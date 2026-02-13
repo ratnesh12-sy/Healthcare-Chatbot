@@ -4,15 +4,23 @@ import com.healthcare.aiassistant.model.ChatMessage;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.payload.request.ChatRequest;
 import com.healthcare.aiassistant.repository.UserRepository;
+import com.healthcare.aiassistant.service.AiChatService;
 import com.healthcare.aiassistant.service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -52,7 +60,7 @@ public class ChatController {
         if (response != null) {
             return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(500).body("Failed to get AI response");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to get AI response");
         }
     }
 }
