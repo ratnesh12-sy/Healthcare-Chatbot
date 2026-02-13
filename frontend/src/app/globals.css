@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+.chat-bubble-user {
+  @apply bg-primary text-white p-3 rounded-lg rounded-tr-none max-w-[80%] self-end;
+}
+
+.chat-bubble-ai {
+  @apply bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-[80%] self-start;
+}
+
+.glass {
+  @apply bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg border border-white border-opacity-30;
+}

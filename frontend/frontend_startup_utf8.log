@@ -1,0 +1,102 @@
+﻿
+> frontend@0.1.0 dev
+> next dev
+
+   Ôû▓ Next.js 14.1.0
+   - Local:        http://localhost:3000
+
+npm : Error: EINVAL: 
+invalid argument, 
+readlink 'C:\Users\ad
+min\OneDrive\Document
+s\GitHub\Healthcare-C
+hatbot\frontend\.next
+\static\chunks\app\da
+shboard\admin\page-9b
+4b4377686ee88d.js'
+At line:1 char:1
++ npm run dev > 
+frontend_startup.log 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (Error:    
+ EINVAL: ...37768    
+6ee88d.js':Strin    
+g) [], RemoteExc    
+eption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+    at async 
+Object.readlink (node
+:internal/fs/promises
+:965:10)
+    at async C:\Users
+\admin\OneDrive\Docum
+ents\GitHub\Healthcar
+e-Chatbot\frontend\no
+de_modules\next\dist\
+lib\recursive-delete.
+js:58:30
+    at async 
+Promise.all (index 0)
+    at async 
+recursiveDelete (C:\U
+sers\admin\OneDrive\D
+ocuments\GitHub\Healt
+hcare-Chatbot\fronten
+d\node_modules\next\d
+ist\lib\recursive-del
+ete.js:51:5)
+    at async C:\Users
+\admin\OneDrive\Docum
+ents\GitHub\Healthcar
+e-Chatbot\frontend\no
+de_modules\next\dist\
+lib\recursive-delete.
+js:68:17
+    at async 
+Promise.all (index 0)
+    at async 
+recursiveDelete (C:\U
+sers\admin\OneDrive\D
+ocuments\GitHub\Healt
+hcare-Chatbot\fronten
+d\node_modules\next\d
+ist\lib\recursive-del
+ete.js:51:5)
+    at async C:\Users
+\admin\OneDrive\Docum
+ents\GitHub\Healthcar
+e-Chatbot\frontend\no
+de_modules\next\dist\
+lib\recursive-delete.
+js:68:17
+    at async 
+Promise.all (index 0)
+    at async 
+recursiveDelete (C:\U
+sers\admin\OneDrive\D
+ocuments\GitHub\Healt
+hcare-Chatbot\fronten
+d\node_modules\next\d
+ist\lib\recursive-del
+ete.js:51:5) {
+  errno: -4071,
+  code: 'EINVAL',
+  syscall: 
+'readlink',
+  path: 'C:\\Users\\a
+dmin\\OneDrive\\Docum
+ents\\GitHub\\Healthc
+are-Chatbot\\frontend
+\\.next\\static\\chun
+ks\\app\\dashboard\\a
+dmin\\page-9b4b437768
+6ee88d.js'
+}
+[?25h

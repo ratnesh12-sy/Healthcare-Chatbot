@@ -1,0 +1,233 @@
+﻿[INFO] Scanning for projects...
+[INFO] 
+[INFO] --------------------< com.healthcare:ai-assistant >---------------------
+[INFO] Building HealthCare AI Assistant 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ ai-assistant ---
+[INFO] Copying 1 resource from src\main\resources to target\classes
+[INFO] Copying 0 resource from src\main\resources to target\classes
+[INFO] 
+[INFO] --- compiler:3.11.0:compile (default-compile) @ ai-assistant ---
+[INFO] Changes detected - recompiling the module! :source
+[INFO] Compiling 32 source files with javac [debug release 17] to target\classes
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[50,69] cannot find symbol
+  symbol:   method getUsername()
+  location: variable loginRequest of type com.healthcare.aiassistant.payload.request.LoginRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[50,97] cannot find symbol
+  symbol:   method getPassword()
+  location: variable loginRequest of type com.healthcare.aiassistant.payload.request.LoginRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[56,41] cannot find symbol
+  symbol:   method getAuthorities()
+  location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[61,28] cannot find symbol
+  symbol:   method getId()
+  location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[62,28] cannot find symbol
+  symbol:   method getUsername()
+  location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[63,28] cannot find symbol
+  symbol:   method getEmail()
+  location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[69,58] cannot find symbol
+  symbol:   method getUsername()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[72,27] constructor MessageResponse in class com.healthcare.aiassistant.payload.response.MessageResponse cannot be applied to given types;
+  required: no arguments
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[75,55] cannot find symbol
+  symbol:   method getEmail()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[78,27] constructor MessageResponse in class com.healthcare.aiassistant.payload.response.MessageResponse cannot be applied to given types;
+  required: no arguments
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[82,43] cannot find symbol
+  symbol:   method getUsername()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[83,30] cannot find symbol
+  symbol:   method getEmail()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[84,45] cannot find symbol
+  symbol:   method getPassword()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[86,39] cannot find symbol
+  symbol:   method getFullName()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[88,39] cannot find symbol
+  symbol:   method getRole()
+  location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[110,13] cannot find symbol
+  symbol:   method setRole(com.healthcare.aiassistant.model.Role)
+  location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[113,34] constructor MessageResponse in class com.healthcare.aiassistant.payload.response.MessageResponse cannot be applied to given types;
+  required: no arguments
+  found:    java.lang.String
+  reason: actual and formal argument lists differ in length
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/jwt/JwtUtils.java:[18,55] cannot find symbol
+  symbol:   variable LoggerFactory
+  location: class org.slf4j.LoggerFactory
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/jwt/JwtUtils.java:[30,43] cannot find symbol
+  symbol:   method getUsername()
+  location: variable userPrincipal of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[36,58] cannot find symbol
+  symbol:   method getDoctorId()
+  location: variable request of type com.healthcare.aiassistant.payload.request.AppointmentRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[40,20] cannot find symbol
+  symbol:   method setPatient(com.healthcare.aiassistant.model.User)
+  location: variable appointment of type com.healthcare.aiassistant.model.Appointment
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[41,20] cannot find symbol
+  symbol:   method setDoctor(com.healthcare.aiassistant.model.Doctor)
+  location: variable appointment of type com.healthcare.aiassistant.model.Appointment
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[42,47] cannot find symbol
+  symbol:   method getAppointmentDate()
+  location: variable request of type com.healthcare.aiassistant.payload.request.AppointmentRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[43,47] cannot find symbol
+  symbol:   method getSymptomsSummary()
+  location: variable request of type com.healthcare.aiassistant.payload.request.AppointmentRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/service/AppointmentService.java:[32,20] cannot find symbol
+  symbol:   method setStatus(com.healthcare.aiassistant.model.AppointmentStatus)
+  location: variable appointment of type com.healthcare.aiassistant.model.Appointment
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[18,8] com.healthcare.aiassistant.security.services.UserDetailsImpl is not abstract and does not override abstract method getUsername() in org.springframework.security.core.userdetails.UserDetails
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[30,48] cannot find symbol
+  symbol:   method getRole()
+  location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[37,21] cannot find symbol
+  symbol:   method getPassword()
+  location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[36,21] cannot find symbol
+  symbol:   method getEmail()
+  location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[35,21] cannot find symbol
+  symbol:   method getUsername()
+  location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[34,21] cannot find symbol
+  symbol:   method getId()
+  location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/ChatController.java:[38,70] cannot find symbol
+  symbol:   method getMessage()
+  location: variable chatRequest of type com.healthcare.aiassistant.payload.request.ChatRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/ChatController.java:[38,96] cannot find symbol
+  symbol:   method getIsFromAi()
+  location: variable chatRequest of type com.healthcare.aiassistant.payload.request.ChatRequest
+[INFO] 33 errors 
+[INFO] -------------------------------------------------------------
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  14.058 s
+[INFO] Finished at: 2026-02-13T08:38:36+05:30
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:compile (default-compile) on project ai-assistant: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[50,69] cannot find symbol
+[ERROR]   symbol:   method getUsername()
+[ERROR]   location: variable loginRequest of type com.healthcare.aiassistant.payload.request.LoginRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[50,97] cannot find symbol
+[ERROR]   symbol:   method getPassword()
+[ERROR]   location: variable loginRequest of type com.healthcare.aiassistant.payload.request.LoginRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[56,41] cannot find symbol
+[ERROR]   symbol:   method getAuthorities()
+[ERROR]   location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[61,28] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[62,28] cannot find symbol
+[ERROR]   symbol:   method getUsername()
+[ERROR]   location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[63,28] cannot find symbol
+[ERROR]   symbol:   method getEmail()
+[ERROR]   location: variable userDetails of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[69,58] cannot find symbol
+[ERROR]   symbol:   method getUsername()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[72,27] constructor MessageResponse in class com.healthcare.aiassistant.payload.response.MessageResponse cannot be applied to given types;
+[ERROR]   required: no arguments
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[75,55] cannot find symbol
+[ERROR]   symbol:   method getEmail()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[78,27] constructor MessageResponse in class com.healthcare.aiassistant.payload.response.MessageResponse cannot be applied to given types;
+[ERROR]   required: no arguments
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[82,43] cannot find symbol
+[ERROR]   symbol:   method getUsername()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[83,30] cannot find symbol
+[ERROR]   symbol:   method getEmail()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[84,45] cannot find symbol
+[ERROR]   symbol:   method getPassword()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[86,39] cannot find symbol
+[ERROR]   symbol:   method getFullName()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[88,39] cannot find symbol
+[ERROR]   symbol:   method getRole()
+[ERROR]   location: variable signUpRequest of type com.healthcare.aiassistant.payload.request.SignupRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[110,13] cannot find symbol
+[ERROR]   symbol:   method setRole(com.healthcare.aiassistant.model.Role)
+[ERROR]   location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AuthController.java:[113,34] constructor MessageResponse in class com.healthcare.aiassistant.payload.response.MessageResponse cannot be applied to given types;
+[ERROR]   required: no arguments
+[ERROR]   found:    java.lang.String
+[ERROR]   reason: actual and formal argument lists differ in length
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/jwt/JwtUtils.java:[18,55] cannot find symbol
+[ERROR]   symbol:   variable LoggerFactory
+[ERROR]   location: class org.slf4j.LoggerFactory
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/jwt/JwtUtils.java:[30,43] cannot find symbol
+[ERROR]   symbol:   method getUsername()
+[ERROR]   location: variable userPrincipal of type com.healthcare.aiassistant.security.services.UserDetailsImpl
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[36,58] cannot find symbol
+[ERROR]   symbol:   method getDoctorId()
+[ERROR]   location: variable request of type com.healthcare.aiassistant.payload.request.AppointmentRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[40,20] cannot find symbol
+[ERROR]   symbol:   method setPatient(com.healthcare.aiassistant.model.User)
+[ERROR]   location: variable appointment of type com.healthcare.aiassistant.model.Appointment
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[41,20] cannot find symbol
+[ERROR]   symbol:   method setDoctor(com.healthcare.aiassistant.model.Doctor)
+[ERROR]   location: variable appointment of type com.healthcare.aiassistant.model.Appointment
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[42,47] cannot find symbol
+[ERROR]   symbol:   method getAppointmentDate()
+[ERROR]   location: variable request of type com.healthcare.aiassistant.payload.request.AppointmentRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/AppointmentController.java:[43,47] cannot find symbol
+[ERROR]   symbol:   method getSymptomsSummary()
+[ERROR]   location: variable request of type com.healthcare.aiassistant.payload.request.AppointmentRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/service/AppointmentService.java:[32,20] cannot find symbol
+[ERROR]   symbol:   method setStatus(com.healthcare.aiassistant.model.AppointmentStatus)
+[ERROR]   location: variable appointment of type com.healthcare.aiassistant.model.Appointment
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[18,8] com.healthcare.aiassistant.security.services.UserDetailsImpl is not abstract and does not override abstract method getUsername() in org.springframework.security.core.userdetails.UserDetails
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[30,48] cannot find symbol
+[ERROR]   symbol:   method getRole()
+[ERROR]   location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[37,21] cannot find symbol
+[ERROR]   symbol:   method getPassword()
+[ERROR]   location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[36,21] cannot find symbol
+[ERROR]   symbol:   method getEmail()
+[ERROR]   location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[35,21] cannot find symbol
+[ERROR]   symbol:   method getUsername()
+[ERROR]   location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/security/services/UserDetailsImpl.java:[34,21] cannot find symbol
+[ERROR]   symbol:   method getId()
+[ERROR]   location: variable user of type com.healthcare.aiassistant.model.User
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/ChatController.java:[38,70] cannot find symbol
+[ERROR]   symbol:   method getMessage()
+[ERROR]   location: variable chatRequest of type com.healthcare.aiassistant.payload.request.ChatRequest
+[ERROR] /C:/Users/admin/OneDrive/Documents/GitHub/Healthcare-Chatbot/backend/src/main/java/com/healthcare/aiassistant/controller/ChatController.java:[38,96] cannot find symbol
+[ERROR]   symbol:   method getIsFromAi()
+[ERROR]   location: variable chatRequest of type com.healthcare.aiassistant.payload.request.ChatRequest
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
