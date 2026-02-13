@@ -44,7 +44,7 @@ export default function ChatPage() {
         setLoading(true);
 
         try {
-            const res = await api.post('/ai-chat', { message: input });
+            const res = await api.post('/chat/ai-chat', { message: input });
             setMessages(prev => [...prev, { ...res.data, isFromAi: true }]);
         } catch (err) {
             console.error('Failed to send message');

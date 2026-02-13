@@ -22,6 +22,9 @@ public class ChatController {
     private ChatService chatService;
 
     @Autowired
+    private AiChatService aiChatService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @GetMapping("/history")
@@ -33,9 +36,23 @@ public class ChatController {
 
     @PostMapping("/save")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> saveMessage(@AuthenticationPrincipal UserDetails userDetails, @RequestBody ChatRequest chatRequest) {
+    public ResponseEntity<?> saveMessage(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ChatRequest chatRequest) {
         User user = userRepository.findByUsername(userDetails.getUsername()).get();
         ChatMessage saved = chatService.saveMessage(user, chatRequest.getMessage(), chatRequest.getIsFromAi());
         return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping("/ai-chat")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> aiChat(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ChatRequest chatRequest) {
+        User user = userRepository.findByUsername(userDetails.getUsername()).get();
+        ChatMessage response = aiChatService.getAiResponse(user, chatRequest.getMessage());
+        if (response != null) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(500).body("Failed to get AI response");
+        }
     }
 }

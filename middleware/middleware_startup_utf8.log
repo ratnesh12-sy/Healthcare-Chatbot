@@ -1,6 +1,0 @@
-﻿
-> middleware@1.0.0 start
-> node index.js
-
-[HPM] Proxy created: /  -> http://localhost:8080
-Middleware Gateway running on port 5000
