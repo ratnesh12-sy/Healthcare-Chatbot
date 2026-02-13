@@ -1,0 +1,65 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.factorypath
+.settings/
+.nb-gradle/
+*.swp
+*.swo
+
+# Build/Package Managers
+node_modules/
+target/
+.mvn/
+bin/
+out/
+.gradle/
+build/
+.next/
+dist/
+*.tsbuildinfo
+
+# Dependencies
+package-lock.json
+*.lock
+
+# Logs
+*.log
+logs/
+*.out
+
+# Environment/Secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.gemini/
+.agent/
+
+# Database
+db_data/
+*.db
+*.sqlite
+
+# Testing
+coverage/
+.nyc_output/
+
+# Temp/Cache
+.cache/
+.npm/
+.yarn/
+.npmrc
+.yarnrc
+*.tmp
+*.temp
