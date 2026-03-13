@@ -60,7 +60,7 @@ export default function LoginPage() {
                         type="submit"
                         className="w-full py-4 px-4 bg-primary text-white font-bold rounded-lg hover:bg-indigo-600 transition-colors shadow-lg"
                     >
-                        Sign In
+                        Log In
                     </button>
                 </form>
 

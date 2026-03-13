@@ -101,7 +101,7 @@ export default function SignupPage() {
                 </form>
 
                 <p className="mt-8 text-center text-gray-600">
-                    Already have an account? <Link href="/login" className="text-primary font-bold hover:underline">Sign in</Link>
+                    Already have an account? <Link href="/login" className="text-primary font-bold hover:underline">Log in</Link>
                 </p>
             </motion.div>
         </div>

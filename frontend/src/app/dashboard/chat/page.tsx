@@ -46,8 +46,10 @@ export default function ChatPage() {
         try {
             const res = await api.post('/chat/ai-chat', { message: input });
             setMessages(prev => [...prev, { ...res.data, isFromAi: true }]);
-        } catch (err) {
-            console.error('Failed to send message');
+        } catch (err: any) {
+            console.error('Failed to send message', err);
+            const errorMessage = err.response?.data || 'Sorry, the AI service is currently unavailable. Please try again later.';
+            setMessages(prev => [...prev, { message: typeof errorMessage === 'string' ? errorMessage : 'Sorry, the AI service encountered an error.', isFromAi: true, timestamp: new Date() }]);
         } finally {
             setLoading(false);
         }
