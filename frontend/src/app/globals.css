@@ -2,20 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --foreground-rgb: 26, 26, 26;
+  --background-rgb: 255, 255, 255;
+  --primary: 0, 169, 157;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background: white;
+  font-family: 'Inter', sans-serif;
 }
 
 .chat-bubble-user {
@@ -23,9 +21,21 @@ body {
 }
 
 .chat-bubble-ai {
-  @apply bg-gray-200 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-[80%] self-start;
+  @apply bg-gray-100 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-[80%] self-start;
 }
 
 .glass {
-  @apply bg-white bg-opacity-20 backdrop-filter backdrop-blur-lg border border-white border-opacity-30;
+  @apply bg-white/70 backdrop-blur-lg border border-white/30 shadow-xl;
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-primary/20;
+}
+
+.btn-primary {
+  @apply px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-opacity-90 transition-all shadow-lg hover:shadow-teal-500/20 active:scale-95;
+}
+
+.btn-secondary {
+  @apply px-8 py-3 bg-light text-dark font-semibold rounded-full hover:bg-gray-200 transition-all active:scale-95;
 }

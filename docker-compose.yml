@@ -6,7 +6,7 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: healthcare_db
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
     volumes:
@@ -15,31 +15,22 @@ services:
   backend:
     build: ./backend
     ports:
-      - "8080:8080"
+      - "8081:8081"
     environment:
+      SERVER_PORT: 8081
       SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/healthcare_db
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_PASSWORD: root
     depends_on:
       - db
 
-  middleware:
-    build: ./middleware
-    ports:
-      - "5000:5000"
-    environment:
-      PORT: 5000
-      SPRING_BOOT_URL: http://backend:8080
-      OPENAI_API_KEY: your_api_key_here
-    depends_on:
-      - backend
 
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
     depends_on:
-      - middleware
+      - backend
 
 volumes:
   db_data:

@@ -16,7 +16,7 @@ export default function LoginPage() {
         try {
             await login(username, password);
         } catch (err: any) {
-            setError('Invalid username or password');
+            setError(err.response?.data?.message || 'Invalid username or password');
         }
     };
 
@@ -27,45 +27,57 @@ export default function LoginPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl"
             >
-                <div className="text-center mb-8">
-                    <Activity className="w-12 h-12 text-primary mx-auto mb-4" />
-                    <h2 className="text-3xl font-bold text-gray-900">Welcome Back</h2>
-                    <p className="text-gray-500 mt-2">Sign in to access your health assistant</p>
+                <div className="text-center mb-10">
+                    <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-teal-500/10">
+                        <Activity className="w-8 h-8" />
+                    </div>
+                    <h2 className="text-3xl font-extrabold text-dark tracking-tight">Welcome Back</h2>
+                    <p className="text-gray-500 mt-3">Sign in to access your HealthAI assistant</p>
                 </div>
 
-                {error && <p className="bg-red-50 text-red-500 p-3 rounded-lg mb-4 text-center">{error}</p>}
+                {error && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-red-50 text-red-600 p-4 rounded-xl mb-6 text-sm font-medium border border-red-100 flex items-center justify-center gap-2"
+                    >
+                        {error}
+                    </motion.div>
+                )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Username</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Username</label>
                         <input
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="mt-1 block w-full px-4 py-3 bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            placeholder="your_username"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Password</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Password</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="mt-1 block w-full px-4 py-3 bg-gray-100 border-transparent rounded-lg focus:ring-2 focus:ring-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            placeholder="••••••••"
                             required
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full py-4 px-4 bg-primary text-white font-bold rounded-lg hover:bg-indigo-600 transition-colors shadow-lg"
+                        className="w-full btn-primary py-4 mt-4"
                     >
                         Log In
                     </button>
                 </form>
 
-                <p className="mt-8 text-center text-gray-600">
-                    Don't have an account? <Link href="/signup" className="text-primary font-bold hover:underline">Sign up</Link>
+                <p className="mt-10 text-center text-gray-600 text-sm">
+                    Don't have an account? <Link href="/signup" className="text-primary font-bold hover:text-teal-600 transition-colors">Create account</Link>
                 </p>
             </motion.div>
         </div>
