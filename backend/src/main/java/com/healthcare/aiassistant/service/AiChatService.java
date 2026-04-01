@@ -4,6 +4,7 @@ import com.healthcare.aiassistant.model.ChatMessage;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.payload.openai.OpenAiMessage;
 import com.healthcare.aiassistant.payload.openai.OpenAiRequest;
+import com.healthcare.aiassistant.repository.SystemSettingRepository;
 import com.healthcare.aiassistant.payload.openai.OpenAiResponse;
 import com.healthcare.aiassistant.security.config.OpenAiProperties;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,23 +24,38 @@ public class AiChatService {
     private OpenAiProperties openAiProperties;
 
     @Autowired
+    private SystemSettingRepository systemSettingRepository;
+
+    @Autowired
     private ChatService chatService;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ChatMessage getAiResponse(User user, String userMessage) {
+        // Fetch dynamic settings from Database gracefully
+        String apiKey = systemSettingRepository.findBySettingKey("apiKey")
+                .map(s -> s.getSettingValue())
+                .orElse(openAiProperties.getApiKey());
+                
+        String aiModel = systemSettingRepository.findBySettingKey("aiModel")
+                .map(s -> s.getSettingValue())
+                .orElse(openAiProperties.getModel());
+                
+        String systemPrompt = systemSettingRepository.findBySettingKey("medicalDisclaimer")
+                .map(s -> s.getSettingValue())
+                .orElse("You are a professional healthcare assistant. Analyze symptoms and provide possible conditions, precautions, and doctor recommendations. Always advise consulting a real doctor.");
+
         // 1. Prepare Request
         List<OpenAiMessage> messages = new ArrayList<>();
-        messages.add(new OpenAiMessage("system",
-                "You are a professional healthcare assistant. Analyze symptoms and provide possible conditions, precautions, and doctor recommendations. Always advise consulting a real doctor."));
+        messages.add(new OpenAiMessage("system", systemPrompt));
         messages.add(new OpenAiMessage("user", userMessage));
 
-        OpenAiRequest request = new OpenAiRequest(openAiProperties.getModel(), messages);
+        OpenAiRequest request = new OpenAiRequest(aiModel, messages);
 
         // 2. Prepare Headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(openAiProperties.getApiKey());
+        headers.setBearerAuth(apiKey);
 
         HttpEntity<OpenAiRequest> entity = new HttpEntity<>(request, headers);
 

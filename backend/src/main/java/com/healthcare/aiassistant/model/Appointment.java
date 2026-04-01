@@ -21,6 +21,8 @@ public class Appointment {
 
     private LocalDateTime appointmentDate;
 
+    private Integer durationMinutes = 30;
+
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status = AppointmentStatus.PENDING;
 
@@ -97,5 +99,13 @@ public class Appointment {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    public void setDurationMinutes(Integer durationMinutes) {
+        this.durationMinutes = durationMinutes;
     }
 }

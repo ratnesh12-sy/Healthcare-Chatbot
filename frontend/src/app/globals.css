@@ -5,9 +5,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --foreground-rgb: 26, 26, 26;
-  --background-rgb: 255, 255, 255;
-  --primary: 0, 169, 157;
+  --foreground-rgb: 15, 23, 42; /* Navy */
+  --background-rgb: 248, 250, 252; /* Slate 50 */
+  --primary: 0, 167, 167; /* Figma Teal */
 }
 
 body {

@@ -1,7 +1,9 @@
 package com.healthcare.aiassistant.util;
 
 import com.healthcare.aiassistant.model.User;
+import com.healthcare.aiassistant.model.ERole;
 import com.healthcare.aiassistant.repository.UserRepository;
+import com.healthcare.aiassistant.repository.RoleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -14,13 +16,11 @@ public class UserInspector implements CommandLineRunner {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public void run(String... args) throws Exception {
-        System.out.println("--- DB PASSWORDS INSPECTION ---");
-        List<User> users = userRepository.findAll();
-        users.forEach(u -> {
-            System.out.println("USER: " + u.getUsername() + " | PASS: " + u.getPassword() + " | ROLE: " + (u.getRole() != null ? u.getRole().getName().name() : "NULL"));
-        });
-        System.out.println("-------------------------------");
+        // System initialization complete.
     }
 }

@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
-import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { Send, Bot, User, Loader2, AlertCircle, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
@@ -55,15 +55,66 @@ export default function ChatPage() {
         }
     };
 
+    const suggestions = [
+        "I have a persistent headache.",
+        "What are the symptoms of flu?",
+        "Should I be worried about high blood pressure?",
+        "How can I improve my sleep quality?"
+    ];
+
     return (
-        <div className="max-w-4xl mx-auto flex flex-col h-[calc(100vh-8rem)]">
+        <div className="max-w-5xl mx-auto flex flex-col h-[calc(100vh-8rem)] animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6 flex items-center justify-between">
-                <h1 className="text-3xl font-bold text-gray-800">Health AI Assistant</h1>
-                <div className="bg-blue-100 text-blue-700 px-4 py-1 rounded-full text-sm font-medium">Online</div>
+                <div>
+                    <h1 className="text-3xl font-extrabold text-secondary flex items-center gap-3">
+                        <Bot className="text-primary w-8 h-8" />
+                        Health AI Assistant
+                    </h1>
+                    <p className="text-slate-500 mt-1 font-medium">Ask questions, check symptoms, or get health tips.</p>
+                </div>
+                <div className="flex items-center gap-2 bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold border border-green-100 shadow-sm">
+                    <span className="relative flex h-2.5 w-2.5">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                    </span>
+                    AI Online
+                </div>
             </div>
 
-            <div className="flex-1 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden flex flex-col">
-                <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex-1 bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden flex flex-col relative">
+                
+                {/* Disclaimer Banner */}
+                <div className="bg-orange-50/80 border-b border-orange-100 px-6 py-3 flex items-start gap-3">
+                    <AlertCircle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-orange-800 leading-relaxed font-medium">
+                        <span className="font-bold">Medical Disclaimer:</span> This AI assistant provides general informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician for any medical conditions.
+                    </p>
+                </div>
+                <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50">
+                    
+                    {messages.length === 0 && (
+                        <div className="h-full flex flex-col items-center justify-center p-8 text-center animate-in fade-in zoom-in duration-500">
+                            <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 shadow-soft">
+                                <Sparkles className="w-10 h-10 text-primary" />
+                            </div>
+                            <h2 className="text-2xl font-bold text-secondary mb-3">How can I help you today?</h2>
+                            <p className="text-slate-500 max-w-md mx-auto mb-10 leading-relaxed">
+                                I'm your intelligent medical assistant. I can help analyze symptoms, provide lifestyle advice, and point you in the right direction.
+                            </p>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full max-w-2xl">
+                                {suggestions.map((suggestion, idx) => (
+                                    <button 
+                                        key={idx}
+                                        onClick={() => setInput(suggestion)}
+                                        className="p-4 bg-white border border-slate-200 rounded-2xl text-left hover:border-primary/50 hover:shadow-md transition-all group"
+                                    >
+                                        <p className="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors">{suggestion}</p>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     <AnimatePresence>
                         {messages.map((msg, i) => (
                             <motion.div
@@ -73,12 +124,12 @@ export default function ChatPage() {
                                 className={`flex ${msg.isFromAi ? 'justify-start' : 'justify-end'}`}
                             >
                                 <div className={`flex gap-3 items-end max-w-[80%] ${msg.isFromAi ? 'flex-row' : 'flex-row-reverse'}`}>
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${msg.isFromAi ? 'bg-primary text-white' : 'bg-gray-200 text-gray-600'}`}>
-                                        {msg.isFromAi ? <Bot size={18} /> : <User size={18} />}
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 ${msg.isFromAi ? 'bg-primary text-white' : 'bg-slate-200 text-slate-600'}`}>
+                                        {msg.isFromAi ? <Bot size={22} /> : <User size={22} />}
                                     </div>
-                                    <div className={msg.isFromAi ? 'chat-bubble-ai' : 'chat-bubble-user'}>
-                                        <p className="whitespace-pre-wrap">{msg.message}</p>
-                                        <span className="text-[10px] opacity-50 block mt-1">
+                                    <div className={msg.isFromAi ? 'chat-bubble-ai border border-slate-200 shadow-sm' : 'chat-bubble-user shadow-soft'}>
+                                        <p className="whitespace-pre-wrap leading-relaxed text-sm md:text-base">{msg.message}</p>
+                                        <span className={`text-[10px] block mt-2 font-medium ${msg.isFromAi ? 'text-slate-400' : 'text-white/70'}`}>
                                             {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                         </span>
                                     </div>
@@ -97,20 +148,28 @@ export default function ChatPage() {
                     <div ref={scrollRef} />
                 </div>
 
-                <form onSubmit={sendMessage} className="p-4 bg-gray-50 border-t flex gap-4">
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Describe your symptoms..."
-                        className="flex-1 p-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary outline-none transition-all shadow-inner"
-                    />
+                <form onSubmit={sendMessage} className="p-5 bg-white border-t border-slate-100 flex gap-4 items-end">
+                    <div className="flex-1 bg-slate-50 border border-slate-200 rounded-3xl flex items-center shadow-inner focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden p-1">
+                        <textarea
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    sendMessage(e);
+                                }
+                            }}
+                            placeholder="Type your health-related concern..."
+                            className="flex-1 max-h-32 min-h-[50px] bg-transparent border-none outline-none resize-none p-3 text-secondary text-sm md:text-base"
+                            rows={1}
+                        />
+                    </div>
                     <button
                         type="submit"
-                        disabled={loading}
-                        className="bg-primary text-white p-3 rounded-xl hover:bg-indigo-600 transition-colors shadow-lg disabled:opacity-50"
+                        disabled={loading || !input.trim()}
+                        className="bg-primary text-white p-4 rounded-2xl hover:bg-teal-600 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 flex-shrink-0"
                     >
-                        <Send size={20} />
+                        <Send size={22} className={loading ? "animate-pulse" : ""} />
                     </button>
                 </form>
             </div>

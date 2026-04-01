@@ -8,7 +8,8 @@ import {
     Calendar,
     Users,
     LogOut,
-    UserCircle
+    UserCircle,
+    ShieldAlert
 } from 'lucide-react';
 
 const Sidebar: React.FC = () => {
@@ -17,18 +18,22 @@ const Sidebar: React.FC = () => {
 
     const menuItems = [
         { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN'] },
-        { name: 'AI Chat', icon: <MessageSquare size={20} />, path: '/dashboard/chat', roles: ['ROLE_PATIENT'] },
-        { name: 'Appointments', icon: <Calendar size={20} />, path: '/dashboard/appointments', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
+        { name: 'AI Chat', icon: <MessageSquare size={20} />, path: '/dashboard/chat', roles: ['ROLE_PATIENT', 'ROLE_ADMIN'] },
+        { name: 'Appointments', icon: <Calendar size={20} />, path: '/dashboard/appointments', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN'] },
         { name: 'Manage Users', icon: <Users size={20} />, path: '/dashboard/admin', roles: ['ROLE_ADMIN'] },
         { name: 'Profile', icon: <UserCircle size={20} />, path: '/dashboard/profile', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN'] },
+        { name: 'Admin Console', icon: <ShieldAlert size={20} className="text-rose-500" />, path: '/admin', roles: ['ROLE_ADMIN'] },
     ];
 
     const userRole = user?.roles?.[0];
 
     return (
-        <div className="w-64 bg-white border-r min-h-screen flex flex-col">
-            <div className="p-6 text-2xl font-bold text-primary flex items-center gap-2">
-                <span>HealthCare</span>
+        <div className="w-64 bg-white shadow-soft z-10 min-h-screen flex flex-col">
+            <div className="p-6 text-2xl font-extrabold flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xl">
+                    H
+                </div>
+                <span className="text-secondary">HealthAI</span>
             </div>
 
             <nav className="flex-1 px-4 py-4 space-y-2">
@@ -36,11 +41,18 @@ const Sidebar: React.FC = () => {
                     <Link
                         key={item.path}
                         href={item.path}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${pathname === item.path ? 'bg-primary text-white shadow-md' : 'text-gray-600 hover:bg-blue-50'
+                        className={`flex items-center gap-3 px-6 py-3.5 transition-all relative ${pathname === item.path 
+                            ? 'text-white' 
+                            : 'text-secondary/70 hover:text-primary hover:bg-surface'
                             }`}
                     >
-                        {item.icon}
-                        <span className="font-medium">{item.name}</span>
+                        {pathname === item.path && (
+                            <div className="absolute inset-0 bg-primary rounded-r-full -ml-4" />
+                        )}
+                        <div className="relative z-10 flex items-center gap-3">
+                            {item.icon}
+                            <span className="font-semibold">{item.name}</span>
+                        </div>
                     </Link>
                 ))}
             </nav>

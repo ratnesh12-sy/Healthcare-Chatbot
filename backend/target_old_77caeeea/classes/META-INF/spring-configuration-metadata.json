@@ -1,0 +1,54 @@
+{
+  "groups": [
+    {
+      "name": "healthcare",
+      "type": "com.healthcare.aiassistant.security.config.HealthcareProperties",
+      "sourceType": "com.healthcare.aiassistant.security.config.HealthcareProperties"
+    },
+    {
+      "name": "healthcare.jwt",
+      "type": "com.healthcare.aiassistant.security.config.HealthcareProperties$Jwt",
+      "sourceType": "com.healthcare.aiassistant.security.config.HealthcareProperties",
+      "sourceMethod": "getJwt()"
+    },
+    {
+      "name": "openai",
+      "type": "com.healthcare.aiassistant.security.config.OpenAiProperties",
+      "sourceType": "com.healthcare.aiassistant.security.config.OpenAiProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "healthcare.jwt.expiration",
+      "type": "java.lang.Long",
+      "sourceType": "com.healthcare.aiassistant.security.config.HealthcareProperties$Jwt",
+      "defaultValue": 0
+    },
+    {
+      "name": "healthcare.jwt.secret",
+      "type": "java.lang.String",
+      "sourceType": "com.healthcare.aiassistant.security.config.HealthcareProperties$Jwt"
+    },
+    {
+      "name": "openai.api-key",
+      "type": "java.lang.String",
+      "sourceType": "com.healthcare.aiassistant.security.config.OpenAiProperties"
+    },
+    {
+      "name": "openai.api-url",
+      "type": "java.lang.String",
+      "sourceType": "com.healthcare.aiassistant.security.config.OpenAiProperties",
+      "defaultValue": "https:\/\/api.openai.com\/v1\/chat\/completions"
+    },
+    {
+      "name": "openai.model",
+      "type": "java.lang.String",
+      "sourceType": "com.healthcare.aiassistant.security.config.OpenAiProperties",
+      "defaultValue": "gpt-4o-mini"
+    }
+  ],
+  "hints": [],
+  "ignored": {
+    "properties": []
+  }
+}
