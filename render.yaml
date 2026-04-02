@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: healthcare-chatbot-backend
+    env: docker
+    repo: https://github.com/ratnesh12-sy/Healthcare-Chatbot
+    plan: free
+    region: singapore
+    dockerContext: ./backend
+    dockerfilePath: ./backend/Dockerfile
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASS
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GROQ_API_KEY
+        sync: false
+      - key: SERVER_PORT
+        value: 8081
+    healthCheckPath: /api-docs
+    autoDeploy: true

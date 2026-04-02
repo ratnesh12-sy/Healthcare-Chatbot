@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Settings, Server, GlobeLock, ShieldOutline, Save } from 'lucide-react';
+import { Settings, Server, Globe, Save } from 'lucide-react';
 import api from '@/lib/api';
 
 export default function SettingsPage() {
@@ -105,7 +105,7 @@ export default function SettingsPage() {
                 {/* Patient Safety Defaults */}
                 <div className="bg-white p-8 rounded-3xl shadow-2xl border border-slate-100 space-y-6">
                     <h2 className="text-xl font-extrabold text-secondary flex items-center gap-3">
-                        <GlobeLock className="text-amber-500" />
+                        <Globe className="text-amber-500" />
                         Patient Compliance Directives
                     </h2>
                     

@@ -2,15 +2,16 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:8.0
+    image: postgres:15-alpine
     restart: always
     environment:
-      MYSQL_DATABASE: healthcare_db
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_DB: healthcare_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - db_data:/var/lib/mysql
+      - db_data:/var/lib/postgresql/data
 
   backend:
     build: ./backend
@@ -18,9 +19,11 @@ services:
       - "8081:8081"
     environment:
       SERVER_PORT: 8081
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/healthcare_db
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      DATABASE_URL: jdbc:postgresql://db:5432/healthcare_db?sslmode=disable
+      DB_USER: postgres
+      DB_PASS: password
+      JWT_SECRET: YmFzZTY0c2VjcmV0a2V5Zm9yaGVhbHRoY2FyZWNoYXRib3RhcHAxMjM0NTY3ODkw
+      GROQ_API_KEY: ${GROQ_API_KEY}
     depends_on:
       - db
 
@@ -29,6 +32,8 @@ services:
     build: ./frontend
     ports:
       - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8081/api
     depends_on:
       - backend
 
