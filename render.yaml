@@ -22,3 +22,19 @@ services:
         value: 8081
     healthCheckPath: /api-docs
     autoDeploy: true
+
+  - type: web
+    name: healthcare-chatbot-frontend
+    env: docker
+    repo: https://github.com/ratnesh12-sy/Healthcare-Chatbot
+    plan: free
+    region: singapore
+    dockerContext: ./frontend
+    dockerfilePath: ./frontend/Dockerfile
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        fromService:
+          name: healthcare-chatbot-backend
+          type: web
+          property: host
+    autoDeploy: true
