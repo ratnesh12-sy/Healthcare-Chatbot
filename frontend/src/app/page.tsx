@@ -10,7 +10,7 @@ import {
   CheckCircle2, 
   Clock, 
   ArrowRight,
-  Stethoscopes,
+  Stethoscope,
   HeartPulse,
   LineChart,
   BrainCircuit,
