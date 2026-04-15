@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8081/api', // Points to Spring Boot directly
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api', // Uses env variable in production, falls back to localhost
 });
 
 api.interceptors.request.use((config) => {
