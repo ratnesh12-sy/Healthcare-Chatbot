@@ -1,7 +1,8 @@
 "use client";
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Activity, 
   MessageSquare, 
@@ -14,10 +15,14 @@ import {
   HeartPulse,
   LineChart,
   BrainCircuit,
-  Settings
+  Settings,
+  Menu,
+  X
 } from 'lucide-react';
 
 export default function Home() {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
     return (
         <main className="min-h-screen bg-white">
             {/* Navigation */}
@@ -35,7 +40,36 @@ export default function Home() {
                         <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">Login</Link>
                         <Link href="/signup" className="btn-primary py-2 px-6 text-sm">Sign Up</Link>
                     </div>
+
+                    {/* Mobile Menu Toggle */}
+                    <div className="md:hidden flex items-center">
+                        <button 
+                            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                            className="text-gray-700 hover:text-primary transition-colors p-2"
+                        >
+                            {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+                        </button>
+                    </div>
                 </div>
+
+                {/* Mobile Dropdown Menu */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.div 
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
+                        >
+                            <div className="px-6 py-4 flex flex-col gap-4">
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="#features" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">Features</Link>
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="#how-it-works" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">How it Works</Link>
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="/login" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">Login</Link>
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="/signup" className="btn-primary py-3 px-6 text-center mt-2 w-full text-base font-bold">Sign Up Free</Link>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </nav>
 
             {/* Hero Section */}
