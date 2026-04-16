@@ -35,7 +35,8 @@ export default function ChatPage() {
                 const speechInstance = new SpeechRecognition();
                 speechInstance.continuous = true;
                 speechInstance.interimResults = true;
-                speechInstance.lang = 'en-IN';
+                // Let the browser decide the default language for best compatibility
+                // speechInstance.lang = 'en-US';
 
                 speechInstance.onresult = (event: any) => {
                     let currentInterim = '';
