@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import api from '@/lib/api';
-import { Send, Bot, User, Loader2, AlertCircle, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Loader2, AlertCircle, Sparkles, Mic, MicOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Message {
@@ -16,6 +16,111 @@ export default function ChatPage() {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    const [isListening, setIsListening] = useState(false);
+    const [recognition, setRecognition] = useState<any>(null);
+    const [interimTranscript, setInterimTranscript] = useState('');
+    const isListeningRef = useRef(false);
+    const lastRestartTimeRef = useRef(0);
+
+    useEffect(() => {
+        isListeningRef.current = isListening;
+    }, [isListening]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+            
+            if (SpeechRecognition) {
+                const speechInstance = new SpeechRecognition();
+                speechInstance.continuous = true;
+                speechInstance.interimResults = true;
+                speechInstance.lang = 'en-IN';
+
+                speechInstance.onresult = (event: any) => {
+                    let currentInterim = '';
+                    let final = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            final += event.results[i][0].transcript;
+                        } else {
+                            currentInterim += event.results[i][0].transcript;
+                        }
+                    }
+
+                    if (final) {
+                        const finalTrimmed = final.trim();
+                        if (finalTrimmed) {
+                            setInput((prev) => {
+                                const prevTrimmed = prev.trim();
+                                return prevTrimmed ? `${prevTrimmed} ${finalTrimmed}` : finalTrimmed;
+                            });
+                        }
+                    }
+                    
+                    setInterimTranscript(currentInterim);
+                };
+
+                speechInstance.onend = () => {
+                    if (isListeningRef.current) {
+                        const now = Date.now();
+                        if (now - lastRestartTimeRef.current > 300) {
+                            try {
+                                lastRestartTimeRef.current = now;
+                                speechInstance.start();
+                            } catch (err) {
+                                console.error("Error auto-restarting recognition:", err);
+                            }
+                        }
+                    } else {
+                        setIsListening(false);
+                        setInterimTranscript('');
+                    }
+                };
+
+                speechInstance.onerror = (event: any) => {
+                    console.error("Speech recognition error:", event.error);
+                    if (event.error === 'not-allowed') {
+                        alert("Microphone access denied. Please enable it in browser settings.");
+                    }
+                    setIsListening(false);
+                    setInterimTranscript('');
+                };
+
+                setRecognition(speechInstance);
+
+                return () => {
+                    if (speechInstance) {
+                        speechInstance.stop();
+                    }
+                };
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        if (interimTranscript) {
+            scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    }, [interimTranscript]);
+
+    const toggleListening = () => {
+        if (!recognition) return;
+
+        if (isListening) {
+            recognition.stop();
+            setIsListening(false);
+            setInterimTranscript('');
+        } else {
+            try {
+                recognition.start();
+                setIsListening(true);
+            } catch (err) {
+                console.error("Error starting recognition:", err);
+            }
+        }
+    };
 
     useEffect(() => {
         fetchHistory();
@@ -36,15 +141,23 @@ export default function ChatPage() {
 
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!input.trim()) return;
 
-        const userMsg: Message = { message: input, isFromAi: false, timestamp: new Date() };
+        if (isListeningRef.current && recognition) {
+            recognition.stop();
+            setIsListening(false);
+            setInterimTranscript('');
+        }
+
+        const finalMessage = input.trim();
+        if (!finalMessage) return;
+
+        const userMsg: Message = { message: finalMessage, isFromAi: false, timestamp: new Date() };
         setMessages([...messages, userMsg]);
         setInput('');
         setLoading(true);
 
         try {
-            const res = await api.post('/chat/ai-chat', { message: input });
+            const res = await api.post('/chat/ai-chat', { message: finalMessage });
             setMessages(prev => [...prev, { ...res.data, isFromAi: true }]);
         } catch (err: any) {
             console.error('Failed to send message', err);
@@ -151,26 +264,58 @@ export default function ChatPage() {
                 <form onSubmit={sendMessage} className="p-5 bg-white border-t border-slate-100 flex gap-4 items-end">
                     <div className="flex-1 bg-slate-50 border border-slate-200 rounded-3xl flex items-center shadow-inner focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden p-1">
                         <textarea
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
+                            value={input + (interimTranscript ? (input ? ' ' : '') + interimTranscript : '')}
+                            onChange={(e) => {
+                                let newValue = e.target.value;
+                                if (interimTranscript && newValue.endsWith(interimTranscript)) {
+                                    newValue = newValue.slice(0, -interimTranscript.length).trim();
+                                }
+                                setInput(newValue);
+                                if (isListeningRef.current && recognition) {
+                                    toggleListening();
+                                }
+                            }}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' && !e.shiftKey) {
                                     e.preventDefault();
                                     sendMessage(e);
                                 }
                             }}
-                            placeholder="Type your health-related concern..."
+                            placeholder="Type or speak your health-related concern..."
                             className="flex-1 max-h-32 min-h-[50px] bg-transparent border-none outline-none resize-none p-3 text-secondary text-sm md:text-base"
                             rows={1}
                         />
                     </div>
-                    <button
-                        type="submit"
-                        disabled={loading || !input.trim()}
-                        className="bg-primary text-white p-4 rounded-2xl hover:bg-teal-600 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 flex-shrink-0"
-                    >
-                        <Send size={22} className={loading ? "animate-pulse" : ""} />
-                    </button>
+                    
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={toggleListening}
+                            disabled={!recognition}
+                            title={
+                                !recognition ? "Voice input not supported in this browser" 
+                                : isListening ? "Stop listening" 
+                                : "Start voice typing"
+                            }
+                            className={`p-4 rounded-2xl transition-all shadow-md flex-shrink-0 ${
+                                !recognition 
+                                    ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                                    : isListening 
+                                        ? 'bg-red-50 text-red-500 border border-red-200 animate-pulse hover:bg-red-100' 
+                                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
+                            }`}
+                        >
+                            {isListening ? <MicOff size={22} /> : <Mic size={22} />}
+                        </button>
+
+                        <button
+                            type="submit"
+                            disabled={loading || (!input.trim() && !interimTranscript)}
+                            className="bg-primary text-white p-4 rounded-2xl hover:bg-teal-600 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:hover:translate-y-0 flex-shrink-0"
+                        >
+                            <Send size={22} className={loading ? "animate-pulse" : ""} />
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
