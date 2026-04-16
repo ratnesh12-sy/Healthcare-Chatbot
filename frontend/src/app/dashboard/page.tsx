@@ -1,11 +1,71 @@
 "use client";
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { motion } from 'framer-motion';
-import { Activity, MessageSquare, Calendar, HeartPulse, Flame, Moon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Activity, MessageSquare, Calendar, HeartPulse, Flame, Moon, BellRing, CheckCircle2, Circle, Trash2, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
+import { ReminderService, Reminder } from '@/lib/reminderService';
 
 export default function DashboardHome() {
     const { user } = useAuth();
+
+    const { user } = useAuth();
+    const [reminders, setReminders] = useState<Reminder[]>([]);
+    const [loaded, setLoaded] = useState(false);
+
+    const loadReminders = async () => {
+        try {
+            const data = await ReminderService.getAll();
+            
+            // Deterministic Priority Sorting: Incomplete first, then Newest first
+            const sorted = data.sort((a, b) => {
+                if (a.isCompleted === b.isCompleted) {
+                    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+                }
+                return a.isCompleted ? 1 : -1;
+            });
+            
+            setReminders(sorted);
+        } catch (error) {
+            console.error("Failed to fetch reminders:", error);
+        } finally {
+            setLoaded(true);
+        }
+    };
+
+    useEffect(() => {
+        loadReminders();
+        
+        const handleUpdate = () => loadReminders();
+        window.addEventListener("remindersUpdated", handleUpdate);
+        
+        return () => window.removeEventListener("remindersUpdated", handleUpdate);
+    }, []);
+
+    const toggleReminder = async (id: string, currentStatus: boolean) => {
+        // Optimistic UI Update
+        setReminders(prev => prev.map(r => r.id === id ? { ...r, isCompleted: !currentStatus } : r));
+        
+        try {
+            await ReminderService.toggle(id);
+            // Sorting will naturally trigger again via the window event, pulling it cleanly down.
+        } catch (err) {
+            // Revert state on failure
+            setReminders(prev => prev.map(r => r.id === id ? { ...r, isCompleted: currentStatus } : r));
+            console.error("Failed to toggle reminder");
+        }
+    };
+
+    const deleteReminder = async (id: string) => {
+        // Optimistic UI Update
+        setReminders(prev => prev.filter(r => r.id !== id));
+        try {
+            await ReminderService.delete(id);
+        } catch (err) {
+            loadReminders(); // Revert on failure
+            console.error("Failed to delete reminder");
+        }
+    };
 
     const stats = [
         { label: 'Heart Rate', value: '72 bpm', icon: <HeartPulse className="text-rose-500 w-6 h-6" />, color: 'bg-rose-50 text-rose-600' },
@@ -70,40 +130,77 @@ export default function DashboardHome() {
                     </div>
                 </div>
 
-                <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100">
+                <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100 flex flex-col h-[400px]">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-xl font-bold text-secondary">Upcoming Schedule</h2>
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                                <BellRing className="w-5 h-5" />
+                            </div>
+                            <h2 className="text-xl font-bold text-secondary">My Reminders</h2>
+                        </div>
                     </div>
-                    <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 border border-slate-100 rounded-2xl hover:shadow-md transition-shadow cursor-pointer group">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center group-hover:bg-primary transition-colors">
-                                    <Calendar className="w-6 h-6 text-primary group-hover:text-white transition-colors" />
-                                </div>
-                                <div>
-                                    <p className="font-extrabold text-secondary tracking-tight">General Checkup</p>
-                                    <p className="text-sm text-slate-500 font-medium mt-0.5">Tomorrow, 10:00 AM</p>
-                                </div>
+                    
+                    <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+                        {!loaded ? (
+                            <div className="animate-pulse space-y-3">
+                                {[1, 2, 3].map(i => (
+                                    <div key={i} className="h-16 bg-slate-100 rounded-2xl w-full"></div>
+                                ))}
                             </div>
-                            <div className="px-3 py-1 bg-green-50 text-green-600 text-xs font-bold rounded-full">
-                                Confirmed
-                            </div>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-4 border border-slate-100 rounded-2xl hover:shadow-md transition-shadow cursor-pointer group">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center group-hover:bg-blue-500 transition-colors">
-                                    <Activity className="w-6 h-6 text-blue-500 group-hover:text-white transition-colors" />
+                        ) : reminders.length === 0 ? (
+                            <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-slate-50 border border-slate-100 border-dashed rounded-2xl">
+                                <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mb-3 shadow-sm">
+                                    <BellRing className="w-6 h-6 text-slate-300" />
                                 </div>
-                                <div>
-                                    <p className="font-extrabold text-secondary tracking-tight">Lab Results</p>
-                                    <p className="text-sm text-slate-500 font-medium mt-0.5">Friday, 02:30 PM</p>
-                                </div>
+                                <h3 className="font-bold text-slate-700 mb-1">No reminders yet</h3>
+                                <p className="text-xs text-slate-500 mb-4 max-w-[200px]">Save actionable advice directly from your AI consultations.</p>
+                                <Link href="/dashboard/chat" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 bg-indigo-50 px-4 py-2 rounded-lg transition-colors">
+                                    Go to Chat <ArrowRight className="w-3 h-3" />
+                                </Link>
                             </div>
-                            <div className="px-3 py-1 bg-orange-50 text-orange-600 text-xs font-bold rounded-full">
-                                Pending
-                            </div>
-                        </div>
+                        ) : (
+                            <AnimatePresence>
+                                {reminders.map((reminder) => (
+                                    <motion.div
+                                        key={reminder.id}
+                                        layout
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.95, height: 0, marginBottom: 0 }}
+                                        transition={{ duration: 0.2 }}
+                                        className={`group flex items-start gap-3 p-4 rounded-2xl border transition-all ${
+                                            reminder.isCompleted 
+                                                ? 'bg-slate-50 border-slate-100 opacity-60' 
+                                                : 'bg-white border-slate-200 shadow-sm hover:border-indigo-200 hover:shadow-md'
+                                        }`}
+                                    >
+                                        <button 
+                                            onClick={() => toggleReminder(reminder.id, reminder.isCompleted)}
+                                            className={`mt-0.5 flex-shrink-0 transition-colors ${reminder.isCompleted ? 'text-green-500' : 'text-slate-300 hover:text-indigo-500'}`}
+                                            aria-label={reminder.isCompleted ? "Mark incomplete" : "Mark complete"}
+                                        >
+                                            {reminder.isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Circle className="w-6 h-6" />}
+                                        </button>
+                                        
+                                        <div className="flex-1 min-w-0 pr-2">
+                                            <p className={`text-sm font-semibold transition-all ${
+                                                reminder.isCompleted ? 'text-slate-500 line-through' : 'text-slate-800'
+                                            }`}>
+                                                {reminder.text}
+                                            </p>
+                                        </div>
+                                        
+                                        <button 
+                                            onClick={() => deleteReminder(reminder.id)}
+                                            className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all flex-shrink-0"
+                                            aria-label="Delete reminder"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        )}
                     </div>
                 </div>
             </div>

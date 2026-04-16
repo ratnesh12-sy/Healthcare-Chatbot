@@ -96,6 +96,13 @@ public class AuthController {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        // Double encode blockade
+        if (signUpRequest.getPassword().matches("^\\$2[aby]\\$.*")) {
+             return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Password should not already be encoded."));
+        }
+
         // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
