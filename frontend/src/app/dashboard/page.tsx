@@ -9,7 +9,6 @@ import { ReminderService, Reminder } from '@/lib/reminderService';
 export default function DashboardHome() {
     const { user } = useAuth();
 
-    const { user } = useAuth();
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [loaded, setLoaded] = useState(false);
 
