@@ -1,27 +1,40 @@
 "use client";
+import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { useAuth } from '@/context/AuthContext';
-import { Bell, Search, ChevronDown } from 'lucide-react';
+import { Bell, Search, ChevronDown, Menu } from 'lucide-react';
 import Image from 'next/image';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     
     return (
         <ProtectedRoute>
             <div className="flex bg-light min-h-screen text-secondary">
-                <Sidebar />
-                <div className="flex-1 flex flex-col overflow-hidden">
+                <Sidebar isMobileOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+                <div className="flex-1 flex flex-col overflow-hidden w-full relative">
                     {/* Top Header */}
-                    <header className="h-20 bg-white shadow-sm flex items-center justify-between px-8 z-0">
-                        <div className="flex items-center bg-gray-100 px-4 py-2 rounded-full w-96">
-                            <Search className="w-5 h-5 text-gray-400" />
-                            <input 
-                                type="text" 
-                                placeholder="Search appointments, patients..." 
-                                className="bg-transparent border-none outline-none ml-3 w-full text-sm placeholder-gray-400 text-secondary"
-                            />
+                    <header className="h-20 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 z-0">
+                        <div className="flex items-center gap-4">
+                            {/* Mobile Hamburger Toggle */}
+                            <button 
+                                className="md:hidden p-2 text-gray-500 hover:text-primary transition-colors hover:bg-gray-50 rounded-lg"
+                                onClick={() => setIsSidebarOpen(true)}
+                            >
+                                <Menu size={24} />
+                            </button>
+                            
+                            {/* Search Bar - Hidden on mobile */}
+                            <div className="hidden md:flex items-center bg-gray-100 px-4 py-2 rounded-full w-96">
+                                <Search className="w-5 h-5 text-gray-400" />
+                                <input 
+                                    type="text" 
+                                    placeholder="Search appointments, patients..." 
+                                    className="bg-transparent border-none outline-none ml-3 w-full text-sm placeholder-gray-400 text-secondary"
+                                />
+                            </div>
                         </div>
                         <div className="flex items-center gap-6">
                             <button className="relative p-2 text-gray-400 hover:text-primary transition-colors">

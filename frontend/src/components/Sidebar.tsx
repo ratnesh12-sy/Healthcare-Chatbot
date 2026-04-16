@@ -9,10 +9,16 @@ import {
     Users,
     LogOut,
     UserCircle,
-    ShieldAlert
+    ShieldAlert,
+    X
 } from 'lucide-react';
 
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+    isMobileOpen?: boolean;
+    onClose?: () => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onClose }) => {
     const pathname = usePathname();
     const { user, logout } = useAuth();
 
@@ -28,19 +34,37 @@ const Sidebar: React.FC = () => {
     const userRole = user?.roles?.[0];
 
     return (
-        <div className="w-64 bg-white shadow-soft z-10 min-h-screen flex flex-col">
-            <div className="p-6 text-2xl font-extrabold flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xl">
-                    H
+        <>
+            {/* Mobile Overlay */}
+            {isMobileOpen && (
+                <div 
+                    className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 md:hidden"
+                    onClick={onClose}
+                />
+            )}
+
+            <div className={`fixed inset-y-0 left-0 transform ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'} md:relative md:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white shadow-soft z-50 min-h-screen flex flex-col`}>
+                <div className="p-6 text-2xl font-extrabold flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xl">
+                            H
+                        </div>
+                        <span className="text-secondary">HealthAI</span>
+                    </div>
+                    {/* Close Button for Mobile */}
+                    {onClose && (
+                        <button onClick={onClose} className="md:hidden text-gray-400 hover:text-gray-600 p-1">
+                            <X size={24} />
+                        </button>
+                    )}
                 </div>
-                <span className="text-secondary">HealthAI</span>
-            </div>
 
             <nav className="flex-1 px-4 py-4 space-y-2">
                 {menuItems.filter(item => userRole && item.roles.includes(userRole)).map((item) => (
                     <Link
                         key={item.path}
                         href={item.path}
+                        onClick={onClose} // Auto-close drawer on mobile when clicking a link
                         className={`flex items-center gap-3 px-6 py-3.5 transition-all relative ${pathname === item.path 
                             ? 'text-white' 
                             : 'text-secondary/70 hover:text-primary hover:bg-surface'
@@ -67,6 +91,7 @@ const Sidebar: React.FC = () => {
                 </button>
             </div>
         </div>
+        </>
     );
 };
 
