@@ -1,25 +1,31 @@
 package com.healthcare.aiassistant.controller;
 
-import com.healthcare.aiassistant.model.Appointment;
 import com.healthcare.aiassistant.model.Doctor;
 import com.healthcare.aiassistant.model.User;
+import com.healthcare.aiassistant.payload.dto.AppointmentDTO;
+import com.healthcare.aiassistant.payload.dto.SlotDTO;
 import com.healthcare.aiassistant.payload.request.AppointmentRequest;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.service.AppointmentService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
+
     @Autowired
     private AppointmentService appointmentService;
 
@@ -29,35 +35,67 @@ public class AppointmentController {
     @Autowired
     private DoctorRepository doctorRepository;
 
-    @PostMapping("/book")
+    @PostMapping
     @PreAuthorize("hasRole('PATIENT')")
-    public ResponseEntity<?> bookAppointment(@AuthenticationPrincipal UserDetails userDetails, @RequestBody AppointmentRequest request) {
-        User patient = userRepository.findByUsername(userDetails.getUsername()).get();
-        Doctor doctor = doctorRepository.findById(request.getDoctorId())
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+    public ResponseEntity<?> bookAppointment(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody AppointmentRequest request) {
 
-        Appointment appointment = new Appointment();
-        appointment.setPatient(patient);
-        appointment.setDoctor(doctor);
-        appointment.setAppointmentDate(request.getAppointmentDate());
-        appointment.setSymptomsSummary(request.getSymptomsSummary());
+        User patient = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        return ResponseEntity.ok(appointmentService.bookAppointment(appointment));
+        AppointmentDTO dto = appointmentService.bookAppointment(
+                request.getDoctorId(),
+                request.getAppointmentDate(),
+                request.getSymptomsSummary(),
+                patient);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("status", "SUCCESS", "data", dto));
     }
 
     @GetMapping("/patient")
     @PreAuthorize("hasRole('PATIENT')")
-    public List<Appointment> getPatientAppointments(@AuthenticationPrincipal UserDetails userDetails) {
-        User patient = userRepository.findByUsername(userDetails.getUsername()).get();
-        return appointmentService.getPatientAppointments(patient);
+    public ResponseEntity<?> getPatientAppointments(@AuthenticationPrincipal UserDetails userDetails) {
+        User patient = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<AppointmentDTO> appointments = appointmentService.getPatientAppointments(patient);
+        return ResponseEntity.ok(Map.of("status", "SUCCESS", "data", appointments));
     }
 
     @GetMapping("/doctor")
     @PreAuthorize("hasRole('DOCTOR')")
-    public List<Appointment> getDoctorAppointments(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userRepository.findByUsername(userDetails.getUsername()).get();
+    public ResponseEntity<?> getDoctorAppointments(@AuthenticationPrincipal UserDetails userDetails) {
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
-        return appointmentService.getDoctorAppointments(doctor);
+
+        List<AppointmentDTO> appointments = appointmentService.getDoctorAppointments(doctor);
+        return ResponseEntity.ok(Map.of("status", "SUCCESS", "data", appointments));
+    }
+
+    @GetMapping("/available-slots")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<?> getAvailableSlots(
+            @RequestParam Long doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+
+        List<SlotDTO> slots = appointmentService.getAvailableSlots(doctorId, date);
+        return ResponseEntity.ok(Map.of("status", "SUCCESS", "data", slots));
+    }
+
+    @PatchMapping("/{id}/cancel")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<?> cancelAppointment(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
+
+        User patient = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        AppointmentDTO dto = appointmentService.cancelAppointment(id, patient.getId());
+        return ResponseEntity.ok(Map.of("status", "SUCCESS", "data", dto));
     }
 }

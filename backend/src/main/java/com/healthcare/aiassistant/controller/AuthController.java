@@ -13,7 +13,12 @@ import com.healthcare.aiassistant.security.jwt.JwtUtils;
 import com.healthcare.aiassistant.security.services.UserDetailsImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +49,27 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
+
+    @Value("${app.cookie.domain:}")
+    private String cookieDomain;
+
+    private ResponseCookie buildAuthCookie(String token, boolean expired) {
+        ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from("token", token)
+            .httpOnly(true)
+            .secure(cookieSecure)
+            .sameSite(cookieSecure ? "None" : "Lax")
+            .path("/")
+            .maxAge(expired ? 0 : 7 * 24 * 60 * 60);
+
+        if (cookieDomain != null && !cookieDomain.isBlank()) {
+            builder.domain(cookieDomain);
+        }
+
+        return builder.build();
+    }
+
     @GetMapping("/testlogin")
     public ResponseEntity<?> testLogin() {
         User u = userRepository.findAll().get(0);
@@ -71,7 +97,11 @@ public class AuthController {
                     .map(item -> item.getAuthority())
                     .collect(Collectors.toList());
 
-            return ResponseEntity.ok(new JwtResponse(jwt,
+            ResponseCookie cookie = buildAuthCookie(jwt, false);
+
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(new JwtResponse(jwt,
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getEmail(),
@@ -80,6 +110,42 @@ public class AuthController {
             e.printStackTrace();
             return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body(new MessageResponse("Error: " + e.getMessage()));
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logoutUser() {
+        ResponseCookie cookie = buildAuthCookie("", true);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new MessageResponse("You've been signed out!"));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED)
+                .body(new MessageResponse("Unauthorized"));
+        }
+
+        Object principal = authentication.getPrincipal();
+
+        if (!(principal instanceof UserDetailsImpl userDetails)) {
+            return ResponseEntity.status(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED)
+                .body(new MessageResponse("Invalid authentication principal"));
+        }
+
+        List<String> roles = userDetails.getAuthorities()
+            .stream()
+            .map(item -> item.getAuthority())
+            .collect(Collectors.toList());
+
+        Map<String, Object> userInfo = new HashMap<>();
+        userInfo.put("id", userDetails.getId());
+        userInfo.put("username", userDetails.getUsername());
+        userInfo.put("email", userDetails.getEmail());
+        userInfo.put("roles", roles);
+
+        return ResponseEntity.ok(userInfo);
     }
 
     @PostMapping("/signup")

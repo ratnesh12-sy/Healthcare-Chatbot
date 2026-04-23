@@ -3,6 +3,7 @@ package com.healthcare.aiassistant.security.jwt;
 import com.healthcare.aiassistant.security.services.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -52,12 +53,26 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     }
 
     private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
+        String token = null;
 
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
         }
 
-        return null;
+        // TODO: Remove Authorization header fallback after full migration to cookie-based auth
+        if (token == null || token.trim().isEmpty()) {
+            String headerAuth = request.getHeader("Authorization");
+            if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
+                token = headerAuth.substring(7);
+            }
+        }
+
+        return (StringUtils.hasText(token)) ? token : null;
     }
 }
