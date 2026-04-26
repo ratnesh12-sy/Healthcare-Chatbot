@@ -1,6 +1,5 @@
 package com.healthcare.aiassistant.service;
 
-import com.healthcare.aiassistant.model.Gender;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.model.UserProfile;
 import com.healthcare.aiassistant.payload.dto.UserProfileDTO;

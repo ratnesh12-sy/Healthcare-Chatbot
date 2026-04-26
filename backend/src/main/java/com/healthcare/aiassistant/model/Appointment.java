@@ -29,6 +29,12 @@ public class Appointment {
     @Column(columnDefinition = "TEXT")
     private String symptomsSummary;
 
+    @Column(name = "cancel_reason")
+    private String cancelReason;
+
+    @Column(name = "cancelled_by")
+    private String cancelledBy;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public Appointment() {
@@ -107,5 +113,21 @@ public class Appointment {
 
     public void setDurationMinutes(Integer durationMinutes) {
         this.durationMinutes = durationMinutes;
+    }
+
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    public void setCancelReason(String cancelReason) {
+        this.cancelReason = cancelReason;
+    }
+
+    public String getCancelledBy() {
+        return cancelledBy;
+    }
+
+    public void setCancelledBy(String cancelledBy) {
+        this.cancelledBy = cancelledBy;
     }
 }

@@ -1,6 +1,5 @@
 package com.healthcare.aiassistant.security;
 
-import com.healthcare.aiassistant.security.jwt.AuthEntryPointJwt;
 import com.healthcare.aiassistant.security.jwt.AuthTokenFilter;
 import com.healthcare.aiassistant.security.services.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +24,6 @@ public class WebSecurityConfig {
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
-
-    @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {

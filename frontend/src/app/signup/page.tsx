@@ -15,13 +15,18 @@ export default function SignupPage() {
     });
     const { signup } = useAuth();
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
         try {
             await signup(formData);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to sign up');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -110,9 +115,10 @@ export default function SignupPage() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full btn-primary py-4 mt-6"
+                        disabled={loading}
+                        className="w-full btn-primary py-4 mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Create Account
+                        {loading ? 'Creating Account...' : 'Create Account'}
                     </button>
                 </form>
 

@@ -16,12 +16,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class VerificationController {
@@ -37,6 +37,9 @@ public class VerificationController {
 
     @Autowired
     private AuditService auditService;
+
+    @Autowired
+    private Clock clock;
 
     // Doctor submits their credentials
     @PostMapping("/doctors/verify")
@@ -76,7 +79,7 @@ public class VerificationController {
         }
 
         DoctorVerification verification = verificationOpt.get();
-        verification.setResolvedAt(LocalDateTime.now());
+        verification.setResolvedAt(LocalDateTime.now(clock));
 
         if ("APPROVE".equalsIgnoreCase(action)) {
             verification.setStatus(ERequestStatus.APPROVED);

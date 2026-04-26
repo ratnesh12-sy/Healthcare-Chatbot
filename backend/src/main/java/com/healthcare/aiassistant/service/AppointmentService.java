@@ -5,7 +5,6 @@ import com.healthcare.aiassistant.exception.PastSlotException;
 import com.healthcare.aiassistant.exception.SlotAlreadyBookedException;
 import com.healthcare.aiassistant.model.*;
 import com.healthcare.aiassistant.payload.dto.AppointmentDTO;
-import com.healthcare.aiassistant.payload.dto.SlotDTO;
 import com.healthcare.aiassistant.repository.AppointmentRepository;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import org.slf4j.Logger;
@@ -28,8 +27,7 @@ public class AppointmentService {
 
     private static final Logger log = LoggerFactory.getLogger(AppointmentService.class);
 
-    private static final List<AppointmentStatus> ACTIVE_STATUSES =
-            List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED);
+
 
     private static final LocalTime WORKING_START = LocalTime.of(9, 0);
     private static final LocalTime WORKING_END = LocalTime.of(16, 30);
@@ -129,36 +127,16 @@ public class AppointmentService {
         return mapToDTO(appointment);
     }
 
+    @Autowired
+    private AvailabilityService availabilityService;
+
     // ── Available Slots ─────────────────────────────────────────
 
-    public List<SlotDTO> getAvailableSlots(Long doctorId, LocalDate date) {
+    public List<com.healthcare.aiassistant.payload.dto.SlotResponseDTO> getAvailableSlots(Long doctorId, LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
-        LocalDateTime dayStart = date.atTime(WORKING_START);
-        LocalDateTime dayEnd = date.atTime(WORKING_END).plusMinutes(SLOT_DURATION_MINUTES);
-
-        // Fetch booked active slots for this doctor on this date
-        List<Appointment> booked = appointmentRepository
-                .findByDoctorAndAppointmentDateBetweenAndStatusIn(
-                        doctor, dayStart, dayEnd, ACTIVE_STATUSES);
-
-        Set<LocalTime> bookedTimes = booked.stream()
-                .map(a -> a.getAppointmentDate().toLocalTime())
-                .collect(Collectors.toSet());
-
-        // Generate all possible slots and mark availability
-        List<SlotDTO> slots = new ArrayList<>();
-        LocalTime current = WORKING_START;
-        while (!current.isAfter(WORKING_END)) {
-            slots.add(new SlotDTO(current, !bookedTimes.contains(current)));
-            current = current.plusMinutes(SLOT_DURATION_MINUTES);
-        }
-
-        // Guaranteed ascending order
-        slots.sort(Comparator.comparing(SlotDTO::getSlot));
-
-        return slots;
+        return availabilityService.getAvailableSlots(doctor, date);
     }
 
     // ── Queries ──────────────────────────────────────────────────
@@ -177,12 +155,52 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    public org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> getDoctorAppointmentsPaginated(Doctor doctor, org.springframework.data.domain.Pageable pageable) {
+        return appointmentRepository.findByDoctorOrderByAppointmentDateDesc(doctor, pageable)
+                .map(this::mapToDoctorDTO);
+    }
+
     public AppointmentDTO updateStatus(Long id, AppointmentStatus status) {
         Appointment appointment = appointmentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
         appointment.setStatus(status);
         appointment = appointmentRepository.save(appointment);
         return mapToDTO(appointment);
+    }
+
+    @Transactional
+    public com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO updateDoctorAppointmentStatus(Long appointmentId, Doctor doctor, AppointmentStatus newStatus, String cancelReason) {
+        if (newStatus == null) {
+            throw new IllegalArgumentException("Status cannot be null");
+        }
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        if (!appointment.getDoctor().getId().equals(doctor.getId())) {
+            throw new org.springframework.security.access.AccessDeniedException("Unauthorized: Cannot modify another doctor's appointments.");
+        }
+
+        if (appointment.getStatus() == newStatus) {
+            log.info("Duplicate update ignored for appointment {}", appointmentId);
+            return mapToDoctorDTO(appointment);
+        }
+
+        if (appointment.getStatus() != AppointmentStatus.PENDING && newStatus == AppointmentStatus.CONFIRMED) {
+            throw new IllegalStateException("Appointment has already been updated.");
+        }
+
+        // Handle cancellations
+        if (newStatus == AppointmentStatus.CANCELLED) {
+            appointment.setCancelReason(cancelReason);
+            appointment.setCancelledBy("DOCTOR");
+        }
+
+        appointment.setStatus(newStatus);
+        appointment = appointmentRepository.save(appointment);
+
+        log.info("Doctor {} updated appointment {} to {}", doctor.getId(), appointmentId, newStatus);
+        return mapToDoctorDTO(appointment);
     }
 
     // ── Internal Helpers ────────────────────────────────────────
@@ -237,6 +255,22 @@ public class AppointmentService {
         }
         dto.setPatientName(patientName);
 
+        return dto;
+    }
+
+    private com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO mapToDoctorDTO(Appointment appointment) {
+        com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO dto = new com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO();
+        dto.setId(appointment.getId());
+        dto.setAppointmentDate(appointment.getAppointmentDate());
+        dto.setDurationMinutes(appointment.getDurationMinutes());
+        dto.setStatus(appointment.getStatus().name());
+        dto.setSymptomsSummary(appointment.getSymptomsSummary());
+        
+        String patientName = Optional.ofNullable(appointment.getPatient())
+                .map(User::getFullName)
+                .orElse("Unknown");
+        dto.setPatientName(patientName);
+        
         return dto;
     }
 }

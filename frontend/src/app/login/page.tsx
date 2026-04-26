@@ -10,13 +10,18 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const { login } = useAuth();
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setLoading(true);
+        setError('');
         try {
             await login(username, password);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Invalid username or password');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,9 +75,10 @@ export default function LoginPage() {
                     </div>
                     <button
                         type="submit"
-                        className="w-full btn-primary py-4 mt-4"
+                        disabled={loading}
+                        className="w-full btn-primary py-4 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Log In
+                        {loading ? 'Signing in...' : 'Log In'}
                     </button>
                 </form>
 

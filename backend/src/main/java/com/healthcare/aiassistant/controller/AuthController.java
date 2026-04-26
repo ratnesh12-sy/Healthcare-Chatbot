@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -70,18 +70,7 @@ public class AuthController {
         return builder.build();
     }
 
-    @GetMapping("/testlogin")
-    public ResponseEntity<?> testLogin() {
-        User u = userRepository.findAll().get(0);
-        boolean matches = encoder.matches("password123", u.getPassword());
-        boolean matches2 = encoder.matches("password", u.getPassword());
-        return ResponseEntity.ok("USER: " + u.getUsername() + ", HASH: " + u.getPassword() + ", matches 'password123': " + matches + ", matches 'password': " + matches2);
-    }
 
-    @GetMapping("/users")
-    public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok(userRepository.findAll());
-    }
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {

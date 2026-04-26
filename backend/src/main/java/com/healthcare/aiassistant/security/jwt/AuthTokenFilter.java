@@ -65,13 +65,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         }
 
-        // TODO: Remove Authorization header fallback after full migration to cookie-based auth
-        if (token == null || token.trim().isEmpty()) {
-            String headerAuth = request.getHeader("Authorization");
-            if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-                token = headerAuth.substring(7);
-            }
-        }
+
 
         return (StringUtils.hasText(token)) ? token : null;
     }

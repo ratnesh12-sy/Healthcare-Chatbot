@@ -3,7 +3,6 @@ package com.healthcare.aiassistant.controller;
 import com.healthcare.aiassistant.model.Doctor;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.payload.dto.AppointmentDTO;
-import com.healthcare.aiassistant.payload.dto.SlotDTO;
 import com.healthcare.aiassistant.payload.request.AppointmentRequest;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
@@ -66,14 +65,35 @@ public class AppointmentController {
 
     @GetMapping("/doctor")
     @PreAuthorize("hasRole('DOCTOR')")
-    public ResponseEntity<?> getDoctorAppointments(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> getDoctorAppointments(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
 
-        List<AppointmentDTO> appointments = appointmentService.getDoctorAppointments(doctor);
-        return ResponseEntity.ok(Map.of("status", "SUCCESS", "data", appointments));
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
+        org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> appointments = appointmentService.getDoctorAppointmentsPaginated(doctor, pageable);
+        return ResponseEntity.ok(com.healthcare.aiassistant.payload.dto.ApiResponse.success(appointments, "Doctor appointments retrieved successfully"));
+    }
+
+    @PatchMapping("/{id}/status")
+    @PreAuthorize("hasRole('DOCTOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> updateAppointmentStatus(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id,
+            @RequestParam com.healthcare.aiassistant.model.AppointmentStatus status,
+            @RequestParam(required = false) String cancelReason) {
+
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Doctor doctor = doctorRepository.findByUser(user)
+                .orElseThrow(() -> new RuntimeException("Doctor details not found"));
+
+        com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO updated = appointmentService.updateDoctorAppointmentStatus(id, doctor, status, cancelReason);
+        return ResponseEntity.ok(com.healthcare.aiassistant.payload.dto.ApiResponse.success(updated, "Status updated successfully"));
     }
 
     @GetMapping("/available-slots")
@@ -82,8 +102,8 @@ public class AppointmentController {
             @RequestParam Long doctorId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
 
-        List<SlotDTO> slots = appointmentService.getAvailableSlots(doctorId, date);
-        return ResponseEntity.ok(Map.of("status", "SUCCESS", "data", slots));
+        List<com.healthcare.aiassistant.payload.dto.SlotResponseDTO> slots = appointmentService.getAvailableSlots(doctorId, date);
+        return ResponseEntity.ok(Map.of("date", date.toString(), "slots", slots));
     }
 
     @PatchMapping("/{id}/cancel")

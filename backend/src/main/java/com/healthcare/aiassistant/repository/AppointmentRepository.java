@@ -15,6 +15,7 @@ import java.util.List;
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
     List<Appointment> findByPatientOrderByAppointmentDateDesc(User patient);
     List<Appointment> findByDoctorOrderByAppointmentDateDesc(Doctor doctor);
+    org.springframework.data.domain.Page<Appointment> findByDoctorOrderByAppointmentDateDesc(Doctor doctor, org.springframework.data.domain.Pageable pageable);
 
     List<Appointment> findByDoctorAndAppointmentDateBetweenAndStatusIn(
             Doctor doctor, LocalDateTime start, LocalDateTime end,

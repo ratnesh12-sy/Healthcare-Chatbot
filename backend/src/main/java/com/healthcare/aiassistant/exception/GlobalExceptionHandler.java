@@ -36,19 +36,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SlotAlreadyBookedException.class)
     public ResponseEntity<?> handleSlotAlreadyBooked(SlotAlreadyBookedException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
-                .body(Map.of("status", "ERROR", "message", ex.getMessage()));
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
     }
 
     @ExceptionHandler(OutsideWorkingHoursException.class)
     public ResponseEntity<?> handleOutsideWorkingHours(OutsideWorkingHoursException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("status", "ERROR", "message", ex.getMessage()));
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
     }
 
     @ExceptionHandler(PastSlotException.class)
     public ResponseEntity<?> handlePastSlot(PastSlotException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("status", "ERROR", "message", ex.getMessage()));
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<?> handleValidationExceptions(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(org.springframework.security.access.AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error("Access Denied: " + ex.getMessage()));
     }
 
     @ExceptionHandler(Exception.class)
@@ -56,6 +68,6 @@ public class GlobalExceptionHandler {
         // Log full details internally, return generic message externally
         logger.error("Unhandled exception: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(Map.of("status", "ERROR", "message", "An unexpected error occurred"));
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error("An unexpected error occurred"));
     }
 }

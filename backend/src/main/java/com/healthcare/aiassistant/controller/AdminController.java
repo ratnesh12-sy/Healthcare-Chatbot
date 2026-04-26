@@ -11,6 +11,7 @@ import com.healthcare.aiassistant.repository.ChatMessageRepository;
 import com.healthcare.aiassistant.model.Role;
 import com.healthcare.aiassistant.model.ERole;
 import com.healthcare.aiassistant.model.AuditLog;
+import com.healthcare.aiassistant.payload.dto.UserResponseDTO;
 import com.healthcare.aiassistant.service.AuditService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -95,8 +96,16 @@ public class AdminController {
 
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserResponseDTO> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(u -> new UserResponseDTO(
+                        u.getId(),
+                        u.getUsername(),
+                        u.getEmail(),
+                        u.getFullName(),
+                        u.getRole() != null ? u.getRole().getName().name() : "UNKNOWN"
+                ))
+                .collect(Collectors.toList());
     }
 
     @GetMapping("/audit")

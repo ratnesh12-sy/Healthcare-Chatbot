@@ -7,6 +7,8 @@ import com.healthcare.aiassistant.payload.openai.OpenAiRequest;
 import com.healthcare.aiassistant.repository.SystemSettingRepository;
 import com.healthcare.aiassistant.payload.openai.OpenAiResponse;
 import com.healthcare.aiassistant.security.config.OpenAiProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Service
 public class AiChatService {
+
+    private static final Logger log = LoggerFactory.getLogger(AiChatService.class);
 
     @Autowired
     private OpenAiProperties openAiProperties;
@@ -73,7 +77,7 @@ public class AiChatService {
                 return chatService.saveMessage(user, aiResponseText, true);
             }
         } catch (Exception e) {
-            System.err.println("Error calling OpenAI API: " + e.getMessage());
+            log.error("Error calling Groq API", e);
         }
 
         return null;
