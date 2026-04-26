@@ -9,6 +9,7 @@ interface User {
     email: string;
     fullName: string;
     roles: string[];
+    profileComplete?: boolean;
 }
 
 interface AuthContextType {
@@ -45,7 +46,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const res = await api.post('/auth/signin', { username, password });
         const { token, ...userData } = res.data;
         setUser(userData);
-        router.push('/dashboard');
+        
+        if (userData.roles?.includes('ROLE_DOCTOR') && !userData.profileComplete) {
+            router.push('/doctor/onboarding');
+        } else {
+            router.push('/dashboard');
+        }
     };
 
     const signup = async (formData: any) => {

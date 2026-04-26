@@ -21,6 +21,10 @@ public class Doctor {
 
     private Boolean isAvailable = true;
 
+    private String licenseNumber;
+    
+    private String verificationStatus = "PENDING";
+
     public Doctor() {
     }
 
@@ -79,5 +83,21 @@ public class Doctor {
 
     public void setIsAvailable(Boolean isAvailable) {
         this.isAvailable = isAvailable;
+    }
+
+    public String getLicenseNumber() {
+        return licenseNumber;
+    }
+
+    public void setLicenseNumber(String licenseNumber) {
+        this.licenseNumber = licenseNumber;
+    }
+
+    public String getVerificationStatus() {
+        return verificationStatus;
+    }
+
+    public void setVerificationStatus(String verificationStatus) {
+        this.verificationStatus = verificationStatus;
     }
 }

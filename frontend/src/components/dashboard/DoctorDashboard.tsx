@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Calendar, CheckCircle, Clock, Search, X, ChevronRight, Activity } from 'lucide-react';
 import { DoctorService, DashboardStats, DoctorAppointmentDTO } from '@/lib/doctorService';
 import toast, { Toaster } from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 import DoctorAvailability from './DoctorAvailability';
 
@@ -15,6 +16,7 @@ export default function DoctorDashboard() {
     const [error, setError] = useState<string | null>(null);
     const [selectedAppointment, setSelectedAppointment] = useState<DoctorAppointmentDTO | null>(null);
     const [activeMainTab, setActiveMainTab] = useState<'overview' | 'availability'>('overview');
+    const router = useRouter();
 
     const loadData = async () => {
         try {
@@ -22,8 +24,12 @@ export default function DoctorDashboard() {
             const data = await DoctorService.getDashboardStats();
             setStats(data);
             setError(null);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to load doctor dashboard stats", err);
+            if (err.response?.status === 403 && err.response?.data?.error === 'PROFILE_INCOMPLETE') {
+                router.push('/doctor/onboarding');
+                return;
+            }
             setError("Failed to load your dashboard. Please try again later.");
         } finally {
             setLoading(false);
@@ -31,10 +37,15 @@ export default function DoctorDashboard() {
     };
 
     useEffect(() => {
+        if (user && user.roles?.includes('ROLE_DOCTOR') && user.profileComplete === false) {
+            router.push('/doctor/onboarding');
+            return;
+        }
+        
         loadData();
         const interval = setInterval(loadData, 30000); // Polling every 30s
         return () => clearInterval(interval);
-    }, []);
+    }, [user, router]);
 
     const handleUpdateStatus = async (id: number, currentStatus: string, newStatus: string) => {
         if (currentStatus === newStatus) return;

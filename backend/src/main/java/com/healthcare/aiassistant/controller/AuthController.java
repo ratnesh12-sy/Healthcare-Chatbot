@@ -94,6 +94,7 @@ public class AuthController {
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getEmail(),
+                    userDetails.getIsProfileComplete(),
                     roles));
         } catch (Exception e) {
             e.printStackTrace();
@@ -132,6 +133,7 @@ public class AuthController {
         userInfo.put("id", userDetails.getId());
         userInfo.put("username", userDetails.getUsername());
         userInfo.put("email", userDetails.getEmail());
+        userInfo.put("profileComplete", userDetails.getIsProfileComplete());
         userInfo.put("roles", roles);
 
         return ResponseEntity.ok(userInfo);
@@ -176,14 +178,17 @@ public class AuthController {
                 case "admin":
                     role = roleRepository.findByName(ERole.ROLE_ADMIN)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    user.setIsProfileComplete(true);
                     break;
                 case "doctor":
                     role = roleRepository.findByName(ERole.ROLE_DOCTOR)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    user.setIsProfileComplete(false);
                     break;
                 default:
                     role = roleRepository.findByName(ERole.ROLE_PATIENT)
                             .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                    user.setIsProfileComplete(true);
             }
         }
 

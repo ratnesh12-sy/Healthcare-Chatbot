@@ -19,14 +19,16 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     @JsonIgnore
     private String password;
+    private Boolean isProfileComplete;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserDetailsImpl(Long id, String username, String email, String password,
+    public UserDetailsImpl(Long id, String username, String email, String password, Boolean isProfileComplete,
             Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.isProfileComplete = isProfileComplete;
         this.authorities = authorities;
     }
 
@@ -48,6 +50,10 @@ public class UserDetailsImpl implements UserDetails {
         return password;
     }
 
+    public Boolean getIsProfileComplete() {
+        return isProfileComplete;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
@@ -62,6 +68,7 @@ public class UserDetailsImpl implements UserDetails {
                 user.getUsername(),
                 user.getEmail(),
                 user.getPassword(),
+                user.getIsProfileComplete(),
                 authorities);
     }
 

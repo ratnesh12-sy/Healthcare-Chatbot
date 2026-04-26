@@ -5,6 +5,7 @@ import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.payload.dto.ApiResponse;
 import com.healthcare.aiassistant.payload.dto.AvailabilityBlockDTO;
 import com.healthcare.aiassistant.payload.dto.AvailabilityExceptionDTO;
+import com.healthcare.aiassistant.exception.IncompleteProfileException;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.service.AvailabilityService;
@@ -33,6 +34,11 @@ public class AvailabilityController {
     private Doctor getAuthenticatedDoctor(UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        if (!user.getIsProfileComplete()) {
+            throw new IncompleteProfileException("Doctor profile is incomplete");
+        }
+        
         return doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
     }

@@ -63,6 +63,13 @@ public class GlobalExceptionHandler {
                 .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error("Access Denied: " + ex.getMessage()));
     }
 
+    @ExceptionHandler(IncompleteProfileException.class)
+    public ResponseEntity<?> handleIncompleteProfileException(IncompleteProfileException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "PROFILE_INCOMPLETE");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex) {
         // Log full details internally, return generic message externally

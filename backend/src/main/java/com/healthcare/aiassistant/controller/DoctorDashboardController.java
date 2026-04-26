@@ -5,6 +5,7 @@ import com.healthcare.aiassistant.model.Doctor;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.payload.dto.ApiResponse;
 import com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO;
+import com.healthcare.aiassistant.exception.IncompleteProfileException;
 import com.healthcare.aiassistant.repository.AppointmentRepository;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
@@ -44,6 +45,11 @@ public class DoctorDashboardController {
     public ResponseEntity<ApiResponse<Map<String, Object>>> getDashboardStats(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        if (!user.getIsProfileComplete()) {
+            throw new IncompleteProfileException("Doctor profile is incomplete");
+        }
+        
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
 

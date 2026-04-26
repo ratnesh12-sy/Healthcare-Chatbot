@@ -45,6 +45,8 @@ public class User {
 
     private Boolean twoFactorEnabled = false;
 
+    private Boolean isProfileComplete = true;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
@@ -165,5 +167,13 @@ public class User {
 
     public void setTwoFactorEnabled(Boolean twoFactorEnabled) {
         this.twoFactorEnabled = twoFactorEnabled;
+    }
+
+    public Boolean getIsProfileComplete() {
+        return isProfileComplete;
+    }
+
+    public void setIsProfileComplete(Boolean isProfileComplete) {
+        this.isProfileComplete = isProfileComplete;
     }
 }
