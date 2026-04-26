@@ -8,7 +8,7 @@ public class JwtResponse {
     private Long id;
     private String username;
     private String email;
-    private Boolean isProfileComplete;
+    private Boolean profileComplete;
     private List<String> roles;
 
     public JwtResponse(String accessToken, Long id, String username, String email, Boolean isProfileComplete, List<String> roles) {
@@ -16,7 +16,7 @@ public class JwtResponse {
         this.id = id;
         this.username = username;
         this.email = email;
-        this.isProfileComplete = isProfileComplete;
+        this.profileComplete = isProfileComplete;
         this.roles = roles;
     }
 
@@ -60,12 +60,12 @@ public class JwtResponse {
         this.email = email;
     }
 
-    public Boolean getIsProfileComplete() {
-        return isProfileComplete;
+    public Boolean getProfileComplete() {
+        return profileComplete;
     }
 
-    public void setIsProfileComplete(Boolean isProfileComplete) {
-        this.isProfileComplete = isProfileComplete;
+    public void setProfileComplete(Boolean profileComplete) {
+        this.profileComplete = profileComplete;
     }
 
     public List<String> getRoles() {
