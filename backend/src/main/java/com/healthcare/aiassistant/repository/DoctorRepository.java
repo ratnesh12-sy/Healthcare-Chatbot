@@ -17,5 +17,6 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
      * Repository-level safety: fetch only doctors with a specific verification status.
      * Use this instead of findAll() to prevent unverified doctors from leaking into public views.
      */
-    List<Doctor> findByVerificationStatus(String verificationStatus);
+    @org.springframework.data.jpa.repository.Query("SELECT d FROM Doctor d JOIN FETCH d.user WHERE d.verificationStatus = :verificationStatus")
+    List<Doctor> findByVerificationStatus(@org.springframework.data.repository.query.Param("verificationStatus") String verificationStatus);
 }

@@ -11,19 +11,13 @@ public class TestDB {
 
         try (Connection conn = DriverManager.getConnection(url, user, password);
              Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery("SELECT username, password FROM users WHERE username IN ('admin', 'dr.sharma')")) {
+             ResultSet rs = stmt.executeQuery("SELECT d.id, u.username, d.verification_status, d.license_number FROM doctors d JOIN users u ON d.user_id = u.id")) {
             
             while (rs.next()) {
-                System.out.println("User: " + rs.getString("username"));
-                System.out.println("Hash: " + rs.getString("password"));
+                System.out.println("Doctor: " + rs.getString("username"));
+                System.out.println("Status: " + rs.getString("verification_status"));
+                System.out.println("License: " + rs.getString("license_number"));
                 System.out.println("-----------------");
-            }
-            
-            // Also check flyway history
-            ResultSet rs2 = stmt.executeQuery("SELECT version, description, checksum, success FROM flyway_schema_history ORDER BY version DESC LIMIT 5");
-            System.out.println("=== FLYWAY HISTORY ===");
-            while (rs2.next()) {
-                System.out.println("V" + rs2.getString("version") + " - " + rs2.getString("description") + " | " + rs2.getBoolean("success"));
             }
         } catch (Exception e) {
             e.printStackTrace();
