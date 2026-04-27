@@ -25,7 +25,9 @@ public class DoctorController {
      */
     @GetMapping("/all")
     public List<Doctor> getAllDoctors() {
-        return verificationService.getVerifiedDoctors();
+        List<Doctor> docs = verificationService.getVerifiedDoctors();
+        System.out.println("API /doctors/all called! Returning " + docs.size() + " doctors.");
+        return docs;
     }
 
     @GetMapping("/{id}")
