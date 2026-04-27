@@ -19,7 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @Configuration
 @EnableMethodSecurity
 public class WebSecurityConfig {
-    @org.springframework.beans.factory.annotation.Value("${app.cors.allowedOrigins:http://localhost:3000,http://localhost:5173}")
+    @org.springframework.beans.factory.annotation.Value("${app.cors.allowedOrigins:http://localhost:3000,http://localhost:5173,https://healthcare-chatbot-1.vercel.app}")
     private String allowedOrigins;
 
     @Autowired

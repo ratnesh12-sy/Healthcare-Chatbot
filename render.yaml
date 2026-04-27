@@ -20,5 +20,9 @@ services:
         sync: false
       - key: SERVER_PORT
         value: 8081
+      - key: app_cookie_secure
+        value: "true"
+      - key: app_cors_allowedOrigins
+        value: "https://healthcare-chatbot-1.vercel.app,http://localhost:3000"
     healthCheckPath: /health
     autoDeploy: true

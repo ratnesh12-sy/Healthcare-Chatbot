@@ -128,17 +128,10 @@ export default function AppointmentsPage() {
     const fetchDoctors = async () => {
         try {
             const res = await api.get('/doctors/all');
-            // Safely extract the array whether it's wrapped or direct
             const data = Array.isArray(res.data) ? res.data : (res.data?.data || res.data?.content || []);
             setDoctors(data);
-            if (data.length === 0) {
-                toast.error('API returned zero doctors');
-            } else {
-                toast.success(`Successfully fetched ${data.length} doctors`);
-            }
         } catch (err: any) {
             console.error('Failed to fetch doctors', err);
-            toast.error('Failed to fetch doctors: ' + (err.response?.data?.message || err.message));
         }
     };
 
