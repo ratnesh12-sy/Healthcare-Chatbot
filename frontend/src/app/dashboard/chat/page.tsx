@@ -87,6 +87,15 @@ export default function ChatPage() {
     const [interimTranscript, setInterimTranscript] = useState('');
     const isListeningRef = useRef(false);
     const lastRestartTimeRef = useRef(0);
+    const committedTextRef = useRef(''); // Tracks text already committed to input (prevents duplication on restart)
+    const preListenInputRef = useRef(''); // Captures input value before mic started
+
+    // ─── Disclaimer auto-hide ───────────────────────────────────────────
+    const [showDisclaimer, setShowDisclaimer] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => setShowDisclaimer(false), 15000);
+        return () => clearTimeout(timer);
+    }, []);
 
     // ─── OCR State ─────────────────────────────────────────────────────
     const [ocrFile, setOcrFile] = useState<File | null>(null);
@@ -123,33 +132,40 @@ export default function ChatPage() {
 
                 speechInstance.onresult = (event: any) => {
                     let currentInterim = '';
-                    let final = '';
+                    // Collect ALL final results from this session (not just new ones)
+                    // This prevents duplication because we replace, not append
+                    let allFinalInSession = '';
 
-                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    for (let i = 0; i < event.results.length; ++i) {
+                        const transcript = event.results[i][0].transcript;
                         if (event.results[i].isFinal) {
-                            final += event.results[i][0].transcript;
+                            allFinalInSession += transcript;
                         } else {
-                            currentInterim += event.results[i][0].transcript;
+                            currentInterim += transcript;
                         }
                     }
 
-                    if (final) {
-                        const finalTrimmed = final.trim();
-                        if (finalTrimmed) {
-                            setInput((prev) => {
-                                const prevTrimmed = prev.trim();
-                                return prevTrimmed ? `${prevTrimmed} ${finalTrimmed}` : finalTrimmed;
-                            });
-                        }
-                    }
-                    
+                    // Build the full input: pre-mic text + all committed from previous sessions + current session finals
+                    const fullFinal = (committedTextRef.current + allFinalInSession).trim();
+                    const base = preListenInputRef.current.trim();
+                    setInput(base ? `${base} ${fullFinal}` : fullFinal);
+
                     setInterimTranscript(currentInterim);
                 };
 
                 speechInstance.onend = () => {
                     if (isListeningRef.current) {
+                        // Commit what we have so far before restarting
+                        // Get current final results from the ending session
+                        setInput((currentInput) => {
+                            const base = preListenInputRef.current.trim();
+                            const spoken = base ? currentInput.slice(base.length).trim() : currentInput.trim();
+                            committedTextRef.current = spoken;
+                            return currentInput;
+                        });
+
                         const now = Date.now();
-                        if (now - lastRestartTimeRef.current > 300) {
+                        if (now - lastRestartTimeRef.current > 500) {
                             try {
                                 lastRestartTimeRef.current = now;
                                 speechInstance.start();
@@ -196,8 +212,12 @@ export default function ChatPage() {
             recognition.stop();
             setIsListening(false);
             setInterimTranscript('');
+            committedTextRef.current = '';
         } else {
             try {
+                // Capture current input as base text before mic starts
+                preListenInputRef.current = input;
+                committedTextRef.current = '';
                 recognition.start();
                 setIsListening(true);
             } catch (err) {
@@ -445,13 +465,21 @@ Keep the analysis clear and patient-friendly.`;
 
             <div className="flex-1 bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden flex flex-col relative">
                 
-                {/* Disclaimer Banner */}
-                <div className="bg-orange-50/80 border-b border-orange-100 px-4 md:px-6 py-3 flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
-                    <p className="text-xs md:text-sm text-orange-800 leading-relaxed font-medium">
-                        <span className="font-bold">Medical Disclaimer:</span> This AI assistant provides general informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician for any medical conditions.
-                    </p>
-                </div>
+                {/* Disclaimer Banner — auto-hides after 15 seconds */}
+                {showDisclaimer && (
+                    <motion.div
+                        initial={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        transition={{ duration: 0.4 }}
+                        className="bg-orange-50/80 border-b border-orange-100 px-4 md:px-6 py-3 flex items-start gap-3"
+                    >
+                        <AlertCircle className="w-5 h-5 text-orange-500 mt-0.5 flex-shrink-0" />
+                        <p className="text-xs md:text-sm text-orange-800 leading-relaxed font-medium">
+                            <span className="font-bold">Medical Disclaimer:</span> This AI assistant provides general informational purposes only. It is not a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician for any medical conditions.
+                        </p>
+                    </motion.div>
+                )}
                 <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-slate-50/50">
                     
                     {messages.length === 0 && (

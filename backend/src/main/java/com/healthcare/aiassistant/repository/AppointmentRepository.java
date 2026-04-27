@@ -20,4 +20,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByDoctorAndAppointmentDateBetweenAndStatusIn(
             Doctor doctor, LocalDateTime start, LocalDateTime end,
             Collection<AppointmentStatus> statuses);
+
+    // Derived count queries for Doctor Profile (no schema change — uses existing columns)
+    long countByDoctor(Doctor doctor);
+    long countByDoctorAndStatus(Doctor doctor, AppointmentStatus status);
 }

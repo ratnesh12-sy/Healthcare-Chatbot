@@ -23,7 +23,7 @@ public class Doctor {
 
     private String licenseNumber;
     
-    private String verificationStatus = "PENDING";
+    private String verificationStatus; // null = NOT_SUBMITTED (virtual state)
 
     public Doctor() {
     }

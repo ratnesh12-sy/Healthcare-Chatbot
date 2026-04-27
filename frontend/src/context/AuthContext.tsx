@@ -10,6 +10,7 @@ interface User {
     fullName: string;
     roles: string[];
     profileComplete?: boolean;
+    verificationStatus?: string | null;
 }
 
 interface AuthContextType {
@@ -47,7 +48,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { token, ...userData } = res.data;
         setUser(userData);
         
-        if (userData.roles?.includes('ROLE_DOCTOR') && !userData.profileComplete) {
+        if (userData.roles?.includes('ROLE_ADMIN')) {
+            router.push('/admin');
+        } else if (userData.roles?.includes('ROLE_DOCTOR') && !userData.profileComplete) {
             router.push('/doctor/onboarding');
         } else {
             router.push('/dashboard');

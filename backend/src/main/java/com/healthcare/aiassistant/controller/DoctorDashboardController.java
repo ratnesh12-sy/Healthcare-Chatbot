@@ -9,11 +9,13 @@ import com.healthcare.aiassistant.exception.IncompleteProfileException;
 import com.healthcare.aiassistant.repository.AppointmentRepository;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
+import com.healthcare.aiassistant.service.DoctorVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,8 +42,12 @@ public class DoctorDashboardController {
     @Autowired
     private AppointmentRepository appointmentRepository;
 
+    @Autowired
+    private DoctorVerificationService verificationService;
+
     @GetMapping
     @PreAuthorize("hasRole('DOCTOR')")
+    @Transactional(readOnly = true)
     public ResponseEntity<ApiResponse<Map<String, Object>>> getDashboardStats(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -52,6 +58,9 @@ public class DoctorDashboardController {
         
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
+
+        // Verification guard — unverified doctors cannot access dashboard stats
+        verificationService.ensureDoctorVerified(doctor);
 
         LocalDateTime startOfDay = LocalDate.now(ZoneOffset.UTC).atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now(ZoneOffset.UTC).atTime(LocalTime.MAX);
@@ -86,10 +95,14 @@ public class DoctorDashboardController {
                 })
                 .collect(Collectors.toList());
 
+        // Derived total count via repository query (safe for future pagination)
+        long totalCount = appointmentRepository.countByDoctor(doctor);
+
         Map<String, Object> data = new HashMap<>();
         data.put("todayCount", todayCount);
         data.put("pendingCount", pendingCount);
         data.put("completedCount", completedCount);
+        data.put("totalCount", totalCount);
         data.put("todayAppointments", todayAppointments);
 
         return ResponseEntity.ok(ApiResponse.success(data, "Dashboard stats retrieved successfully"));

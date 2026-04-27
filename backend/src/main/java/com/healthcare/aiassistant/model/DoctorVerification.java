@@ -31,6 +31,9 @@ public class DoctorVerification {
     @Column(name = "resolved_at")
     private LocalDateTime resolvedAt;
 
+    @Column(name = "document_path")
+    private String documentPath;
+
     public DoctorVerification() {}
 
     public DoctorVerification(User doctor, String licenseNumber, String specialty) {
@@ -59,4 +62,7 @@ public class DoctorVerification {
     
     public LocalDateTime getResolvedAt() { return resolvedAt; }
     public void setResolvedAt(LocalDateTime resolvedAt) { this.resolvedAt = resolvedAt; }
+
+    public String getDocumentPath() { return documentPath; }
+    public void setDocumentPath(String documentPath) { this.documentPath = documentPath; }
 }

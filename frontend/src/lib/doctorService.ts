@@ -13,7 +13,22 @@ export interface DashboardStats {
     todayCount: number;
     pendingCount: number;
     completedCount: number;
+    totalCount: number;
     todayAppointments: DoctorAppointmentDTO[];
+}
+
+export interface DoctorProfileDTO {
+    fullName: string;
+    username: string;
+    email: string;
+    specialization: string;
+    experienceYears: number;
+    licenseNumber: string;
+    verificationStatus: string;
+    bio: string;
+    isAvailable: boolean;
+    totalAppointments: number;
+    completedAppointments: number;
 }
 
 export interface ApiResponse<T> {
@@ -69,6 +84,17 @@ export const DoctorService = {
 
     getExceptions: async (): Promise<any[]> => {
         const response = await api.get<ApiResponse<any[]>>(`/doctor/availability/exception`);
+        return response.data.data;
+    },
+
+    // Doctor Profile methods
+    getDoctorProfile: async (): Promise<DoctorProfileDTO> => {
+        const response = await api.get<ApiResponse<DoctorProfileDTO>>('/doctor/profile');
+        return response.data.data;
+    },
+
+    updateDoctorProfile: async (data: { bio?: string; isAvailable?: boolean }): Promise<DoctorProfileDTO> => {
+        const response = await api.put<ApiResponse<DoctorProfileDTO>>('/doctor/profile', data);
         return response.data.data;
     }
 };

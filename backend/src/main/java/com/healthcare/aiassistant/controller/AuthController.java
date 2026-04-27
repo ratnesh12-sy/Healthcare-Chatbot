@@ -1,5 +1,6 @@
 package com.healthcare.aiassistant.controller;
 
+import com.healthcare.aiassistant.model.Doctor;
 import com.healthcare.aiassistant.model.ERole;
 import com.healthcare.aiassistant.model.Role;
 import com.healthcare.aiassistant.model.User;
@@ -7,6 +8,7 @@ import com.healthcare.aiassistant.payload.request.LoginRequest;
 import com.healthcare.aiassistant.payload.request.SignupRequest;
 import com.healthcare.aiassistant.payload.response.JwtResponse;
 import com.healthcare.aiassistant.payload.response.MessageResponse;
+import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.RoleRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.security.jwt.JwtUtils;
@@ -27,6 +29,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -42,6 +45,9 @@ public class AuthController {
 
     @Autowired
     RoleRepository roleRepository;
+
+    @Autowired
+    DoctorRepository doctorRepository;
 
     @Autowired
     PasswordEncoder encoder;
@@ -88,6 +94,9 @@ public class AuthController {
 
             ResponseCookie cookie = buildAuthCookie(jwt, false);
 
+            // Resolve verification status for doctors
+            String verificationStatus = resolveVerificationStatus(userDetails.getId(), roles);
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())
                     .body(new JwtResponse(jwt,
@@ -95,7 +104,8 @@ public class AuthController {
                     userDetails.getUsername(),
                     userDetails.getEmail(),
                     userDetails.getIsProfileComplete(),
-                    roles));
+                    roles,
+                    verificationStatus));
         } catch (Exception e) {
             e.printStackTrace();
             return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body(new MessageResponse("Error: " + e.getMessage()));
@@ -129,12 +139,16 @@ public class AuthController {
             .map(item -> item.getAuthority())
             .collect(Collectors.toList());
 
+        // Resolve verification status for doctors
+        String verificationStatus = resolveVerificationStatus(userDetails.getId(), roles);
+
         Map<String, Object> userInfo = new HashMap<>();
         userInfo.put("id", userDetails.getId());
         userInfo.put("username", userDetails.getUsername());
         userInfo.put("email", userDetails.getEmail());
         userInfo.put("profileComplete", userDetails.getIsProfileComplete());
         userInfo.put("roles", roles);
+        userInfo.put("verificationStatus", verificationStatus);
 
         return ResponseEntity.ok(userInfo);
     }
@@ -196,5 +210,20 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    /**
+     * Resolves the verification status for doctor users.
+     * Returns null for non-doctor roles (patients, admins).
+     */
+    private String resolveVerificationStatus(Long userId, List<String> roles) {
+        if (!roles.contains("ROLE_DOCTOR")) {
+            return null;
+        }
+        // Use findByUser_Id to avoid LazyInitializationException
+        // (loading User proxy then passing it to findByUser fails outside a session)
+        return doctorRepository.findByUser_Id(userId)
+                .map(Doctor::getVerificationStatus)
+                .orElse(null);
     }
 }

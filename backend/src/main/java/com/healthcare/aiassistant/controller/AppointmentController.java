@@ -7,6 +7,7 @@ import com.healthcare.aiassistant.payload.request.AppointmentRequest;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.service.AppointmentService;
+import com.healthcare.aiassistant.service.DoctorVerificationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,6 +34,9 @@ public class AppointmentController {
 
     @Autowired
     private DoctorRepository doctorRepository;
+
+    @Autowired
+    private DoctorVerificationService verificationService;
 
     @PostMapping
     @PreAuthorize("hasRole('PATIENT')")
@@ -74,6 +78,9 @@ public class AppointmentController {
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
 
+        // Verification guard
+        verificationService.ensureDoctorVerified(doctor);
+
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
         org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> appointments = appointmentService.getDoctorAppointmentsPaginated(doctor, pageable);
         return ResponseEntity.ok(com.healthcare.aiassistant.payload.dto.ApiResponse.success(appointments, "Doctor appointments retrieved successfully"));
@@ -91,6 +98,9 @@ public class AppointmentController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
+
+        // Verification guard
+        verificationService.ensureDoctorVerified(doctor);
 
         com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO updated = appointmentService.updateDoctorAppointmentStatus(id, doctor, status, cancelReason);
         return ResponseEntity.ok(com.healthcare.aiassistant.payload.dto.ApiResponse.success(updated, "Status updated successfully"));

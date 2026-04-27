@@ -63,11 +63,35 @@ public class GlobalExceptionHandler {
                 .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error("Access Denied: " + ex.getMessage()));
     }
 
+    @ExceptionHandler(DoctorNotVerifiedException.class)
+    public ResponseEntity<?> handleDoctorNotVerified(DoctorNotVerifiedException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "DOCTOR_NOT_VERIFIED");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(InvalidVerificationTransitionException.class)
+    public ResponseEntity<?> handleInvalidVerificationTransition(InvalidVerificationTransitionException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "INVALID_VERIFICATION_TRANSITION");
+        response.put("message", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(IncompleteProfileException.class)
     public ResponseEntity<?> handleIncompleteProfileException(IncompleteProfileException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("error", "PROFILE_INCOMPLETE");
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler(org.springframework.web.multipart.MaxUploadSizeExceededException.class)
+    public ResponseEntity<?> handleMaxUploadSizeExceeded(org.springframework.web.multipart.MaxUploadSizeExceededException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("error", "FILE_TOO_LARGE");
+        response.put("message", "File size exceeds the 5MB limit. Please upload a smaller file.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(Exception.class)

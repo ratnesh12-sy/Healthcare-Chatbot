@@ -34,8 +34,17 @@ package-lock.json
 
 # Logs
 *.log
+*.log.*.gz
 logs/
 *.out
+trace.log*
+
+# Runtime uploads (ephemeral)
+backend/uploads/
+uploads/
+
+# Scratch/test files
+backend/scratch/
 
 # Environment/Secrets
 .env

@@ -1,103 +1,126 @@
 package com.healthcare.aiassistant.controller;
 
 import com.healthcare.aiassistant.model.DoctorVerification;
-import com.healthcare.aiassistant.model.ERequestStatus;
-import com.healthcare.aiassistant.model.ERole;
-import com.healthcare.aiassistant.model.Role;
 import com.healthcare.aiassistant.model.User;
-import com.healthcare.aiassistant.repository.DoctorVerificationRepository;
-import com.healthcare.aiassistant.repository.RoleRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
-import com.healthcare.aiassistant.service.AuditService;
+import com.healthcare.aiassistant.service.DoctorVerificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
 public class VerificationController {
 
-    @Autowired
-    private DoctorVerificationRepository verificationRepository;
+    private static final Logger log = LoggerFactory.getLogger(VerificationController.class);
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private DoctorVerificationService verificationService;
 
-    @Autowired
-    private AuditService auditService;
+    // ── Doctor submits verification with document upload ──────────
 
-    @Autowired
-    private Clock clock;
-
-    // Doctor submits their credentials
-    @PostMapping("/doctors/verify")
+    @PostMapping(value = "/doctors/verify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
-    public ResponseEntity<?> submitVerification(@AuthenticationPrincipal UserDetails userDetails,
-                                                @RequestBody Map<String, String> payload) {
-        String license = payload.get("licenseNumber");
-        String specialty = payload.get("specialty");
-
-        if (license == null || specialty == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Missing license or specialty"));
-        }
+    public ResponseEntity<?> submitVerification(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestParam("licenseNumber") String licenseNumber,
+            @RequestParam("specialty") String specialty,
+            @RequestParam("document") MultipartFile document) {
 
         User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow();
-        
-        DoctorVerification verification = new DoctorVerification(user, license, specialty);
-        verificationRepository.save(verification);
+
+        DoctorVerification verification = verificationService.submitVerification(
+                user, licenseNumber, specialty, document);
+
         return ResponseEntity.ok(Map.of("message", "Verification submitted successfully."));
     }
 
-    // Admin fetches all pending verifications
+    // ── Admin fetches all verifications ───────────────────────────
+
     @GetMapping("/admin/doctors/verify")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<DoctorVerification>> getPendingVerifications() {
-        return ResponseEntity.ok(verificationRepository.findAllByOrderBySubmittedAtDesc());
+    public ResponseEntity<List<DoctorVerification>> getVerifications() {
+        return ResponseEntity.ok(verificationService.getAllVerifications());
     }
 
-    // Admin approves or rejects the verification
+    // ── Admin approves or rejects ────────────────────────────────
+
     @PutMapping("/admin/doctors/verify/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> resolveVerification(@PathVariable Long id, @RequestBody Map<String, String> payload, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<?> resolveVerification(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
         String action = payload.get("action"); // "APPROVE" or "REJECT"
-        
-        Optional<DoctorVerification> verificationOpt = verificationRepository.findById(id);
-        if (!verificationOpt.isPresent()) {
-            return ResponseEntity.notFound().build();
+
+        DoctorVerification verification = verificationService.resolveVerification(
+                id, action, userDetails.getUsername());
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Verification request " + action.toLowerCase() + "d successfully.",
+                "status", verification.getStatus().name()));
+    }
+
+    // ── Admin views uploaded document ─────────────────────────────
+
+    @GetMapping("/admin/doctors/verify/document/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Resource> getDocument(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        Path filePath = verificationService.getDocumentFile(id, userDetails.getUsername());
+
+        try {
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Dynamic content type detection (never hardcode APPLICATION_PDF)
+            String contentType;
+            try {
+                contentType = Files.probeContentType(filePath);
+            } catch (IOException e) {
+                contentType = null;
+            }
+            if (contentType == null) {
+                contentType = "application/octet-stream"; // Safe fallback
+            }
+
+            // Content-Disposition: inline so PDFs/images preview in browser
+            String filename = filePath.getFileName().toString();
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(contentType))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                    .body(resource);
+
+        } catch (MalformedURLException e) {
+            log.error("Failed to construct resource URL for verification document id={}", id, e);
+            return ResponseEntity.internalServerError().build();
         }
-
-        DoctorVerification verification = verificationOpt.get();
-        verification.setResolvedAt(LocalDateTime.now(clock));
-
-        if ("APPROVE".equalsIgnoreCase(action)) {
-            verification.setStatus(ERequestStatus.APPROVED);
-            
-            // Actually promote the user to ROLE_DOCTOR if they aren't already
-            User user = verification.getDoctor();
-            Optional<Role> doctorRole = roleRepository.findByName(ERole.ROLE_DOCTOR);
-            doctorRole.ifPresent(user::setRole);
-            userRepository.save(user);
-            
-        } else if ("REJECT".equalsIgnoreCase(action)) {
-            verification.setStatus(ERequestStatus.REJECTED);
-        } else {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid action"));
-        }
-
-        verificationRepository.save(verification);
-        auditService.logAction(userDetails.getUsername(), "VERIFICATION_" + action.toUpperCase(), verification.getDoctor().getId(), "Resolved doctor application: " + action);
-        return ResponseEntity.ok(Map.of("message", "Verification request " + action.toLowerCase() + "d successfully."));
     }
 }

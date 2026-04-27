@@ -23,11 +23,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onClose }) => {
     const { user, logout } = useAuth();
 
     const menuItems = [
-        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN'] },
-        { name: 'AI Chat', icon: <MessageSquare size={20} />, path: '/dashboard/chat', roles: ['ROLE_PATIENT', 'ROLE_ADMIN'] },
-        { name: 'Appointments', icon: <Calendar size={20} />, path: '/dashboard/appointments', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN'] },
-        { name: 'Manage Users', icon: <Users size={20} />, path: '/dashboard/admin', roles: ['ROLE_ADMIN'] },
-        { name: 'Profile', icon: <UserCircle size={20} />, path: '/dashboard/profile', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR', 'ROLE_ADMIN'] },
+        { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
+        { name: 'AI Chat', icon: <MessageSquare size={20} />, path: '/dashboard/chat', roles: ['ROLE_PATIENT'] },
+        { name: 'Appointments', icon: <Calendar size={20} />, path: '/dashboard/appointments', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
+        { name: 'Profile', icon: <UserCircle size={20} />, path: '/dashboard/profile', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
         { name: 'Admin Console', icon: <ShieldAlert size={20} className="text-rose-500" />, path: '/admin', roles: ['ROLE_ADMIN'] },
     ];
 

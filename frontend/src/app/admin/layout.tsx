@@ -61,6 +61,7 @@ export default function AdminLayout({
                         Doctor Verification
                         <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>
                     </Link>
+                    {/* 
                     <div className="pt-8 pb-2">
                         <p className="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 pb-2">System</p>
                     </div>
@@ -68,10 +69,11 @@ export default function AdminLayout({
                         <Settings size={20} />
                         Global Settings
                     </Link>
+                    */}
                 </nav>
 
                 <div className="p-4 border-t border-slate-800 space-y-2">
-                    <Link href="/dashboard" className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all font-bold">
+                    <Link href="/admin" className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all font-bold">
                         <ArrowLeft size={20} />
                         Back to Dashboard
                     </Link>
@@ -100,7 +102,7 @@ export default function AdminLayout({
                     </div>
                 </header>
                 <div className="flex-1 overflow-y-auto p-8 relative">
-                    <div className="absolute top-0 left-0 w-full h-64 bg-slate-900 -z-10 rounded-b-[3rem] shadow-inner"></div>
+                    <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-slate-100 to-transparent -z-10 rounded-b-[3rem]"></div>
                     {children}
                 </div>
             </main>

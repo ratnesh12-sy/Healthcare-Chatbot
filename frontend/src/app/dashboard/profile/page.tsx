@@ -3,6 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
 import { User, Camera, Mail, ShieldCheck, Settings, Bell, Calendar, Activity, Heart, Pill, AlertTriangle, Phone, UserCheck } from 'lucide-react';
+import DoctorProfile from '@/components/dashboard/DoctorProfile';
 
 interface ProfileData {
     fullName: string;
@@ -41,6 +42,11 @@ function ShimmerBlock({ className = "" }: { className?: string }) {
 
 export default function ProfilePage() {
     const { user } = useAuth();
+
+    // Route doctors to dedicated professional profile
+    const isDoctor = user?.roles?.includes('ROLE_DOCTOR');
+    if (isDoctor) return <DoctorProfile />;
+
     const [profile, setProfile] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);

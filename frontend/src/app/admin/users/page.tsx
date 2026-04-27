@@ -49,8 +49,8 @@ export default function UserManagementPage() {
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">User Management</h1>
-                    <p className="text-slate-400 mt-2 font-medium">Control platform access, roles, and administrative statuses.</p>
+                    <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">User Management</h1>
+                    <p className="text-slate-500 mt-2 font-medium">Control platform access, roles, and administrative statuses.</p>
                 </div>
             </div>
 

@@ -39,8 +39,8 @@ export default function AdminDashboard() {
     return (
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-                <h1 className="text-3xl font-extrabold text-white tracking-tight">Command Center</h1>
-                <p className="text-slate-400 mt-2 font-medium">Platform overview and high-level artificial intelligence metrics.</p>
+                <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Command Center</h1>
+                <p className="text-slate-500 mt-2 font-medium">Platform overview and high-level artificial intelligence metrics.</p>
             </div>
 
             {/* Metrics Grid */}
