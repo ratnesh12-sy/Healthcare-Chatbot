@@ -23,6 +23,7 @@ public class User {
 
     @NotBlank
     @Size(max = 120)
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private String password;
 
     @NotBlank
