@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
+import { ChatProvider } from '@/context/ChatContext';
 import { useAuth } from '@/context/AuthContext';
 import { Bell, Search, ChevronDown, Menu } from 'lucide-react';
 import Image from 'next/image';
@@ -12,6 +13,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     
     return (
         <ProtectedRoute>
+            <ChatProvider>
             <div className="flex bg-light min-h-screen text-secondary">
                 <Sidebar isMobileOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
                 <div className="flex-1 flex flex-col overflow-hidden w-full relative">
@@ -62,6 +64,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </main>
                 </div>
             </div>
+            </ChatProvider>
         </ProtectedRoute>
     );
 }

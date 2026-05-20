@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import { Client, IMessage, StompSubscription } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import { useAuth } from './AuthContext'; // Assuming AuthContext exists
-import axios from 'axios';
+import api from '@/lib/api';
 
 type SenderType = 'PATIENT' | 'DOCTOR' | 'AI';
 
@@ -42,10 +42,7 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchHistory = async (appointmentId: number) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/consultation/${appointmentId}/messages`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const response = await api.get(`/consultation/${appointmentId}/messages`);
       const history = response.data.content;
       setMessages(history.sort((a: ConsultationMessage, b: ConsultationMessage) => 
         new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime() || 
@@ -60,8 +57,9 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
   const connectToAppointment = (appointmentId: number) => {
     if (stompClient?.active) return;
 
-    const token = localStorage.getItem('token');
-    const socket = new SockJS('http://localhost:8080/ws-chat');
+    const token = localStorage.getItem('wsToken');
+    const wsBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api').replace('/api', '');
+    const socket = new SockJS(`${wsBase}/ws-chat`);
     const client = new Client({
       webSocketFactory: () => socket,
       connectHeaders: {

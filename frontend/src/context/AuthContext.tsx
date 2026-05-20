@@ -46,6 +46,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (username: string, password: string) => {
         const res = await api.post('/auth/signin', { username, password });
         const { token, ...userData } = res.data;
+        // Store token for WebSocket STOMP auth (cookies don't work with STOMP CONNECT frames)
+        if (token) localStorage.setItem('wsToken', token);
         setUser(userData);
         
         if (userData.roles?.includes('ROLE_ADMIN')) {
@@ -66,6 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             await api.post('/auth/logout');
         } finally {
+            localStorage.removeItem('wsToken');
             setUser(null);
             router.push('/login');
         }

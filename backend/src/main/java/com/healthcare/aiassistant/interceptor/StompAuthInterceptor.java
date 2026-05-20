@@ -42,7 +42,7 @@ public class StompAuthInterceptor implements ChannelInterceptor {
                 String token = authorization.get(0).substring(7);
                 if (jwtUtils.validateJwtToken(token)) {
                     String username = jwtUtils.getUserNameFromJwtToken(token);
-                    User user = userRepository.findByEmail(username).orElseThrow(() -> new AccessDeniedException("User not found"));
+                    User user = userRepository.findByUsername(username).orElseThrow(() -> new AccessDeniedException("User not found"));
                     UserDetailsImpl userDetails = UserDetailsImpl.build(user);
                     accessor.setUser(new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities()));
                 } else {

@@ -99,9 +99,9 @@
 				<groupId>org.flywaydb</groupId>
 				<artifactId>flyway-maven-plugin</artifactId>
 				<configuration>
-					<url>jdbc:postgresql://ep-rough-silence-a1ktbcc5.ap-southeast-1.aws.neon.tech/neondb?sslmode=require</url>
-					<user>neondb_owner</user>
-					<password>npg_eus6JrbvTS8a</password>
+					<url>${env.DATABASE_URL}</url>
+					<user>${env.DB_USER}</user>
+					<password>${env.DB_PASS}</password>
 					<baselineOnMigrate>true</baselineOnMigrate>
 				</configuration>
 			</plugin>
