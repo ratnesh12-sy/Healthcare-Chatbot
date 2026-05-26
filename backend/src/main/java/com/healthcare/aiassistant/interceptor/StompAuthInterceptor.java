@@ -42,17 +42,32 @@ public class StompAuthInterceptor implements ChannelInterceptor {
                 String token = authorization.get(0).substring(7);
                 if (jwtUtils.validateJwtToken(token)) {
                     String username = jwtUtils.getUserNameFromJwtToken(token);
-                    User user = userRepository.findByUsername(username).orElseThrow(() -> new AccessDeniedException("User not found"));
+                    User user = userRepository.findByUsername(username)
+                            .orElseThrow(() -> new AccessDeniedException("User not found"));
                     UserDetailsImpl userDetails = UserDetailsImpl.build(user);
-                    accessor.setUser(new UsernamePasswordAuthenticationToken(user, null, userDetails.getAuthorities()));
+                    accessor.setUser(new UsernamePasswordAuthenticationToken(
+                            user, null, userDetails.getAuthorities()));
                 } else {
                     throw new AccessDeniedException("Invalid JWT token");
                 }
             } else {
-                 throw new AccessDeniedException("Authorization header is missing");
+                throw new AccessDeniedException("Authorization header is missing");
             }
+
         } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
             String destination = accessor.getDestination();
+
+            // ✅ FIX: null check before casting — prevents NullPointerException
+            if (accessor.getUser() == null) {
+                throw new AccessDeniedException("Not authenticated — connect first");
+            }
+
+            // ✅ FIX: safe instanceof check before casting
+            if (!(accessor.getUser() instanceof UsernamePasswordAuthenticationToken)) {
+                throw new AccessDeniedException("Invalid authentication token");
+            }
+
+            // Now safe to cast
             User user = (User) ((UsernamePasswordAuthenticationToken) accessor.getUser()).getPrincipal();
 
             if (destination != null && destination.startsWith("/topic/appointment/")) {
@@ -61,7 +76,6 @@ public class StompAuthInterceptor implements ChannelInterceptor {
                     throw new AccessDeniedException("Unauthorized subscription to appointment topic");
                 }
             } else if (destination != null && destination.startsWith("/user/queue/ai-responses")) {
-                // Only PATIENT can subscribe to AI responses (Doctor shouldn't see AI responses per plan)
                 boolean isPatient = user.getRole().getName().name().equals("ROLE_PATIENT");
                 if (!isPatient) {
                     throw new AccessDeniedException("Only patients can subscribe to AI responses");
@@ -82,9 +96,11 @@ public class StompAuthInterceptor implements ChannelInterceptor {
     }
 
     private boolean isUserPartOfAppointment(User user, Long appointmentId) {
-        if (appointmentId == null) return false;
+        if (appointmentId == null)
+            return false;
         Optional<Appointment> appointmentOpt = appointmentRepository.findById(appointmentId);
-        if (appointmentOpt.isEmpty()) return false;
+        if (appointmentOpt.isEmpty())
+            return false;
         Appointment appointment = appointmentOpt.get();
 
         boolean isPatient = appointment.getPatient().getId().equals(user.getId());

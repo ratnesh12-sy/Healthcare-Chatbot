@@ -72,8 +72,12 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     });
 
     client.onConnect = () => {
+      // ✅ Remove token immediately — it has done its job (authenticated the STOMP CONNECT frame)
+      // No need to keep it exposed in localStorage any longer
+      localStorage.removeItem('wsToken');
+
       setIsConnected(true);
-      
+
       // If reconnecting while PROCESSING, fetch latest DB state
       if (aiStatus === 'PROCESSING') {
           fetchHistory(appointmentId);

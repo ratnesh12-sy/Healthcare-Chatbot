@@ -2,6 +2,7 @@ package com.healthcare.aiassistant.config;
 
 import com.healthcare.aiassistant.interceptor.StompAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -16,6 +17,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private StompAuthInterceptor stompAuthInterceptor;
 
+    // ✅ Read allowed origins from environment variable
+    @Value("${app.allowed-origins:http://localhost:3000}")
+    private String allowedOrigins;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic", "/queue");
@@ -26,7 +31,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws-chat")
-                .setAllowedOriginPatterns("*")
+                // ✅ BEFORE: .setAllowedOriginPatterns("*")
+                // ✅ AFTER: only your Vercel domain + localhost for dev
+                .setAllowedOriginPatterns(allowedOrigins.split(","))
                 .withSockJS();
     }
 

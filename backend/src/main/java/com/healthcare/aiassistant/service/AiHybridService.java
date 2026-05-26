@@ -1,5 +1,6 @@
 package com.healthcare.aiassistant.service;
 
+import jakarta.annotation.PostConstruct;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.healthcare.aiassistant.model.ConsultationMessage;
@@ -53,6 +54,19 @@ public class AiHybridService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // ── Startup Validation ───────────────────────────────────────────────────
+
+    @PostConstruct
+    public void validateConfig() {
+        String apiKey = openAiProperties.getApiKey();
+        if (apiKey == null || apiKey.isBlank() || apiKey.equals("MISSING_GROQ_API_KEY")) {
+            throw new IllegalStateException(
+                    "GROQ_API_KEY environment variable is not set! " +
+                            "Add it to your Render environment variables.");
+        }
+        log.info("Groq API key loaded successfully.");
+    }
+
     @Async("aiExecutor")
     public void generateAndSendAiResponse(Long appointmentId, Long patientUserId, String rawContext) {
         String requestId = UUID.randomUUID().toString();
@@ -94,7 +108,7 @@ public class AiHybridService {
                 if (msg.getSenderType() == SenderType.PATIENT) {
                     messages.add(new OpenAiMessage("user", "[PATIENT]: " + msg.getContent()));
                 } else if (msg.getSenderType() == SenderType.DOCTOR) {
-                    messages.add(new OpenAiMessage("user", "[DOCTOR]: " + msg.getContent()));
+                    messages.add(new OpenAiMessage("system", "[DOCTOR Note]: " + msg.getContent()));
                 } else if (msg.getSenderType() == SenderType.AI) {
                     messages.add(new OpenAiMessage("assistant", msg.getContent()));
                 }

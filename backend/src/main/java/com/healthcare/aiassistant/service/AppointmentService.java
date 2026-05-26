@@ -27,8 +27,6 @@ public class AppointmentService {
 
     private static final Logger log = LoggerFactory.getLogger(AppointmentService.class);
 
-
-
     private static final LocalTime WORKING_START = LocalTime.of(9, 0);
     private static final LocalTime WORKING_END = LocalTime.of(16, 30);
     private static final int SLOT_DURATION_MINUTES = 30;
@@ -47,7 +45,7 @@ public class AppointmentService {
 
     @Transactional
     public AppointmentDTO bookAppointment(Long doctorId, LocalDateTime requestedDate,
-                                          String symptomsSummary, User patient) {
+            String symptomsSummary, User patient) {
         // 1. Normalize timestamp — all times floored to nearest 30-min slot
         LocalDateTime normalized = normalizeToSlot(requestedDate);
 
@@ -62,7 +60,7 @@ public class AppointmentService {
         LocalTime time = normalized.toLocalTime();
         if (time.isBefore(WORKING_START) || time.isAfter(WORKING_END)) {
             throw new OutsideWorkingHoursException(
-                    "Appointments are only available between 09:00 and 17:00");
+                    "Appointments are only available between 09:00 and 16:30");
         }
 
         // 5. Past check
@@ -132,7 +130,8 @@ public class AppointmentService {
 
     // ── Available Slots ─────────────────────────────────────────
 
-    public List<com.healthcare.aiassistant.payload.dto.SlotResponseDTO> getAvailableSlots(Long doctorId, LocalDate date) {
+    public List<com.healthcare.aiassistant.payload.dto.SlotResponseDTO> getAvailableSlots(Long doctorId,
+            LocalDate date) {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new RuntimeException("Doctor not found"));
 
@@ -155,7 +154,8 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
-    public org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> getDoctorAppointmentsPaginated(Doctor doctor, org.springframework.data.domain.Pageable pageable) {
+    public org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> getDoctorAppointmentsPaginated(
+            Doctor doctor, org.springframework.data.domain.Pageable pageable) {
         return appointmentRepository.findByDoctorOrderByAppointmentDateDesc(doctor, pageable)
                 .map(this::mapToDoctorDTO);
     }
@@ -169,7 +169,8 @@ public class AppointmentService {
     }
 
     @Transactional
-    public com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO updateDoctorAppointmentStatus(Long appointmentId, Doctor doctor, AppointmentStatus newStatus, String cancelReason) {
+    public com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO updateDoctorAppointmentStatus(Long appointmentId,
+            Doctor doctor, AppointmentStatus newStatus, String cancelReason) {
         if (newStatus == null) {
             throw new IllegalArgumentException("Status cannot be null");
         }
@@ -178,7 +179,8 @@ public class AppointmentService {
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
         if (!appointment.getDoctor().getId().equals(doctor.getId())) {
-            throw new org.springframework.security.access.AccessDeniedException("Unauthorized: Cannot modify another doctor's appointments.");
+            throw new org.springframework.security.access.AccessDeniedException(
+                    "Unauthorized: Cannot modify another doctor's appointments.");
         }
 
         if (appointment.getStatus() == newStatus) {
@@ -265,12 +267,12 @@ public class AppointmentService {
         dto.setDurationMinutes(appointment.getDurationMinutes());
         dto.setStatus(appointment.getStatus().name());
         dto.setSymptomsSummary(appointment.getSymptomsSummary());
-        
+
         String patientName = Optional.ofNullable(appointment.getPatient())
                 .map(User::getFullName)
                 .orElse("Unknown");
         dto.setPatientName(patientName);
-        
+
         return dto;
     }
 }

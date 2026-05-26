@@ -46,10 +46,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const login = async (username: string, password: string) => {
         const res = await api.post('/auth/signin', { username, password });
         const { token, ...userData } = res.data;
-        // Store token for WebSocket STOMP auth (cookies don't work with STOMP CONNECT frames)
-        if (token) localStorage.setItem('wsToken', token);
+
+        // Store token briefly for WebSocket STOMP auth
+        // (cookies don't work with STOMP CONNECT frames)
+        // It will be removed immediately after WebSocket connects — see ChatContext.tsx
+        if (token) {
+            localStorage.setItem('wsToken', token);
+
+            // Safety net — remove after 30 seconds no matter what,
+            // in case WebSocket never connects for some reason
+            setTimeout(() => {
+                localStorage.removeItem('wsToken');
+            }, 30000);
+        }
+
         setUser(userData);
-        
+
         if (userData.roles?.includes('ROLE_ADMIN')) {
             router.push('/admin');
         } else if (userData.roles?.includes('ROLE_DOCTOR') && !userData.profileComplete) {
