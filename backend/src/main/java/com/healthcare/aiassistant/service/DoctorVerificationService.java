@@ -91,9 +91,8 @@ public class DoctorVerificationService {
                     "Cannot submit verification for another user");
         }
 
-        // 5. Determine current status (virtual NOT_SUBMITTED for null)
-        String currentVerificationStatus = Optional.ofNullable(doctor.getVerificationStatus()).orElse(null);
-        ERequestStatus currentStatus = mapStringToStatus(currentVerificationStatus);
+        // 5. Determine current status (null = virtual NOT_SUBMITTED state)
+        ERequestStatus currentStatus = doctor.getVerificationStatus();
 
         // 6. State machine check
         if (!stateMachine.isValidTransition(currentStatus, ERequestStatus.PENDING)) {
@@ -141,7 +140,7 @@ public class DoctorVerificationService {
             verificationRepository.save(verification);
 
             // 10. Sync doctor entity
-            doctor.setVerificationStatus("PENDING");
+            doctor.setVerificationStatus(ERequestStatus.PENDING);
             doctor.setLicenseNumber(licenseNumber);
             doctor.setSpecialization(specialty);
             doctorRepository.save(doctor);
@@ -211,7 +210,7 @@ public class DoctorVerificationService {
         Doctor doctor = doctorRepository.findByUser(doctorUser)
                 .orElse(null);
         if (doctor != null) {
-            doctor.setVerificationStatus(newStatus.name());
+            doctor.setVerificationStatus(newStatus);
             doctorRepository.save(doctor);
         }
 
@@ -278,8 +277,8 @@ public class DoctorVerificationService {
      * Use in any controller that restricts actions to verified doctors.
      */
     public void ensureDoctorVerified(Doctor doctor) {
-        String status = Optional.ofNullable(doctor.getVerificationStatus()).orElse("NOT_SUBMITTED");
-        if (!"APPROVED".equals(status)) {
+        ERequestStatus status = doctor.getVerificationStatus();
+        if (status == null || status != ERequestStatus.APPROVED) {
             log.warn("VERIFICATION_FAILED reason=UNAUTHORIZED_ACCESS doctorId={} currentStatus={}",
                     doctor.getId(), status);
             throw new DoctorNotVerifiedException("Doctor not verified. Current status: " + status);
@@ -291,7 +290,7 @@ public class DoctorVerificationService {
      * Single source of truth — never expose findAll() for public endpoints.
      */
     public List<Doctor> getVerifiedDoctors() {
-        return doctorRepository.findByVerificationStatus("APPROVED");
+        return doctorRepository.findByVerificationStatus(ERequestStatus.APPROVED);
     }
 
     // ── File Handling Helpers ─────────────────────────────────────
@@ -355,20 +354,5 @@ public class DoctorVerificationService {
         return (lastDot > 0) ? filename.substring(lastDot + 1) : "";
     }
 
-    // ── Status Helpers ────────────────────────────────────────────
 
-    /**
-     * Maps the string-based verificationStatus on Doctor entity to ERequestStatus enum.
-     * Returns null for null/"NOT_SUBMITTED" (treated as virtual NOT_SUBMITTED state).
-     */
-    private ERequestStatus mapStringToStatus(String status) {
-        if (status == null || status.isBlank() || "NOT_SUBMITTED".equals(status)) {
-            return null;
-        }
-        try {
-            return ERequestStatus.valueOf(status);
-        } catch (IllegalArgumentException e) {
-            return null;
-        }
-    }
 }

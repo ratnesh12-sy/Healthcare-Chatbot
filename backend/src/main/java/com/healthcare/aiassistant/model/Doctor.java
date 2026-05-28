@@ -24,7 +24,9 @@ public class Doctor {
 
     private String licenseNumber;
     
-    private String verificationStatus; // null = NOT_SUBMITTED (virtual state)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "verification_status")
+    private ERequestStatus verificationStatus; // null = NOT_SUBMITTED (virtual state)
 
     public Doctor() {
     }
@@ -94,11 +96,11 @@ public class Doctor {
         this.licenseNumber = licenseNumber;
     }
 
-    public String getVerificationStatus() {
+    public ERequestStatus getVerificationStatus() {
         return verificationStatus;
     }
 
-    public void setVerificationStatus(String verificationStatus) {
+    public void setVerificationStatus(ERequestStatus verificationStatus) {
         this.verificationStatus = verificationStatus;
     }
 }

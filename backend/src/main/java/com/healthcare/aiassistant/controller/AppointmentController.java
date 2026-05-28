@@ -78,8 +78,8 @@ public class AppointmentController {
         Doctor doctor = doctorRepository.findByUser(user)
                 .orElseThrow(() -> new RuntimeException("Doctor details not found"));
 
-        // Verification guard
-        verificationService.ensureDoctorVerified(doctor);
+        // Note: No verification guard here — doctors can always VIEW their own appointments.
+        // Write operations (PATCH /status) still require verification.
 
         org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size);
         org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> appointments = appointmentService.getDoctorAppointmentsPaginated(doctor, pageable);

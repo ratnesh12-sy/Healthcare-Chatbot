@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { motion } from 'framer-motion';
-import { Shield, ShieldCheck, Clock, Mail, Award, Stethoscope, FileText, Users, CheckCircle, ToggleLeft, ToggleRight } from 'lucide-react';
+import { Shield, ShieldCheck, Clock, Mail, Award, Stethoscope, FileText, Users, CheckCircle, ToggleLeft, ToggleRight, AlertCircle } from 'lucide-react';
 import { DoctorService, DoctorProfileDTO } from '@/lib/doctorService';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -144,10 +144,14 @@ export default function DoctorProfile() {
                                 <span className={`flex items-center gap-1.5 text-sm font-bold px-3 py-1.5 rounded-full ${
                                     profile.verificationStatus === 'APPROVED'
                                         ? 'bg-green-500/20 text-green-300'
+                                        : profile.verificationStatus === 'REJECTED'
+                                        ? 'bg-red-500/20 text-red-300'
                                         : 'bg-amber-500/20 text-amber-300'
                                 }`}>
                                     {profile.verificationStatus === 'APPROVED'
                                         ? <><ShieldCheck className="w-4 h-4" /> Verified</>
+                                        : profile.verificationStatus === 'REJECTED'
+                                        ? <><AlertCircle className="w-4 h-4" /> Verification Rejected</>
                                         : <><Clock className="w-4 h-4" /> Pending Verification</>
                                     }
                                 </span>
@@ -231,9 +235,13 @@ export default function DoctorProfile() {
                                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold ${
                                     profile.verificationStatus === 'APPROVED'
                                         ? 'bg-green-100 text-green-700'
+                                        : profile.verificationStatus === 'REJECTED'
+                                        ? 'bg-red-100 text-red-700'
                                         : 'bg-amber-100 text-amber-700'
                                 }`}>
-                                    {profile.verificationStatus === 'APPROVED' ? '✅ Approved' : '⏳ Pending'}
+                                    {profile.verificationStatus === 'APPROVED' ? '✅ Approved'
+                                        : profile.verificationStatus === 'REJECTED' ? '❌ Rejected'
+                                        : '⏳ Pending'}
                                 </span>
                             }
                         />

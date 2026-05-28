@@ -43,7 +43,9 @@ public class DoctorProfileController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         if (user.getIsProfileComplete()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Profile is already complete."));
+            // Idempotent: if profile was already created (e.g. Step 1 succeeded but Step 2 failed),
+            // return success so the frontend can proceed to the verification step.
+            return ResponseEntity.ok(new MessageResponse("Doctor profile created successfully"));
         }
 
         Doctor doctor = new Doctor();
@@ -130,7 +132,7 @@ public class DoctorProfileController {
         dto.setSpecialization(doctor.getSpecialization());
         dto.setExperienceYears(doctor.getExperienceYears());
         dto.setLicenseNumber(doctor.getLicenseNumber());
-        dto.setVerificationStatus(doctor.getVerificationStatus());
+        dto.setVerificationStatus(doctor.getVerificationStatus() != null ? doctor.getVerificationStatus().name() : null);
         dto.setBio(doctor.getBio());
         dto.setIsAvailable(doctor.getIsAvailable());
         // Derived at runtime from existing appointments table

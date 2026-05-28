@@ -96,7 +96,7 @@ export default function DoctorOnboardingPage() {
         setError('');
 
         try {
-            // Step 1: Create doctor profile
+            // Step 1: Create doctor profile (idempotent — safe to retry)
             await api.post('/doctor/profile', {
                 specialization: formData.specialization,
                 experience: parseInt(formData.experience),
@@ -111,9 +111,7 @@ export default function DoctorOnboardingPage() {
                 verifyFormData.append('specialty', formData.specialization);
                 verifyFormData.append('document', selectedFile);
 
-                await api.post('/doctors/verify', verifyFormData, {
-                    headers: { 'Content-Type': 'multipart/form-data' }
-                });
+                await api.post('/doctors/verify', verifyFormData);
                 toast.success('Profile completed & verification submitted!');
             } else {
                 toast.success('Profile completed! You can submit verification later.');
@@ -125,6 +123,16 @@ export default function DoctorOnboardingPage() {
             setError(msg);
             toast.error(msg);
             setLoading(false);
+
+            // Recovery: if Step 1 succeeded but Step 2 failed, the DB has
+            // profileComplete=true but our React state is stale. Refresh the
+            // user so the page auto-switches to the verification-only view.
+            try {
+                const res = await api.get('/auth/me');
+                if (res.data?.profileComplete) {
+                    window.location.reload();
+                }
+            } catch { /* ignore — user will see the error message and can retry */ }
         }
     };
 
@@ -135,19 +143,20 @@ export default function DoctorOnboardingPage() {
             toast.error('Please select a document to upload');
             return;
         }
+        if (!formData.licenseNumber || !formData.specialization) {
+            toast.error('Please fill in all required fields');
+            return;
+        }
         setLoading(true);
         setError('');
 
         try {
             const verifyFormData = new FormData();
-            // Use existing profile data from the user's doctor record
-            verifyFormData.append('licenseNumber', formData.licenseNumber || 'PENDING');
-            verifyFormData.append('specialty', formData.specialization || 'General');
+            verifyFormData.append('licenseNumber', formData.licenseNumber);
+            verifyFormData.append('specialty', formData.specialization);
             verifyFormData.append('document', selectedFile);
 
-            await api.post('/doctors/verify', verifyFormData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            await api.post('/doctors/verify', verifyFormData);
             toast.success('Verification submitted successfully!');
             window.location.href = '/dashboard';
         } catch (err: any) {

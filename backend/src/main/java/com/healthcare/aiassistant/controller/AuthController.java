@@ -223,7 +223,10 @@ public class AuthController {
         // Use findByUser_Id to avoid LazyInitializationException
         // (loading User proxy then passing it to findByUser fails outside a session)
         return doctorRepository.findByUser_Id(userId)
-                .map(Doctor::getVerificationStatus)
+                .map(doctor -> {
+                    var status = doctor.getVerificationStatus();
+                    return status != null ? status.name() : null;
+                })
                 .orElse(null);
     }
 }

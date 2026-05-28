@@ -61,8 +61,24 @@ export default function DoctorDashboard() {
         }
         
         loadData();
-        const interval = setInterval(loadData, 30000); // Polling every 30s
-        return () => clearInterval(interval);
+        let interval = setInterval(loadData, 30000);
+
+        // Pause polling when tab is backgrounded to save bandwidth
+        const handleVisibilityChange = () => {
+            if (document.hidden) {
+                clearInterval(interval);
+            } else {
+                loadData(); // Refresh immediately on tab focus
+                interval = setInterval(loadData, 30000);
+            }
+        };
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+        };
     }, [user, router]);
 
     const handleUpdateStatus = async (id: number, currentStatus: string, newStatus: string) => {
@@ -322,7 +338,7 @@ export default function DoctorDashboard() {
                                     {/* Vertical timeline line */}
                                     <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-slate-200" />
                                     
-                                    <div className={`space-y-${stats.todayAppointments.length > 3 ? '2' : '4'}`}>
+                                    <div className={stats.todayAppointments.length > 3 ? 'space-y-2' : 'space-y-4'}>
                                         {stats.todayAppointments.map((apt, idx) => {
                                             const config = statusConfig[apt.status] || statusConfig.PENDING;
                                             return (

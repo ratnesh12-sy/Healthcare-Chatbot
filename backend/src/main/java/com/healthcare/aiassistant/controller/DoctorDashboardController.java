@@ -65,24 +65,16 @@ public class DoctorDashboardController {
         LocalDateTime startOfDay = LocalDate.now(ZoneOffset.UTC).atStartOfDay();
         LocalDateTime endOfDay = LocalDate.now(ZoneOffset.UTC).atTime(LocalTime.MAX);
 
-        // All appointments for the doctor (for counts)
-        var allAppointments = appointmentRepository.findByDoctorOrderByAppointmentDateDesc(doctor);
+        // Targeted DB queries instead of loading all appointments into memory
+        long todayCount = appointmentRepository.countByDoctorAndAppointmentDateBetween(doctor, startOfDay, endOfDay);
+        long pendingCount = appointmentRepository.countByDoctorAndStatus(doctor, AppointmentStatus.PENDING);
+        long completedCount = appointmentRepository.countByDoctorAndStatus(doctor, AppointmentStatus.COMPLETED);
+        long totalCount = appointmentRepository.countByDoctor(doctor);
 
-        long todayCount = allAppointments.stream()
-                .filter(a -> !a.getAppointmentDate().isBefore(startOfDay) && !a.getAppointmentDate().isAfter(endOfDay))
-                .count();
-
-        long pendingCount = allAppointments.stream()
-                .filter(a -> a.getStatus() == AppointmentStatus.PENDING)
-                .count();
-
-        long completedCount = allAppointments.stream()
-                .filter(a -> a.getStatus() == AppointmentStatus.COMPLETED)
-                .count();
-
-        // Today's appointments list
-        List<DoctorAppointmentDTO> todayAppointments = allAppointments.stream()
-                .filter(a -> !a.getAppointmentDate().isBefore(startOfDay) && !a.getAppointmentDate().isAfter(endOfDay))
+        // Only fetch today's appointments (the list we actually render)
+        List<DoctorAppointmentDTO> todayAppointments = appointmentRepository
+                .findByDoctorAndAppointmentDateBetweenOrderByAppointmentDateAsc(doctor, startOfDay, endOfDay)
+                .stream()
                 .map(appointment -> {
                     DoctorAppointmentDTO dto = new DoctorAppointmentDTO();
                     dto.setId(appointment.getId());
@@ -94,9 +86,6 @@ public class DoctorDashboardController {
                     return dto;
                 })
                 .collect(Collectors.toList());
-
-        // Derived total count via repository query (safe for future pagination)
-        long totalCount = appointmentRepository.countByDoctor(doctor);
 
         Map<String, Object> data = new HashMap<>();
         data.put("todayCount", todayCount);

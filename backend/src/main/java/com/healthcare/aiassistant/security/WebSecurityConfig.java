@@ -69,6 +69,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/v1/profile/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
+                        .requestMatchers("/api/doctors/**").hasRole("DOCTOR")
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated())
                 .headers(headers -> headers

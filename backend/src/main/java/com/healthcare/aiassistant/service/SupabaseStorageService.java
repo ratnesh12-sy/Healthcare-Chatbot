@@ -99,14 +99,10 @@ public class SupabaseStorageService {
                 throw new IOException("Failed to generate signed URL: " + response.code());
             }
             String responseBody = response.body().string();
-            // Extract signedURL from response JSON
-            // Response: {"signedURL": "/storage/v1/..."}
-            String signedPath = responseBody
-                    .replace("{", "")
-                    .replace("}", "")
-                    .replace("\"", "")
-                    .split("signedURL:")[1]
-                    .trim();
+            // Parse JSON response: {"signedURL": "/storage/v1/..."}
+            com.fasterxml.jackson.databind.JsonNode node =
+                    new com.fasterxml.jackson.databind.ObjectMapper().readTree(responseBody);
+            String signedPath = node.get("signedURL").asText();
 
             return supabaseUrl + signedPath;
         }

@@ -31,7 +31,7 @@ public class VerificationController {
     // ── Doctor submits verification with document upload ──────────
 
     @PostMapping(value = "/doctors/verify", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR')")
+    @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> submitVerification(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam("licenseNumber") String licenseNumber,
