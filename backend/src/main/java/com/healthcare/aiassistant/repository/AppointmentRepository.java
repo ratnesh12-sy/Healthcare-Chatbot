@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
@@ -24,4 +25,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     // Derived count queries for Doctor Profile (no schema change — uses existing columns)
     long countByDoctor(Doctor doctor);
     long countByDoctorAndStatus(Doctor doctor, AppointmentStatus status);
+
+    Optional<Appointment> findByPatientIdAndSymptomsSummaryStartingWith(
+            Long patientId, String symptomsPrefix);
 }

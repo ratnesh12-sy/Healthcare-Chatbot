@@ -17,8 +17,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Autowired
     private StompAuthInterceptor stompAuthInterceptor;
 
-    // ✅ Read allowed origins from environment variable
-    @Value("${app.allowed-origins:http://localhost:3000}")
+    // ✅ Read allowed origins from environment variable (shared with HTTP CORS)
+    @Value("${app.cors.allowedOrigins:http://localhost:3000,http://localhost:5173,https://healthcare-chatbot-1.vercel.app}")
     private String allowedOrigins;
 
     @Override

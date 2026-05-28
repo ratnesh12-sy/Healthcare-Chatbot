@@ -17,17 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Centralized service for all doctor verification operations.
@@ -45,7 +40,7 @@ public class DoctorVerificationService {
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
             "pdf", "jpg", "jpeg", "png"
     );
-    private static final Path BASE_UPLOAD_DIR = Paths.get("uploads", "doctor-verifications");
+
 
     @Autowired
     private DoctorVerificationRepository verificationRepository;
@@ -64,6 +59,9 @@ public class DoctorVerificationService {
 
     @Autowired
     private Clock clock;
+
+    @Autowired
+    private SupabaseStorageService supabaseStorageService;
 
     // ── Submit Verification (with file upload) ────────────────────
 
@@ -127,18 +125,18 @@ public class DoctorVerificationService {
             verification.setSubmittedAt(LocalDateTime.now(clock));
         }
 
-        // 8. Save file to disk
-        Path savedFilePath = null;
+        // 8. Upload file to Supabase Storage
+        String uploadedFilePath;
         try {
-            savedFilePath = saveDocumentFile(document, doctor.getId());
-            verification.setDocumentPath(savedFilePath.toString());
+            uploadedFilePath = supabaseStorageService.uploadFile(document, doctor.getId());
+            verification.setDocumentPath(uploadedFilePath);
         } catch (IOException e) {
             log.warn("DOCUMENT_UPLOAD_FAILED doctorId={} reason={} timestamp={}",
                     doctor.getId(), e.getMessage(), Instant.now());
-            throw new RuntimeException("Failed to save uploaded document", e);
+            throw new RuntimeException("Failed to upload verification document", e);
         }
 
-        // 9. Save to DB — with manual rollback if DB fails after file write
+        // 9. Save to DB — with manual rollback if DB fails after file upload
         try {
             verificationRepository.save(verification);
 
@@ -148,21 +146,21 @@ public class DoctorVerificationService {
             doctor.setSpecialization(specialty);
             doctorRepository.save(doctor);
         } catch (Exception dbException) {
-            // Manual rollback: delete the newly uploaded file since DB save failed
+            // Manual rollback: delete the newly uploaded file from Supabase since DB save failed
             log.error("DB_SAVE_FAILED doctorId={} — rolling back uploaded file", doctor.getId(), dbException);
-            cleanupFile(savedFilePath);
+            cleanupSupabaseFile(uploadedFilePath);
             throw dbException;
         }
 
-        // 11. Delete old file AFTER successful DB save (safe replacement)
+        // 11. Delete old file from Supabase AFTER successful DB save (safe replacement)
         if (oldDocumentPath != null) {
-            cleanupFile(Paths.get(oldDocumentPath));
+            cleanupSupabaseFile(oldDocumentPath);
             log.info("DOCUMENT_DELETED doctorId={} oldPath={} timestamp={}",
                     doctor.getId(), oldDocumentPath, Instant.now());
         }
 
-        log.info("DOCUMENT_UPLOADED doctorId={} fileName={} timestamp={}",
-                doctor.getId(), savedFilePath.getFileName(), Instant.now());
+        log.info("DOCUMENT_UPLOADED doctorId={} filePath={} timestamp={}",
+                doctor.getId(), uploadedFilePath, Instant.now());
         log.info("VERIFICATION_ACTION doctorId={} oldStatus={} newStatus=PENDING action=SUBMIT",
                 doctor.getId(), stateMachine.getStatusLabel(currentStatus));
 
@@ -234,13 +232,13 @@ public class DoctorVerificationService {
     // ── Document Access ───────────────────────────────────────────
 
     /**
-     * Loads a verification document from disk for admin viewing.
-     * Validates path safety and file existence.
+     * Generates a signed URL for a verification document stored in Supabase.
+     * Use this when serving the file to admin for review.
      *
-     * @return the normalized, absolute Path to the file
-     * @throws RuntimeException if document is missing or path is unsafe
+     * @return a signed URL string valid for 1 hour
+     * @throws RuntimeException if document is missing or URL generation fails
      */
-    public Path getDocumentFile(Long verificationId, String adminUsername) {
+    public String getDocumentSignedUrl(Long verificationId, String adminUsername) {
         DoctorVerification verification = verificationRepository.findById(verificationId)
                 .orElseThrow(() -> new RuntimeException("Verification request not found"));
 
@@ -251,26 +249,16 @@ public class DoctorVerificationService {
             throw new RuntimeException("No document uploaded for this verification");
         }
 
-        // Path safety: normalize and ensure it's within our upload directory
-        Path filePath = Paths.get(docPath).toAbsolutePath().normalize();
-        Path safeBaseDir = BASE_UPLOAD_DIR.toAbsolutePath().normalize();
-
-        if (!filePath.startsWith(safeBaseDir)) {
-            log.warn("DOCUMENT_ACCESS_FAILED adminId={} doctorId={} reason=PATH_TRAVERSAL_ATTEMPT path={} timestamp={}",
-                    adminUsername, verification.getDoctor().getId(), docPath, Instant.now());
-            throw new RuntimeException("Invalid document path");
+        try {
+            String signedUrl = supabaseStorageService.generateSignedUrl(docPath);
+            log.info("DOCUMENT_ACCESSED adminId={} doctorId={} timestamp={}",
+                    adminUsername, verification.getDoctor().getId(), Instant.now());
+            return signedUrl;
+        } catch (IOException e) {
+            log.error("DOCUMENT_ACCESS_FAILED adminId={} doctorId={} reason=SIGNED_URL_FAILED timestamp={}",
+                    adminUsername, verification.getDoctor().getId(), Instant.now(), e);
+            throw new RuntimeException("Failed to generate document URL", e);
         }
-
-        if (!Files.exists(filePath)) {
-            log.warn("DOCUMENT_ACCESS_FAILED adminId={} doctorId={} reason=FILE_NOT_FOUND path={} timestamp={}",
-                    adminUsername, verification.getDoctor().getId(), docPath, Instant.now());
-            throw new RuntimeException("Document file not found on server");
-        }
-
-        log.info("DOCUMENT_ACCESSED adminId={} doctorId={} timestamp={}",
-                adminUsername, verification.getDoctor().getId(), Instant.now());
-
-        return filePath;
     }
 
     // ── Queries ───────────────────────────────────────────────────
@@ -347,39 +335,15 @@ public class DoctorVerificationService {
     }
 
     /**
-     * Saves the document to disk using a safe, unique filename.
-     * Structure: uploads/doctor-verifications/{doctorId}/verification_{timestamp}_{uuid}.{ext}
+     * Safely deletes a file from Supabase Storage. Logs but does not throw on failure.
      */
-    private Path saveDocumentFile(MultipartFile document, Long doctorId) throws IOException {
-        Path doctorDir = BASE_UPLOAD_DIR.resolve(String.valueOf(doctorId));
-        Files.createDirectories(doctorDir);
-
-        String originalFilename = document.getOriginalFilename();
-        String ext = (originalFilename != null) ? getFileExtension(originalFilename) : "pdf";
-        // Sanitized filename: no user-supplied characters, UUID prevents collision
-        String safeFilename = "verification_" + System.currentTimeMillis() + "_"
-                + UUID.randomUUID().toString().substring(0, 8) + "." + ext;
-
-        Path filePath = doctorDir.resolve(safeFilename).toAbsolutePath().normalize();
-
-        // TODO (Prod): Integrate ClamAV or similar stream-based virus scanning before disk write.
-        Files.copy(document.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        return filePath;
-    }
-
-    /**
-     * Safely deletes a file if it exists. Logs but does not throw on failure.
-     */
-    private void cleanupFile(Path path) {
-        if (path == null) return;
+    private void cleanupSupabaseFile(String filePath) {
+        if (filePath == null || filePath.isBlank()) return;
         try {
-            boolean deleted = Files.deleteIfExists(path.toAbsolutePath().normalize());
-            if (deleted) {
-                log.debug("Cleaned up file: {}", path);
-            }
+            supabaseStorageService.deleteFile(filePath);
+            log.debug("Cleaned up Supabase file: {}", filePath);
         } catch (IOException e) {
-            log.warn("Failed to cleanup file: {} — {}", path, e.getMessage());
+            log.warn("Failed to cleanup Supabase file: {} — {}", filePath, e.getMessage());
         }
     }
 
