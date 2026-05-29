@@ -103,6 +103,7 @@ public class AuthController {
                     userDetails.getId(),
                     userDetails.getUsername(),
                     userDetails.getEmail(),
+                    userDetails.getFullName(),
                     userDetails.getIsProfileComplete(),
                     roles,
                     verificationStatus));
@@ -146,6 +147,7 @@ public class AuthController {
         userInfo.put("id", userDetails.getId());
         userInfo.put("username", userDetails.getUsername());
         userInfo.put("email", userDetails.getEmail());
+        userInfo.put("fullName", userDetails.getFullName());
         userInfo.put("profileComplete", userDetails.getIsProfileComplete());
         userInfo.put("roles", roles);
         userInfo.put("verificationStatus", verificationStatus);
