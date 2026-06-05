@@ -19,6 +19,7 @@ Thumbs.db
 # Build/Package Managers
 node_modules/
 target/
+target_old*/
 .mvn/
 bin/
 out/
@@ -27,6 +28,14 @@ build/
 .next/
 dist/
 *.tsbuildinfo
+*.class
+
+# Compile / test scratch outputs
+compile_*.txt
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
 
 # Dependencies
 package-lock.json
