@@ -94,6 +94,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(AppointmentOwnershipException.class)
+    public ResponseEntity<?> handleAppointmentOwnership(AppointmentOwnershipException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidAppointmentStatusException.class)
+    public ResponseEntity<?> handleInvalidAppointmentStatus(InvalidAppointmentStatusException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex) {
         // Log full details internally, return generic message externally

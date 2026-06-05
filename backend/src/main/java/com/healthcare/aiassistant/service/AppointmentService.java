@@ -108,12 +108,12 @@ public class AppointmentService {
 
         // Ownership check
         if (!appointment.getPatient().getId().equals(currentUserId)) {
-            throw new RuntimeException("Unauthorized: You can only cancel your own appointments");
+            throw new com.healthcare.aiassistant.exception.AppointmentOwnershipException("You do not have access to this appointment");
         }
 
         // Status check — only PENDING can be cancelled
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
-            throw new RuntimeException("Only pending appointments can be cancelled");
+            throw new com.healthcare.aiassistant.exception.InvalidAppointmentStatusException("Appointment is already cancelled");
         }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);
@@ -189,7 +189,7 @@ public class AppointmentService {
         }
 
         if (appointment.getStatus() != AppointmentStatus.PENDING && newStatus == AppointmentStatus.CONFIRMED) {
-            throw new IllegalStateException("Appointment has already been updated.");
+            throw new com.healthcare.aiassistant.exception.InvalidAppointmentStatusException("Appointment has already been updated.");
         }
 
         // Handle cancellations
