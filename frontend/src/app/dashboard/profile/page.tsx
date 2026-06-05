@@ -43,10 +43,17 @@ function ShimmerBlock({ className = "" }: { className?: string }) {
 export default function ProfilePage() {
     const { user } = useAuth();
 
-    // Route doctors to dedicated professional profile
+    // Route doctors to their dedicated professional profile.
+    // This must be a separate component so PatientProfile's hooks are never
+    // declared conditionally (Rules of Hooks).
     const isDoctor = user?.roles?.includes('ROLE_DOCTOR');
     if (isDoctor) return <DoctorProfile />;
 
+    return <PatientProfile />;
+}
+
+function PatientProfile() {
+    const { user } = useAuth();
     const [profile, setProfile] = useState<ProfileData | null>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);

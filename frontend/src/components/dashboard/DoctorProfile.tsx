@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { motion } from 'framer-motion';
-import { Shield, ShieldCheck, Clock, Mail, Award, Stethoscope, FileText, Users, CheckCircle, ToggleLeft, ToggleRight, AlertCircle } from 'lucide-react';
+import { Shield, ShieldCheck, Clock, Mail, Award, Stethoscope, FileText, Users, CheckCircle, ToggleLeft, ToggleRight, AlertCircle, X } from 'lucide-react';
 import { DoctorService, DoctorProfileDTO } from '@/lib/doctorService';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -17,9 +18,11 @@ function ShimmerBlock({ className = "" }: { className?: string }) {
 
 export default function DoctorProfile() {
     const { user } = useAuth();
+    const router = useRouter();
     const [profile, setProfile] = useState<DoctorProfileDTO | null>(null);
     const [schedule, setSchedule] = useState<{ [key: number]: any[] }>({});
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [bio, setBio] = useState('');
     const [savingBio, setSavingBio] = useState(false);
     const [togglingAvail, setTogglingAvail] = useState(false);
@@ -29,26 +32,41 @@ export default function DoctorProfile() {
     }, []);
 
     const loadProfile = async () => {
-        try {
-            const [profileData, schedData] = await Promise.all([
-                DoctorService.getDoctorProfile(),
-                DoctorService.getWeeklySchedule()
-            ]);
-            setProfile(profileData);
-            setBio(profileData.bio || '');
+        setLoading(true);
+        setError(null);
 
-            const grouped: { [key: number]: any[] } = {};
-            DAYS.forEach(d => grouped[d.id] = []);
+        // Step 1: Load the profile (critical — the page can't render without it).
+        let profileData: DoctorProfileDTO;
+        try {
+            profileData = await DoctorService.getDoctorProfile();
+        } catch (err: any) {
+            // Profile not yet created → send the doctor to onboarding instead of a blank page.
+            if (err.response?.status === 403 && err.response?.data?.error === 'PROFILE_INCOMPLETE') {
+                router.push('/doctor/onboarding');
+                return;
+            }
+            setError('We couldn\'t load your profile. Please try again.');
+            setLoading(false);
+            return;
+        }
+        setProfile(profileData);
+        setBio(profileData.bio || '');
+
+        // Step 2: Load the weekly schedule (non-critical — a failure here must not blank the page).
+        const grouped: { [key: number]: any[] } = {};
+        DAYS.forEach(d => grouped[d.id] = []);
+        try {
+            const schedData = await DoctorService.getWeeklySchedule();
             schedData.forEach((item: any) => {
                 if (!grouped[item.dayOfWeek]) grouped[item.dayOfWeek] = [];
                 grouped[item.dayOfWeek].push(item);
             });
-            setSchedule(grouped);
-        } catch (err) {
-            toast.error('Failed to load profile');
-        } finally {
-            setLoading(false);
+        } catch {
+            // Leave the schedule empty; the profile itself still renders.
+            toast.error('Could not load your weekly availability.');
         }
+        setSchedule(grouped);
+        setLoading(false);
     };
 
     const handleSaveBio = async () => {
@@ -95,8 +113,23 @@ export default function DoctorProfile() {
         );
     }
 
-    if (!profile) return null;
+    // ── Error state (instead of a silent blank page) ──
+    if (error || !profile) {
+        return (
+            <div className="flex flex-col items-center justify-center h-96 text-center">
+                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mb-4">
+                    <X className="w-8 h-8" />
+                </div>
+                <h2 className="text-xl font-bold text-slate-800 mb-2">Couldn&apos;t load your profile</h2>
+                <p className="text-slate-500 mb-6">{error || 'Something went wrong. Please try again.'}</p>
+                <button onClick={loadProfile} className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                    Try Again
+                </button>
+            </div>
+        );
+    }
 
+    const fullName = profile.fullName || user?.fullName || 'Doctor';
     const specialization = profile.specialization || 'General Physician';
     const experience = profile.experienceYears ? `${profile.experienceYears} yrs experience` : '';
     const initials = profile.fullName
@@ -125,7 +158,7 @@ export default function DoctorProfile() {
 
                     <div className="flex-1 text-center md:text-left">
                         <h1 className="text-3xl font-extrabold text-white tracking-tight">
-                            {profile.fullName.startsWith('Dr.') ? profile.fullName : `Dr. ${profile.fullName}`}
+                            {fullName.startsWith('Dr.') ? fullName : `Dr. ${fullName}`}
                         </h1>
                         <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-3">
                             <span className="px-3 py-1 bg-white/10 backdrop-blur-sm text-white/90 text-sm font-semibold rounded-full border border-white/10">
