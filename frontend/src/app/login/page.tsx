@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Activity, Eye, EyeOff } from 'lucide-react';
+import GoogleSignInButton from '@/components/GoogleSignInButton';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -93,6 +94,8 @@ export default function LoginPage() {
                         {loading ? 'Signing in...' : 'Log In'}
                     </button>
                 </form>
+
+                <GoogleSignInButton onError={setError} />
 
                 <p className="mt-10 text-center text-gray-600 text-sm">
                     Don't have an account? <Link href="/signup" className="text-primary font-bold hover:text-teal-600 transition-colors">Create account</Link>

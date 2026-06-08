@@ -17,6 +17,7 @@ interface AuthContextType {
     user: User | null;
     loading: boolean;
     login: (username: string, password: string) => Promise<void>;
+    googleLogin: (idToken: string) => Promise<void>;
     signup: (formData: any) => Promise<void>;
     logout: () => Promise<void>;
 }
@@ -71,6 +72,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const googleLogin = async (idToken: string) => {
+        const res = await api.post('/auth/google', { idToken });
+        const { token, ...userData } = res.data;
+
+        // Same short-lived WS token handling as a normal login.
+        if (token) {
+            localStorage.setItem('wsToken', token);
+            setTimeout(() => {
+                localStorage.removeItem('wsToken');
+            }, 30000);
+        }
+
+        setUser(userData);
+
+        if (userData.roles?.includes('ROLE_ADMIN')) {
+            router.push('/admin');
+        } else if (userData.roles?.includes('ROLE_DOCTOR') && !userData.profileComplete) {
+            router.push('/doctor/onboarding');
+        } else {
+            router.push('/dashboard');
+        }
+    };
+
     const signup = async (formData: any) => {
         await api.post('/auth/signup', formData);
         router.push('/login');
@@ -87,7 +111,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+        <AuthContext.Provider value={{ user, login, googleLogin, signup, logout, loading }}>
             {loading ? <div className="flex h-screen items-center justify-center">Loading...</div> : children}
         </AuthContext.Provider>
     );

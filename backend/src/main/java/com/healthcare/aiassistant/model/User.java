@@ -22,7 +22,7 @@ public class User {
     @Size(max = 50)
     private String username;
 
-    @NotBlank
+    // Nullable: Google (OAuth) users authenticate without a password.
     @Size(max = 120)
     @com.fasterxml.jackson.annotation.JsonIgnore
     private String password;
@@ -54,6 +54,13 @@ public class User {
     private Role role;
 
     private LocalDateTime createdAt = LocalDateTime.now();
+
+    // ── OAuth (Sign in with Google) ──
+    @Size(max = 255)
+    private String googleSub;
+
+    @Size(max = 20)
+    private String authProvider = "LOCAL";
 
     public User() {
     }
@@ -177,5 +184,21 @@ public class User {
 
     public void setIsProfileComplete(Boolean isProfileComplete) {
         this.isProfileComplete = isProfileComplete;
+    }
+
+    public String getGoogleSub() {
+        return googleSub;
+    }
+
+    public void setGoogleSub(String googleSub) {
+        this.googleSub = googleSub;
+    }
+
+    public String getAuthProvider() {
+        return authProvider;
+    }
+
+    public void setAuthProvider(String authProvider) {
+        this.authProvider = authProvider;
     }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import GoogleAuthProvider from '@/components/GoogleAuthProvider';
 
 export const metadata = {
     title: 'HealthCare AI Assistant',
@@ -16,9 +17,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </head>
             <body className="font-sans antialiased">
                 <ErrorBoundary>
-                    <AuthProvider>
-                        {children}
-                    </AuthProvider>
+                    <GoogleAuthProvider>
+                        <AuthProvider>
+                            {children}
+                        </AuthProvider>
+                    </GoogleAuthProvider>
                 </ErrorBoundary>
             </body>
         </html>

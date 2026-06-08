@@ -13,6 +13,11 @@ import com.healthcare.aiassistant.repository.RoleRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.security.jwt.JwtUtils;
 import com.healthcare.aiassistant.security.services.UserDetailsImpl;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
+import java.util.Collections;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +65,9 @@ public class AuthController {
 
     @Value("${app.cookie.domain:}")
     private String cookieDomain;
+
+    @Value("${google.client-id:}")
+    private String googleClientId;
 
     private ResponseCookie buildAuthCookie(String token, boolean expired) {
         ResponseCookie.ResponseCookieBuilder builder = ResponseCookie.from("token", token)
@@ -215,6 +223,106 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/google")
+    public ResponseEntity<?> googleSignIn(@RequestBody Map<String, String> body) {
+        String idTokenString = body.get("idToken");
+        if (idTokenString == null || idTokenString.isBlank()) {
+            return ResponseEntity.badRequest().body(new MessageResponse("Missing Google credential."));
+        }
+        if (googleClientId == null || googleClientId.isBlank()) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(new MessageResponse("Google sign-in is not configured."));
+        }
+
+        // 1. Verify the ID token against Google's public keys, scoped to our client id.
+        GoogleIdToken idToken;
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+                    new NetHttpTransport(), GsonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+            idToken = verifier.verify(idTokenString);
+        } catch (Exception e) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(new MessageResponse("Could not verify Google token."));
+        }
+        if (idToken == null) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(new MessageResponse("Invalid Google token."));
+        }
+
+        GoogleIdToken.Payload payload = idToken.getPayload();
+        if (!Boolean.TRUE.equals(payload.getEmailVerified())) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(new MessageResponse("Your Google email is not verified."));
+        }
+
+        String email = payload.getEmail();
+        String googleSub = payload.getSubject();
+        String name = (String) payload.get("name");
+        String picture = (String) payload.get("picture");
+
+        // 2. Auto-link by verified email, or create a new patient account.
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null) {
+            user = new User();
+            user.setEmail(email);
+            user.setUsername(generateUniqueUsername(email));
+            user.setFullName((name != null && !name.isBlank()) ? name : email);
+            user.setPassword(null);
+            user.setAvatarUrl(picture);
+            user.setGoogleSub(googleSub);
+            user.setAuthProvider("GOOGLE");
+            user.setIsProfileComplete(true); // new Google users are patients
+            Role patientRole = roleRepository.findByName(ERole.ROLE_PATIENT)
+                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+            user.setRole(patientRole);
+            userRepository.save(user);
+        } else if (user.getGoogleSub() == null) {
+            // Existing password account with the same verified email → link it.
+            user.setGoogleSub(googleSub);
+            userRepository.save(user);
+        }
+
+        // 3. Issue our own JWT cookie — identical session to a normal login.
+        UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+        Authentication authentication = new UsernamePasswordAuthenticationToken(
+                userDetails, null, userDetails.getAuthorities());
+        String jwt = jwtUtils.generateJwtToken(authentication);
+
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(item -> item.getAuthority())
+                .collect(Collectors.toList());
+
+        ResponseCookie cookie = buildAuthCookie(jwt, false);
+        String verificationStatus = resolveVerificationStatus(userDetails.getId(), roles);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(new JwtResponse(jwt,
+                        userDetails.getId(),
+                        userDetails.getUsername(),
+                        userDetails.getEmail(),
+                        userDetails.getFullName(),
+                        userDetails.getIsProfileComplete(),
+                        roles,
+                        verificationStatus));
+    }
+
+    /** Derives a unique username from a Google email's local part. */
+    private String generateUniqueUsername(String email) {
+        String base = email.split("@")[0].replaceAll("[^a-zA-Z0-9._-]", "");
+        if (base.isBlank()) base = "user";
+        if (base.length() > 40) base = base.substring(0, 40);
+        String candidate = base;
+        int suffix = 1;
+        while (userRepository.existsByUsernameIgnoreCase(candidate)) {
+            candidate = base + suffix;
+            suffix++;
+        }
+        return candidate;
     }
 
     /**
