@@ -79,6 +79,14 @@ public class AdminController {
             User user = userOpt.get();
             try {
                 ERole enumRole = ERole.valueOf(newRoleName);
+
+                // Self-demotion guard: an admin cannot strip their own admin role
+                // (prevents accidentally locking yourself out of the admin console).
+                if (enumRole != ERole.ROLE_ADMIN && user.getUsername().equals(userDetails.getUsername())) {
+                    return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
+                            .body(Map.of("error", "You cannot remove your own admin role."));
+                }
+
                 Optional<Role> roleOpt = roleRepository.findByName(enumRole);
                 if(roleOpt.isPresent()) {
                     user.setRole(roleOpt.get());

@@ -27,14 +27,20 @@ export default function UserManagementPage() {
     };
 
     const changeRole = async (userId: number, newRole: string) => {
+        // Self-demotion guard: an admin can't strip their own admin role.
+        // (The select stays controlled by user.role, so it snaps back on return.)
+        if (userId === currentUser?.id && newRole !== 'ROLE_ADMIN') {
+            alert("You can't remove your own admin role.");
+            return;
+        }
         try {
             await api.put(`/admin/users/${userId}/role`, { role: newRole });
             // Update local state instantly. Backend returns `role` as a plain string
             // (e.g. "ROLE_DOCTOR"), so keep the same shape here.
             setUsers(users.map(u => (u.id === userId ? { ...u, role: newRole } : u)));
-        } catch (err) {
+        } catch (err: any) {
             console.error("Failed to update role");
-            alert("Failed to update role. Ensure accurate role nomenclature.");
+            alert(err?.response?.data?.error || "Failed to update role. Ensure accurate role nomenclature.");
         }
     };
 
