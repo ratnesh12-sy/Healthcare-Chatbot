@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
-import { Search, Shield, UserX, UserCheck, MoreVertical, Edit2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Search, UserX } from 'lucide-react';
 
 export default function UserManagementPage() {
+    const { user: currentUser } = useAuth();
     const [users, setUsers] = useState<any[]>([]);
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false);
@@ -27,21 +29,32 @@ export default function UserManagementPage() {
     const changeRole = async (userId: number, newRole: string) => {
         try {
             await api.put(`/admin/users/${userId}/role`, { role: newRole });
-            // Update local state instantly
-            setUsers(users.map(u => {
-                if(u.id === userId) {
-                    return { ...u, role: { name: newRole } };
-                }
-                return u;
-            }));
+            // Update local state instantly. Backend returns `role` as a plain string
+            // (e.g. "ROLE_DOCTOR"), so keep the same shape here.
+            setUsers(users.map(u => (u.id === userId ? { ...u, role: newRole } : u)));
         } catch (err) {
             console.error("Failed to update role");
             alert("Failed to update role. Ensure accurate role nomenclature.");
         }
     };
 
-    const filteredUsers = users.filter(u => 
-        u.username.toLowerCase().includes(search.toLowerCase()) || 
+    const deleteUser = async (userId: number, username: string) => {
+        if (currentUser?.id === userId) {
+            alert("You can't delete your own admin account.");
+            return;
+        }
+        if (!window.confirm(`Permanently delete "${username}"? This cannot be undone.`)) return;
+        try {
+            await api.delete(`/admin/users/${userId}`);
+            setUsers(prev => prev.filter(u => u.id !== userId));
+        } catch (err) {
+            console.error("Failed to delete user", err);
+            alert("Failed to delete user. Please try again.");
+        }
+    };
+
+    const filteredUsers = users.filter(u =>
+        u.username.toLowerCase().includes(search.toLowerCase()) ||
         (u.email && u.email.toLowerCase().includes(search.toLowerCase()))
     );
 
@@ -58,19 +71,14 @@ export default function UserManagementPage() {
                 <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-center gap-4 relative">
                     <div className="relative w-full sm:w-96">
                         <Search className="absolute left-4 top-3.5 text-slate-400 w-5 h-5" />
-                        <input 
-                            type="text" 
-                            placeholder="Search users by name, email, or handle..." 
+                        <input
+                            type="text"
+                            placeholder="Search users by name, email, or handle..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             className="w-full bg-white border border-slate-200 pl-12 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all shadow-sm font-medium text-secondary"
                         />
                     </div>
-                    {/* HIDDEN FOR NOW - Future implementation to bypass Doctor Verification Queue */}
-                    <button className="hidden sm:flex items-center gap-2 px-5 py-3 bg-secondary text-white font-bold rounded-xl shadow-lg hover:bg-slate-800 transition-all ml-auto">
-                        <UserCheck size={18} />
-                        Add New Doctor
-                    </button>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -105,12 +113,12 @@ export default function UserManagementPage() {
                                     </td>
                                     <td className="p-4">
                                         <div className="flex items-center gap-2">
-                                            <select 
-                                                value={user.role?.name || 'ROLE_PATIENT'}
+                                            <select
+                                                value={user.role || 'ROLE_PATIENT'}
                                                 onChange={(e) => changeRole(user.id, e.target.value)}
                                                 className={`text-xs font-bold px-3 py-1.5 rounded-full border outline-none cursor-pointer ${
-                                                    user.role?.name === 'ROLE_ADMIN' ? 'bg-rose-50 text-rose-700 border-rose-200' :
-                                                    user.role?.name === 'ROLE_DOCTOR' ? 'bg-teal-50 text-teal-700 border-teal-200' :
+                                                    user.role === 'ROLE_ADMIN' ? 'bg-rose-50 text-rose-700 border-rose-200' :
+                                                    user.role === 'ROLE_DOCTOR' ? 'bg-teal-50 text-teal-700 border-teal-200' :
                                                     'bg-blue-50 text-blue-700 border-blue-200'
                                                 }`}
                                             >
@@ -128,7 +136,12 @@ export default function UserManagementPage() {
                                     </td>
                                     <td className="p-4 text-right">
                                         <div className="flex items-center justify-end gap-2">
-                                            <button className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors" title="Suspend User">
+                                            <button
+                                                onClick={() => deleteUser(user.id, user.username)}
+                                                disabled={currentUser?.id === user.id}
+                                                className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                                                title={currentUser?.id === user.id ? "You can't delete yourself" : "Delete User"}
+                                            >
                                                 <UserX size={18} />
                                             </button>
                                         </div>

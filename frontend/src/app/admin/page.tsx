@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
 import api from '@/lib/api';
-import { Users, UserPlus, FileText, Activity, ShieldAlert, TrendingUp } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Users, UserPlus, FileText, Activity, ShieldAlert } from 'lucide-react';
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState({
@@ -12,6 +11,7 @@ export default function AdminDashboard() {
         aiQueriesProcessed: 0
     });
     const [auditLogs, setAuditLogs] = useState<any[]>([]);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         fetchStats();
@@ -22,8 +22,10 @@ export default function AdminDashboard() {
         try {
             const res = await api.get('/admin/stats');
             setStats(res.data);
+            setError(null);
         } catch (err) {
             console.error("Failed to load admin stats");
+            setError("Couldn't load platform metrics. Please refresh or try again later.");
         }
     };
 
@@ -42,6 +44,15 @@ export default function AdminDashboard() {
                 <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Command Center</h1>
                 <p className="text-slate-500 mt-2 font-medium">Platform overview and high-level artificial intelligence metrics.</p>
             </div>
+
+            {error && (
+                <div className="bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl p-4 text-sm font-medium flex items-center justify-between gap-3">
+                    <span>{error}</span>
+                    <button onClick={() => { fetchStats(); fetchLogs(); }} className="px-4 py-1.5 bg-rose-500 text-white font-bold rounded-lg hover:bg-rose-600 transition-colors shrink-0">
+                        Retry
+                    </button>
+                </div>
+            )}
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
@@ -79,7 +90,6 @@ export default function AdminDashboard() {
                     </div>
                     <div className="flex items-end gap-3 relative z-10">
                         <h3 className="text-4xl font-extrabold text-white">{stats.aiQueriesProcessed}</h3>
-                        <span className="flex items-center text-rose-400 text-sm font-bold mb-1 bg-rose-500/10 px-2 py-0.5 rounded-full"><TrendingUp size={14} className="mr-1" />+24%</span>
                     </div>
                     <p className="text-sm font-bold text-slate-400 mt-1 relative z-10 uppercase tracking-wider">AI API Queries Handled</p>
                 </div>

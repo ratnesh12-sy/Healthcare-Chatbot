@@ -53,8 +53,8 @@ export default function SettingsPage() {
         <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-white tracking-tight">Global Directives</h1>
-                    <p className="text-slate-400 mt-2 font-medium">Modulate underlying platform systems and external API linkages.</p>
+                    <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Global Directives</h1>
+                    <p className="text-slate-500 mt-2 font-medium">Modulate underlying platform systems and external API linkages.</p>
                 </div>
                 <button 
                     onClick={saveSettings}
@@ -64,6 +64,11 @@ export default function SettingsPage() {
                     <Save size={18} />
                     {isSaving ? "Deploying..." : "Deploy Changes"}
                 </button>
+            </div>
+
+            <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl p-4 text-sm font-medium flex items-start gap-2">
+                <span className="text-amber-500 shrink-0">⚠</span>
+                <span>Preview: these settings are saved but not yet applied platform-wide. Wiring them into the live AI service is still in progress.</span>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

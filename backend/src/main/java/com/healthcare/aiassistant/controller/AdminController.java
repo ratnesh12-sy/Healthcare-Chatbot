@@ -57,9 +57,9 @@ public class AdminController {
         long totalUsers = userRepository.count();
         long totalAppointments = appointmentRepository.count();
         
-        long totalDoctors = userRepository.findAll().stream()
-                .filter(u -> u.getRole() != null && ERole.ROLE_DOCTOR.equals(u.getRole().getName()))
-                .count();
+        long totalDoctors = roleRepository.findByName(ERole.ROLE_DOCTOR)
+                .map(userRepository::countByRole)
+                .orElse(0L);
 
         stats.put("totalUsers", totalUsers);
         stats.put("totalDoctors", totalDoctors);

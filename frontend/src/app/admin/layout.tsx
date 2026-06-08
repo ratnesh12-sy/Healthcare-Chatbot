@@ -61,7 +61,6 @@ export default function AdminLayout({
                         Doctor Verification
                         <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>
                     </Link>
-                    {/* 
                     <div className="pt-8 pb-2">
                         <p className="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 pb-2">System</p>
                     </div>
@@ -69,7 +68,6 @@ export default function AdminLayout({
                         <Settings size={20} />
                         Global Settings
                     </Link>
-                    */}
                 </nav>
 
                 <div className="p-4 border-t border-slate-800 space-y-2">

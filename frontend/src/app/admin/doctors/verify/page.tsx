@@ -77,21 +77,14 @@ export default function DoctorVerificationPage() {
         }
     };
 
-    const handleViewDocument = async (verificationId: number) => {
-        try {
-            const res = await api.get(`/admin/doctors/verify/document/${verificationId}`, {
-                responseType: 'blob'
-            });
-
-            const url = URL.createObjectURL(res.data);
-            window.open(url, '_blank');
-
-            // Prevent memory leak — revoke after browser has had time to load it
-            setTimeout(() => URL.revokeObjectURL(url), 5000);
-        } catch (err) {
-            console.error('Document fetch failed:', err);
-            toast.error('Failed to load document');
-        }
+    const handleViewDocument = (verificationId: number) => {
+        // The backend 302-redirects to a Supabase signed URL. Opening the endpoint
+        // directly lets the browser follow that redirect natively — no XHR/CORS hop
+        // (which the previous blob approach was fragile about). The auth cookie rides
+        // along since the URL is same-origin in production (/api proxy) and a top-level
+        // navigation locally.
+        const base = api.defaults.baseURL || '';
+        window.open(`${base}/admin/doctors/verify/document/${verificationId}`, '_blank');
     };
 
     // Filter + Sort (PENDING first)

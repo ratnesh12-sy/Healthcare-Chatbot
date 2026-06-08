@@ -2,6 +2,7 @@ package com.healthcare.aiassistant.controller;
 
 import com.healthcare.aiassistant.model.DoctorVerification;
 import com.healthcare.aiassistant.model.User;
+import com.healthcare.aiassistant.payload.dto.DoctorVerificationDTO;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.service.DoctorVerificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,8 +51,11 @@ public class VerificationController {
 
     @GetMapping("/admin/doctors/verify")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<DoctorVerification>> getVerifications() {
-        return ResponseEntity.ok(verificationService.getAllVerifications());
+    public ResponseEntity<List<DoctorVerificationDTO>> getVerifications() {
+        List<DoctorVerificationDTO> dtos = verificationService.getAllVerifications().stream()
+                .map(DoctorVerificationDTO::from)
+                .toList();
+        return ResponseEntity.ok(dtos);
     }
 
     // ── Admin approves or rejects ────────────────────────────────
