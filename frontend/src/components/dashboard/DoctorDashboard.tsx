@@ -43,6 +43,12 @@ export default function DoctorDashboard() {
             // Step 2: Try to fetch dashboard stats (has verification guard)
             try {
                 const data = await DoctorService.getDashboardStats();
+                if (!data) {
+                    // Successful response but no payload — show an error instead of a
+                    // half-rendered dashboard (only the welcome hero would otherwise show).
+                    setError("Failed to load your dashboard. Please try again later.");
+                    return;
+                }
                 setStats(data);
                 setVerificationState(null); // Verified — full access
                 setError(null);

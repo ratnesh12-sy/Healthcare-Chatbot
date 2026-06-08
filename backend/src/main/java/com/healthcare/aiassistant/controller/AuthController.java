@@ -107,9 +107,12 @@ public class AuthController {
                     userDetails.getIsProfileComplete(),
                     roles,
                     verificationStatus));
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(new MessageResponse("Invalid username or password"));
         } catch (Exception e) {
-            e.printStackTrace();
-            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED).body(new MessageResponse("Error: " + e.getMessage()));
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
+                    .body(new MessageResponse("Login failed. Please try again."));
         }
     }
 

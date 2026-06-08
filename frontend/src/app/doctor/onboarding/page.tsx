@@ -28,7 +28,11 @@ export default function DoctorOnboardingPage() {
 
     // Determine which step to show based on user state
     const isProfileDone = !!user?.profileComplete;
-    const hasSubmittedVerification = !!user?.verificationStatus;
+    // Only PENDING/APPROVED count as "already submitted". A REJECTED doctor must be
+    // allowed back into the verification form to resubmit — the backend state machine
+    // explicitly permits REJECTED → PENDING.
+    const hasSubmittedVerification =
+        user?.verificationStatus === 'PENDING' || user?.verificationStatus === 'APPROVED';
 
     const [formData, setFormData] = useState({
         specialization: '',
@@ -48,6 +52,31 @@ export default function DoctorOnboardingPage() {
             router.push('/dashboard');
         }
     }, [user, router, isProfileDone, hasSubmittedVerification]);
+
+    // Pre-fill license number & specialization from the saved profile so the doctor
+    // doesn't have to retype them on the verification step (e.g. after completing the
+    // profile, resubmitting after rejection, or retrying a failed upload).
+    useEffect(() => {
+        if (!isProfileDone) return;
+        let cancelled = false;
+        (async () => {
+            try {
+                const res = await api.get('/doctor/profile');
+                const p = res.data?.data;
+                if (p && !cancelled) {
+                    setFormData(prev => ({
+                        ...prev,
+                        licenseNumber: prev.licenseNumber || p.licenseNumber || '',
+                        specialization: prev.specialization || p.specialization || '',
+                        bio: prev.bio || p.bio || '',
+                    }));
+                }
+            } catch {
+                // Non-fatal: the doctor can still type the values manually.
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [isProfileDone]);
 
     const validateFile = (file: File): string | null => {
         if (!ALLOWED_TYPES.includes(file.type)) {
