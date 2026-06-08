@@ -58,7 +58,11 @@ export const ChatProvider = ({ children }: { children: ReactNode }) => {
     if (stompClient?.active) return;
 
     const token = localStorage.getItem('wsToken');
-    const wsBase = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api').replace('/api', '');
+    // WebSocket must hit the backend DIRECTLY (it authenticates with a token in the
+    // STOMP frame, not cookies, and SockJS can't be proxied via Next rewrites). REST
+    // uses a relative "/api" in production (same-origin proxy for first-party cookies),
+    // so the WS URL has its own env var and must not fall back to that relative path.
+    const wsBase = (process.env.NEXT_PUBLIC_WS_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8081/api').replace('/api', '');
     const socket = new SockJS(`${wsBase}/ws-chat`);
     const client = new Client({
       webSocketFactory: () => socket,
