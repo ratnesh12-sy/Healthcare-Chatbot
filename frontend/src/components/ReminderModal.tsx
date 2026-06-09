@@ -2,9 +2,21 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Save, Clock, CheckCircle, AlertTriangle } from "lucide-react";
-import { ReminderService } from "@/lib/reminderService";
+import { X, Save, Clock, CheckCircle, AlertTriangle, Repeat } from "lucide-react";
+import { ReminderService, ParsedSchedule } from "@/lib/reminderService";
 import { extractSuggestions } from "@/lib/suggestionExtraction";
+
+const INTERVAL_OPTIONS: { label: string; value: number }[] = [
+  { label: "Every 30 minutes", value: 30 },
+  { label: "Every hour", value: 60 },
+  { label: "Every 2 hours", value: 120 },
+  { label: "Every 4 hours", value: 240 },
+  { label: "Every 6 hours", value: 360 },
+  { label: "Every 8 hours", value: 480 },
+  { label: "Twice a day", value: 720 },
+  { label: "Once a day", value: 1440 },
+  { label: "Every other day", value: 2880 },
+];
 
 interface ReminderModalProps {
   isOpen: boolean;
@@ -18,7 +30,11 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  
+  const [schedule, setSchedule] = useState<ParsedSchedule | null>(null);
+  const [useSchedule, setUseSchedule] = useState(true);
+  const [everyMinutes, setEveryMinutes] = useState<number>(720);
+  const [durationDays, setDurationDays] = useState<number>(3);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -28,6 +44,18 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
       setError(null);
       setSuccess(false);
       setLoading(false);
+      setSchedule(null);
+      // Ask the backend to detect a schedule in the AI advice.
+      ReminderService.parseAdvice(aiMessage).then((s) => {
+        setSchedule(s);
+        if (s.hasSchedule) {
+          setUseSchedule(true);
+          if (s.everyMinutes && s.everyMinutes > 0) setEveryMinutes(s.everyMinutes);
+          setDurationDays(s.durationDays && s.durationDays > 0 ? s.durationDays : 3);
+        } else {
+          setUseSchedule(false);
+        }
+      });
       // Autofocus
       setTimeout(() => inputRef.current?.focus(), 100);
     }
@@ -50,7 +78,20 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
     setError(null);
     
     try {
-      await ReminderService.add(trimmed, "ai", "one-time");
+      if (schedule?.hasSchedule && useSchedule) {
+        const now = new Date();
+        const repeatUntil = new Date(now.getTime() + Math.max(1, durationDays) * 86400000);
+        await ReminderService.create({
+          text: trimmed,
+          source: "ai",
+          category: schedule.category,
+          remindAt: now.toISOString(),
+          everyMinutes,
+          repeatUntil: repeatUntil.toISOString(),
+        });
+      } else {
+        await ReminderService.add(trimmed, "ai", "one-time");
+      }
       setSuccess(true);
       setTimeout(() => {
         onClose();
@@ -157,6 +198,59 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
                       </button>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {schedule?.hasSchedule && (
+                <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+                  <label className="flex items-center justify-between gap-2 cursor-pointer">
+                    <span className="flex items-center gap-2 text-sm font-bold text-indigo-700">
+                      <Repeat className="w-4 h-4" /> Schedule reminders
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={useSchedule}
+                      onChange={(e) => setUseSchedule(e.target.checked)}
+                      className="w-4 h-4 accent-indigo-600"
+                    />
+                  </label>
+
+                  {useSchedule && (
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-500 mb-1">Frequency</label>
+                        <select
+                          value={everyMinutes}
+                          onChange={(e) => setEveryMinutes(parseInt(e.target.value))}
+                          className="w-full p-2 text-sm bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-500"
+                        >
+                          {!INTERVAL_OPTIONS.some((o) => o.value === everyMinutes) && (
+                            <option value={everyMinutes}>{`Every ${everyMinutes} min`}</option>
+                          )}
+                          {INTERVAL_OPTIONS.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-500 mb-1">For (days)</label>
+                        <input
+                          type="number"
+                          min={1}
+                          max={90}
+                          value={durationDays}
+                          onChange={(e) => setDurationDays(parseInt(e.target.value) || 1)}
+                          className="w-full p-2 text-sm bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-500"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {schedule.summary && (
+                    <p className="mt-2 text-[11px] text-indigo-600/80">
+                      Detected: &ldquo;{schedule.summary}&rdquo;{schedule.source === "ai" ? " · AI" : ""}
+                    </p>
+                  )}
                 </div>
               )}
 

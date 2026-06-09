@@ -4,6 +4,7 @@ import com.healthcare.aiassistant.payload.dto.ReminderDTO;
 import com.healthcare.aiassistant.payload.request.ReminderRequest;
 import com.healthcare.aiassistant.payload.response.MessageResponse;
 import com.healthcare.aiassistant.security.services.UserDetailsImpl;
+import com.healthcare.aiassistant.service.ReminderScheduleParser;
 import com.healthcare.aiassistant.service.ReminderService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/reminders")
 @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
@@ -19,6 +22,9 @@ public class ReminderController {
 
     @Autowired
     private ReminderService reminderService;
+
+    @Autowired
+    private ReminderScheduleParser scheduleParser;
 
     @GetMapping
     public ResponseEntity<?> list(@AuthenticationPrincipal UserDetailsImpl user) {
@@ -61,6 +67,22 @@ public class ReminderController {
                                     @RequestParam(required = false) Integer minutes) {
         if (user == null) return unauthorized();
         return ResponseEntity.ok(reminderService.snooze(user.getId(), id, minutes));
+    }
+
+    /** Logs medication adherence and marks the reminder done. */
+    @PatchMapping("/{id}/taken")
+    public ResponseEntity<?> markTaken(@AuthenticationPrincipal UserDetailsImpl user,
+                                       @PathVariable Long id) {
+        if (user == null) return unauthorized();
+        return ResponseEntity.ok(reminderService.markTaken(user.getId(), id));
+    }
+
+    /** Parses AI/doctor advice into a suggested schedule (for the patient to confirm). */
+    @PostMapping("/parse-advice")
+    public ResponseEntity<?> parseAdvice(@AuthenticationPrincipal UserDetailsImpl user,
+                                         @RequestBody Map<String, String> body) {
+        if (user == null) return unauthorized();
+        return ResponseEntity.ok(scheduleParser.parse(body == null ? null : body.get("text")));
     }
 
     @DeleteMapping("/{id}")

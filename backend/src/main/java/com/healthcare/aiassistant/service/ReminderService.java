@@ -3,6 +3,7 @@ package com.healthcare.aiassistant.service;
 import com.healthcare.aiassistant.model.*;
 import com.healthcare.aiassistant.payload.dto.ReminderDTO;
 import com.healthcare.aiassistant.payload.request.ReminderRequest;
+import com.healthcare.aiassistant.repository.HealthMetricRepository;
 import com.healthcare.aiassistant.repository.ReminderRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class ReminderService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private HealthMetricRepository healthMetricRepository;
 
     @Autowired
     private Clock clock;
@@ -113,6 +117,23 @@ public class ReminderService {
     public void delete(Long userId, Long id) {
         Reminder r = ownedOrThrow(userId, id);
         reminderRepository.delete(r);
+    }
+
+    /** Logs medication adherence (a HealthMetric) and marks the reminder done. */
+    @Transactional
+    public ReminderDTO markTaken(Long userId, Long id) {
+        Reminder r = ownedOrThrow(userId, id);
+
+        HealthMetric metric = new HealthMetric();
+        metric.setUser(r.getUser());
+        metric.setMetricType(HealthMetricType.MEDICATION_TAKEN);
+        metric.setMetricValue(truncate(r.getText(), 50));
+        metric.setRecordedAt(LocalDateTime.now(clock));
+        healthMetricRepository.save(metric);
+
+        r.setCompleted(true);
+        r.setStatus(ReminderStatus.DONE);
+        return ReminderDTO.from(reminderRepository.save(r));
     }
 
     // ── Appointment integration (system-generated, bypasses user limits) ──

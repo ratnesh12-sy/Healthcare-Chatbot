@@ -4,5 +4,6 @@ public enum HealthMetricType {
     HEART_RATE,
     BLOOD_PRESSURE,
     CALORIES,
-    SLEEP_HOURS
+    SLEEP_HOURS,
+    MEDICATION_TAKEN
 }

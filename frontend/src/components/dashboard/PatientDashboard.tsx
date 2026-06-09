@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Activity, MessageSquare, Calendar, HeartPulse, Flame, Moon, BellRing, CheckCircle2, Circle, Trash2, ArrowRight } from 'lucide-react';
+import { Activity, MessageSquare, Calendar, HeartPulse, Flame, Moon, BellRing, CheckCircle2, Circle, Trash2, ArrowRight, Pill } from 'lucide-react';
 import Link from 'next/link';
 import { ReminderService, Reminder } from '@/lib/reminderService';
 
@@ -49,6 +49,15 @@ export default function PatientDashboard() {
         setReminders(prev => prev.filter(r => r.id !== id));
         try {
             await ReminderService.delete(id);
+        } catch (err) {
+            loadReminders();
+        }
+    };
+
+    const markTaken = async (id: string) => {
+        setReminders(prev => prev.map(r => r.id === id ? { ...r, isCompleted: true } : r));
+        try {
+            await ReminderService.markTaken(id);
         } catch (err) {
             loadReminders();
         }
@@ -177,7 +186,18 @@ export default function PatientDashboard() {
                                             </p>
                                         </div>
                                         
-                                        <button 
+                                        {reminder.category === 'medication' && !reminder.isCompleted && (
+                                            <button
+                                                onClick={() => markTaken(reminder.id)}
+                                                className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:bg-green-50 hover:text-green-600 rounded-lg transition-all flex-shrink-0"
+                                                aria-label="Mark medication taken"
+                                                title="Mark as taken"
+                                            >
+                                                <Pill className="w-4 h-4" />
+                                            </button>
+                                        )}
+
+                                        <button
                                             onClick={() => deleteReminder(reminder.id)}
                                             className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all flex-shrink-0"
                                             aria-label="Delete reminder"

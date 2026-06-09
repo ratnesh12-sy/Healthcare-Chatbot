@@ -17,6 +17,24 @@ export type Reminder = {
   appointmentId?: string | null;
 };
 
+export type ParsedSchedule = {
+  hasSchedule: boolean;
+  everyMinutes?: number | null;
+  durationDays?: number | null;
+  category?: string;
+  summary?: string;
+  source?: "ai" | "heuristic" | "none";
+};
+
+export type NewReminder = {
+  text: string;
+  source?: "ai" | "manual";
+  category?: string;
+  remindAt?: string | null;
+  everyMinutes?: number | null;
+  repeatUntil?: string | null;
+};
+
 const LEGACY_KEY = "health_reminders_v1";
 const MIGRATED_FLAG = "health_reminders_migrated_v1";
 
@@ -109,6 +127,36 @@ export const ReminderService = {
   ): Promise<void> => {
     try {
       await api.post("/v1/reminders", { text: text.trim(), source });
+      emitUpdateEvent();
+    } catch (e) {
+      throw toError(e);
+    }
+  },
+
+  /** Creates a reminder with full options (used by the AI schedule-confirm flow). */
+  create: async (payload: NewReminder): Promise<void> => {
+    try {
+      await api.post("/v1/reminders", { ...payload, text: payload.text.trim() });
+      emitUpdateEvent();
+    } catch (e) {
+      throw toError(e);
+    }
+  },
+
+  /** Asks the backend to parse advice text into a suggested schedule. */
+  parseAdvice: async (text: string): Promise<ParsedSchedule> => {
+    try {
+      const { data } = await api.post<ParsedSchedule>("/v1/reminders/parse-advice", { text });
+      return data || { hasSchedule: false };
+    } catch {
+      return { hasSchedule: false };
+    }
+  },
+
+  /** Logs medication adherence and marks the reminder done. */
+  markTaken: async (id: string): Promise<void> => {
+    try {
+      await api.patch(`/v1/reminders/${id}/taken`);
       emitUpdateEvent();
     } catch (e) {
       throw toError(e);
