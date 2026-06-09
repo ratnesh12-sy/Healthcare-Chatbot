@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
-import { Calendar, Clock, CalendarCheck, CalendarDays, PlusCircle, X, Loader2, CheckCircle, Activity, ShieldAlert, ShieldCheck, AlertCircle, Lock } from 'lucide-react';
+import { Calendar, Clock, CalendarCheck, CalendarDays, PlusCircle, X, Loader2, CheckCircle, Activity, ShieldAlert, AlertCircle, Lock, CalendarPlus } from 'lucide-react';
 import { DoctorService } from '@/lib/doctorService';
+import { downloadAppointmentIcs } from '@/lib/calendar';
 import BookingPanel from '@/components/booking/BookingPanel';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -590,6 +591,23 @@ function AppointmentCard({
                 }`}>
                     {apt.status}
                 </span>
+
+                {/* Patient: add to calendar (upcoming only) */}
+                {isPatient && (apt.status === 'PENDING' || apt.status === 'CONFIRMED') && (
+                    <button
+                        onClick={async () => {
+                            try {
+                                await downloadAppointmentIcs(apt.id);
+                                toast.success('📅 Calendar file downloaded');
+                            } catch {
+                                toast.error('Failed to generate calendar file');
+                            }
+                        }}
+                        className="text-primary text-sm font-bold hover:text-teal-600 transition-colors flex items-center gap-1"
+                    >
+                        <CalendarPlus size={14} /> Add to Calendar
+                    </button>
+                )}
 
                 {/* Patient cancel */}
                 {isPatient && apt.status === 'PENDING' && (

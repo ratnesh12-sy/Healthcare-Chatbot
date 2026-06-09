@@ -1,6 +1,5 @@
 package com.healthcare.aiassistant.controller;
 
-import com.healthcare.aiassistant.model.Doctor;
 import com.healthcare.aiassistant.model.ERole;
 import com.healthcare.aiassistant.model.Role;
 import com.healthcare.aiassistant.model.User;
@@ -34,7 +33,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.GetMapping;
 

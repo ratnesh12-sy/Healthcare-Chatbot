@@ -1,0 +1,35 @@
+name: Reminder Push Dispatch
+
+# Free scheduler that wakes the backend and triggers due-reminder push delivery.
+# GitHub Actions cron is free; the minimum interval is 5 minutes and runs may be
+# delayed a few minutes on shared runners — fine for reminders. Scheduled workflows
+# only run from the DEFAULT branch, so this takes effect once merged to main.
+#
+# Required repo secrets (Settings → Secrets and variables → Actions):
+#   BACKEND_URL      e.g. https://healthcare-chatbot-backend-1a80.onrender.com
+#   DISPATCH_SECRET  must match the backend's DISPATCH_SECRET env var
+#
+# Alternative (no GitHub): a free cron-job.org job POSTing to
+#   {BACKEND_URL}/api/v1/reminders/dispatch  with header  X-Dispatch-Token: <secret>
+
+on:
+  schedule:
+    - cron: "*/15 * * * *" # every 15 minutes
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger reminder dispatch
+        env:
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+          DISPATCH_SECRET: ${{ secrets.DISPATCH_SECRET }}
+        run: |
+          if [ -z "$BACKEND_URL" ] || [ -z "$DISPATCH_SECRET" ]; then
+            echo "BACKEND_URL / DISPATCH_SECRET secrets not set — skipping."
+            exit 0
+          fi
+          curl -sS -X POST "$BACKEND_URL/api/v1/reminders/dispatch" \
+            -H "X-Dispatch-Token: $DISPATCH_SECRET" \
+            -w "\nHTTP %{http_code}\n" --fail-with-body

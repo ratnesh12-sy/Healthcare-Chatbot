@@ -66,10 +66,15 @@ public class WebSecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/health").permitAll()
+                        // Cron-triggered push dispatch — unauthenticated but guarded by a shared-secret header.
+                        .requestMatchers("/api/v1/reminders/dispatch").permitAll()
                         .requestMatchers("/api/v1/profile/**").authenticated()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
-                        .requestMatchers("/api/doctors/**").hasRole("DOCTOR")
+                        // Doctor *listing* (plural) is for any authenticated user — patients
+                        // need it to browse/select a doctor when booking. Doctor-only
+                        // management endpoints live under the singular /api/doctor/** above.
+                        .requestMatchers("/api/doctors/**").authenticated()
                         .requestMatchers("/api/user/**").authenticated()
                         .anyRequest().authenticated())
                 .headers(headers -> headers

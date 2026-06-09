@@ -22,6 +22,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             Doctor doctor, LocalDateTime start, LocalDateTime end,
             Collection<AppointmentStatus> statuses);
 
+    // Slot-occupancy pre-check (clean 409 before relying on the DB partial unique index).
+    boolean existsByDoctorAndAppointmentDateAndStatusIn(
+            Doctor doctor, LocalDateTime appointmentDate,
+            Collection<AppointmentStatus> statuses);
+
     // Dashboard count queries — avoid loading all appointments into memory
     long countByDoctorAndAppointmentDateBetween(Doctor doctor, LocalDateTime start, LocalDateTime end);
     List<Appointment> findByDoctorAndAppointmentDateBetweenOrderByAppointmentDateAsc(

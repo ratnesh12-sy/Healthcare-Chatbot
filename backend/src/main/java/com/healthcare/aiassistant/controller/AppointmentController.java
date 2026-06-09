@@ -116,6 +116,24 @@ public class AppointmentController {
         return ResponseEntity.ok(Map.of("date", date.toString(), "slots", slots));
     }
 
+    @GetMapping(value = "/{id}/calendar.ics", produces = "text/calendar")
+    @PreAuthorize("hasRole('PATIENT')")
+    public ResponseEntity<?> downloadAppointmentIcs(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
+
+        User patient = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String ics = appointmentService.buildAppointmentIcs(id, patient.getId());
+
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_TYPE, "text/calendar; charset=utf-8")
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"appointment-" + id + ".ics\"")
+                .body(ics);
+    }
+
     @PatchMapping("/{id}/cancel")
     @PreAuthorize("hasRole('PATIENT')")
     public ResponseEntity<?> cancelAppointment(

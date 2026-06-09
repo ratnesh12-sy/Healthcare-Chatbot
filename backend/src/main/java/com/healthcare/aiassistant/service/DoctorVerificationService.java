@@ -8,7 +8,6 @@ import com.healthcare.aiassistant.model.ERequestStatus;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.DoctorVerificationRepository;
-import com.healthcare.aiassistant.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +46,6 @@ public class DoctorVerificationService {
 
     @Autowired
     private DoctorRepository doctorRepository;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private AuditService auditService;

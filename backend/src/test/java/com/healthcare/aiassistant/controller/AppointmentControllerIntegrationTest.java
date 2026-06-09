@@ -11,17 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -387,28 +383,29 @@ class AppointmentControllerIntegrationTest {
 
     @Test
     @Order(16)
-    @DisplayName("PATCH /api/appointments/{id}/cancel — Other patient's appointment → 500 (ownership error)")
+    @DisplayName("PATCH /api/appointments/{id}/cancel — Other patient's appointment → 403 (ownership error)")
     void cancelAppointment_otherPatient_returnsForbidden() throws Exception {
         // Appointment belongs to patientUser
         Appointment appointment = createAppointmentInDb(patientUser, doctor, futureSlot, "Not yours");
 
-        // otherPatient tries to cancel → ownership check fails
+        // otherPatient tries to cancel → ownership check fails (AppointmentOwnershipException → 403)
         mockMvc.perform(patch("/api/appointments/{id}/cancel", appointment.getId())
                         .with(user(otherPatientPrincipal)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isForbidden());
     }
 
     @Test
     @Order(17)
-    @DisplayName("PATCH /api/appointments/{id}/cancel — Already cancelled → 500 (status check)")
+    @DisplayName("PATCH /api/appointments/{id}/cancel — Already cancelled → 400 (status check)")
     void cancelAppointment_alreadyCancelled_fails() throws Exception {
         Appointment appointment = createAppointmentInDb(patientUser, doctor, futureSlot, "Already cancelled");
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointmentRepository.save(appointment);
 
+        // Only PENDING can be cancelled (InvalidAppointmentStatusException → 400)
         mockMvc.perform(patch("/api/appointments/{id}/cancel", appointment.getId())
                         .with(user(patientPrincipal)))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -39,6 +39,12 @@ public class AppointmentService {
     private DoctorRepository doctorRepository;
 
     @Autowired
+    private ReminderService reminderService;
+
+    @Autowired
+    private IcsService icsService;
+
+    @Autowired
     private Clock clock;
 
     // ── Booking ──────────────────────────────────────────────────
@@ -73,6 +79,15 @@ public class AppointmentService {
             throw new PastSlotException("Cannot book more than " + MAX_FUTURE_MONTHS + " months ahead");
         }
 
+        // 6b. Slot-occupancy pre-check — gives a clean 409 in the common case and
+        //     works even where the DB partial unique index is absent (e.g. H2 tests).
+        //     The DB constraint below remains the source of truth for race conditions.
+        boolean slotTaken = appointmentRepository.existsByDoctorAndAppointmentDateAndStatusIn(
+                doctor, normalized, List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED));
+        if (slotTaken) {
+            throw new SlotAlreadyBookedException("This time slot is already booked");
+        }
+
         // 7. Build entity
         Appointment appointment = new Appointment();
         appointment.setPatient(patient);
@@ -95,6 +110,9 @@ public class AppointmentService {
         // 9. Log success (PII-safe)
         log.info("event=appointment_booked requestId={} appointmentId={} doctorId={} time={} userId={} status=SUCCESS",
                 MDC.get("requestId"), appointment.getId(), doctorId, normalized, patient.getId());
+
+        // 10. Auto-create reminders (T-24h and morning-of), atomically with the booking.
+        reminderService.createForAppointment(appointment);
 
         return mapToDTO(appointment);
     }
@@ -119,6 +137,9 @@ public class AppointmentService {
         appointment.setStatus(AppointmentStatus.CANCELLED);
         appointment = appointmentRepository.save(appointment);
 
+        // Cancel any pending reminders tied to this appointment.
+        reminderService.cancelForAppointment(appointment.getId());
+
         log.info("event=appointment_cancelled requestId={} appointmentId={} userId={} status=SUCCESS",
                 MDC.get("requestId"), appointment.getId(), currentUserId);
 
@@ -127,6 +148,22 @@ public class AppointmentService {
 
     @Autowired
     private AvailabilityService availabilityService;
+
+    // ── Calendar export (.ics) ──────────────────────────────────
+
+    @Transactional(readOnly = true)
+    public String buildAppointmentIcs(Long appointmentId, Long userId) {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+
+        if (appointment.getPatient() == null
+                || !appointment.getPatient().getId().equals(userId)) {
+            throw new com.healthcare.aiassistant.exception.AppointmentOwnershipException(
+                    "You do not have access to this appointment");
+        }
+
+        return icsService.buildAppointmentIcs(appointment);
+    }
 
     // ── Available Slots ─────────────────────────────────────────
 
@@ -139,7 +176,11 @@ public class AppointmentService {
     }
 
     // ── Queries ──────────────────────────────────────────────────
+    // readOnly transactions keep the Hibernate session open while mapToDTO reads
+    // the lazy doctor/patient associations (open-in-view is disabled), otherwise
+    // mapping throws LazyInitializationException → 500.
 
+    @Transactional(readOnly = true)
     public List<AppointmentDTO> getPatientAppointments(User patient) {
         return appointmentRepository.findByPatientOrderByAppointmentDateDesc(patient)
                 .stream()
@@ -147,6 +188,7 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<AppointmentDTO> getDoctorAppointments(Doctor doctor) {
         return appointmentRepository.findByDoctorOrderByAppointmentDateDesc(doctor)
                 .stream()
@@ -154,6 +196,7 @@ public class AppointmentService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public org.springframework.data.domain.Page<com.healthcare.aiassistant.payload.dto.DoctorAppointmentDTO> getDoctorAppointmentsPaginated(
             Doctor doctor, org.springframework.data.domain.Pageable pageable) {
         return appointmentRepository.findByDoctorOrderByAppointmentDateDesc(doctor, pageable)
@@ -200,6 +243,10 @@ public class AppointmentService {
 
         appointment.setStatus(newStatus);
         appointment = appointmentRepository.save(appointment);
+
+        if (newStatus == AppointmentStatus.CANCELLED) {
+            reminderService.cancelForAppointment(appointment.getId());
+        }
 
         log.info("Doctor {} updated appointment {} to {}", doctor.getId(), appointmentId, newStatus);
         return mapToDoctorDTO(appointment);

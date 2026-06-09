@@ -4,8 +4,8 @@ import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { ChatProvider } from '@/context/ChatContext';
 import { useAuth } from '@/context/AuthContext';
-import { Bell, Search, ChevronDown, Menu } from 'lucide-react';
-import Image from 'next/image';
+import { Search, ChevronDown, Menu } from 'lucide-react';
+import NotificationBell from '@/components/NotificationBell';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
@@ -39,10 +39,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             </div>
                         </div>
                         <div className="flex items-center gap-6">
-                            <button className="relative p-2 text-gray-400 hover:text-primary transition-colors">
-                                <Bell className="w-6 h-6" />
-                                <span className="absolute top-1.5 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"></span>
-                            </button>
+                            <NotificationBell />
                             <div className="flex items-center gap-3 cursor-pointer select-none">
                                 <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm">
                                     {user?.fullName?.charAt(0) || user?.username?.charAt(0) || 'U'}

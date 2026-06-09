@@ -1,3 +1,5 @@
+import api from "@/lib/api";
+
 export type Reminder = {
   id: string;
   text: string;
@@ -6,11 +8,17 @@ export type Reminder = {
   isCompleted: boolean;
   source?: "ai" | "manual";
   type?: "one-time" | "recurring";
+  // Scheduling / notification fields (optional — present on scheduled reminders)
+  category?: string;
+  status?: string;
+  remindAt?: string | null;
+  everyMinutes?: number | null;
+  repeatUntil?: string | null;
+  appointmentId?: string | null;
 };
 
-const STORAGE_KEY = "health_reminders_v1";
-const MAX_REMINDERS = 50;
-const MAX_LENGTH = 120;
+const LEGACY_KEY = "health_reminders_v1";
+const MIGRATED_FLAG = "health_reminders_migrated_v1";
 
 const emitUpdateEvent = () => {
   if (typeof window !== "undefined") {
@@ -18,113 +26,128 @@ const emitUpdateEvent = () => {
   }
 };
 
-const normalize = (text: string) => text.trim();
+/** Normalises an axios/network error into an Error whose message matches the
+ *  backend message (so existing UI checks like "Reminder already exists" work). */
+const toError = (e: any): Error => {
+  const msg = e?.response?.data?.message || e?.message || "Something went wrong";
+  return new Error(msg);
+};
+
+/**
+ * One-time best-effort migration of reminders previously kept in localStorage
+ * into the backend, so users don't lose what they already saved. Runs at most
+ * once per browser (guarded by a flag), and is safe to call repeatedly.
+ */
+let migrationPromise: Promise<void> | null = null;
+const migrateLegacyReminders = async (): Promise<void> => {
+  if (typeof window === "undefined") return;
+  if (localStorage.getItem(MIGRATED_FLAG)) return;
+  if (migrationPromise) return migrationPromise;
+
+  migrationPromise = (async () => {
+    try {
+      const raw = localStorage.getItem(LEGACY_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          for (const r of parsed) {
+            if (!r?.text) continue;
+            try {
+              const res = await api.post("/v1/reminders", {
+                text: r.text,
+                source: r.source === "ai" ? "ai" : "manual",
+              });
+              // Preserve completion state if it was ticked off.
+              if (r.isCompleted && res?.data?.id) {
+                await api.patch(`/v1/reminders/${res.data.id}/toggle`);
+              }
+            } catch {
+              // Skip duplicates / limit hits; keep migrating the rest.
+            }
+          }
+        }
+      }
+      localStorage.setItem(MIGRATED_FLAG, "1");
+      localStorage.removeItem(LEGACY_KEY);
+    } catch {
+      // Leave the flag unset so we retry on the next load.
+    } finally {
+      migrationPromise = null;
+    }
+  })();
+
+  return migrationPromise;
+};
 
 export const ReminderService = {
   getAll: async (): Promise<Reminder[]> => {
-    if (typeof window === "undefined") return [];
+    await migrateLegacyReminders();
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      if (!data) return [];
-      
-      const parsed = JSON.parse(data);
-      if (!Array.isArray(parsed)) return [];
-      
-      return parsed as Reminder[];
-    } catch (error) {
-      console.error("Failed to parse reminders from storage", error);
-      return []; // Fallback gracefully if corrupted
+      const { data } = await api.get<Reminder[]>("/v1/reminders");
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      throw toError(e);
     }
   },
 
-  add: async (text: string, source: "ai" | "manual" = "manual", type: "one-time" | "recurring" = "one-time"): Promise<void> => {
-    if (typeof window === "undefined") throw new Error("Storage unavailable");
-    
-    const normalizedText = normalize(text);
-    if (!normalizedText) throw new Error("Reminder text cannot be empty");
-    if (normalizedText.length > MAX_LENGTH) throw new Error(`Exceeded maximum length of ${MAX_LENGTH} characters`);
-
+  /** Reminders that are due now — drives the in-app notification bell. */
+  getDue: async (): Promise<Reminder[]> => {
     try {
-      const reminders = await ReminderService.getAll();
-      
-      if (reminders.length >= MAX_REMINDERS) {
-        throw new Error("Storage limit reached");
-      }
+      const { data } = await api.get<Reminder[]>("/v1/reminders/due");
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      throw toError(e);
+    }
+  },
 
-      const duplicateExists = reminders.some(r => normalize(r.text).toLowerCase() === normalizedText.toLowerCase());
-      if (duplicateExists) {
-        throw new Error("Reminder already exists");
-      }
-
-      const now = new Date().toISOString();
-      const newReminder: Reminder = {
-        id: crypto.randomUUID(),
-        text: normalizedText,
-        createdAt: now,
-        updatedAt: now,
-        isCompleted: false,
-        source,
-        type,
-      };
-
-      reminders.push(newReminder);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
+  // `type` is kept in the signature for backward compatibility; the backend
+  // derives one-time vs recurring from the schedule fields.
+  add: async (
+    text: string,
+    source: "ai" | "manual" = "manual",
+    _type: "one-time" | "recurring" = "one-time"
+  ): Promise<void> => {
+    try {
+      await api.post("/v1/reminders", { text: text.trim(), source });
       emitUpdateEvent();
-    } catch (e: any) {
-      // Re-throw known validation errors safely
-      if (e.message) throw e;
-      throw new Error("Storage unavailable");
+    } catch (e) {
+      throw toError(e);
     }
   },
 
   toggle: async (id: string): Promise<void> => {
-    if (typeof window === "undefined") throw new Error("Storage unavailable");
-    
     try {
-      const reminders = await ReminderService.getAll();
-      const index = reminders.findIndex(r => r.id === id);
-      if (index === -1) return;
-
-      reminders[index].isCompleted = !reminders[index].isCompleted;
-      reminders[index].updatedAt = new Date().toISOString();
-
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
+      await api.patch(`/v1/reminders/${id}/toggle`);
       emitUpdateEvent();
     } catch (e) {
-      throw new Error("Storage unavailable");
+      throw toError(e);
+    }
+  },
+
+  snooze: async (id: string, minutes = 30): Promise<void> => {
+    try {
+      await api.patch(`/v1/reminders/${id}/snooze?minutes=${minutes}`);
+      emitUpdateEvent();
+    } catch (e) {
+      throw toError(e);
     }
   },
 
   update: async (id: string, text: string): Promise<void> => {
-     if (typeof window === "undefined") throw new Error("Storage unavailable");
-     const normalizedText = normalize(text);
-     if (!normalizedText) throw new Error("Reminder text cannot be empty");
-
-     try {
-       const reminders = await ReminderService.getAll();
-       const index = reminders.findIndex(r => r.id === id);
-       if (index === -1) return;
-
-       reminders[index].text = normalizedText;
-       reminders[index].updatedAt = new Date().toISOString();
-       
-       localStorage.setItem(STORAGE_KEY, JSON.stringify(reminders));
-       emitUpdateEvent();
-     } catch (e) {
-       throw new Error("Storage unavailable");
-     }
+    try {
+      await api.put(`/v1/reminders/${id}`, { text: text.trim() });
+      emitUpdateEvent();
+    } catch (e) {
+      throw toError(e);
+    }
   },
 
   delete: async (id: string): Promise<void> => {
-    if (typeof window === "undefined") throw new Error("Storage unavailable");
     try {
-      const reminders = await ReminderService.getAll();
-      const filtered = reminders.filter(r => r.id !== id);
-      
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+      await api.delete(`/v1/reminders/${id}`);
       emitUpdateEvent();
     } catch (e) {
-      throw new Error("Storage unavailable");
+      throw toError(e);
     }
-  }
+  },
 };
