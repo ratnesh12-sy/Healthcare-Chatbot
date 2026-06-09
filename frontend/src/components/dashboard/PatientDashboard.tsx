@@ -5,12 +5,27 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Activity, MessageSquare, Calendar, HeartPulse, Flame, Moon, BellRing, CheckCircle2, Circle, Trash2, ArrowRight, Pill } from 'lucide-react';
 import Link from 'next/link';
 import { ReminderService, Reminder } from '@/lib/reminderService';
+import { HealthMetricService } from '@/lib/healthMetricService';
 
 export default function PatientDashboard() {
     const { user } = useAuth();
 
     const [reminders, setReminders] = useState<Reminder[]>([]);
     const [loaded, setLoaded] = useState(false);
+    const [latestMetrics, setLatestMetrics] = useState<Record<string, string>>({});
+
+    useEffect(() => {
+        HealthMetricService.getLatest()
+            .then(list => {
+                const map: Record<string, string> = {};
+                list.forEach(m => { map[m.type] = m.value; });
+                setLatestMetrics(map);
+            })
+            .catch(() => { /* keep placeholders if unavailable */ });
+    }, []);
+
+    const metricValue = (type: string, suffix = '') =>
+        latestMetrics[type] ? `${latestMetrics[type]}${suffix}` : '—';
 
     const loadReminders = async () => {
         try {
@@ -64,10 +79,10 @@ export default function PatientDashboard() {
     };
 
     const stats = [
-        { label: 'Heart Rate', value: '72 bpm', icon: <HeartPulse className="text-rose-500 w-6 h-6" />, color: 'bg-rose-50 text-rose-600' },
-        { label: 'Blood Pressure', value: '120/80', icon: <Activity className="text-primary w-6 h-6" />, color: 'bg-surface text-primary' },
-        { label: 'Calories Burned', value: '1,840', icon: <Flame className="text-orange-500 w-6 h-6" />, color: 'bg-orange-50 text-orange-600' },
-        { label: 'Sleep Quality', value: '8.5 hrs', icon: <Moon className="text-indigo-500 w-6 h-6" />, color: 'bg-indigo-50 text-indigo-600' },
+        { label: 'Heart Rate', value: metricValue('HEART_RATE', ' bpm'), icon: <HeartPulse className="text-rose-500 w-6 h-6" />, color: 'bg-rose-50 text-rose-600' },
+        { label: 'Blood Pressure', value: metricValue('BLOOD_PRESSURE'), icon: <Activity className="text-primary w-6 h-6" />, color: 'bg-surface text-primary' },
+        { label: 'Calories', value: metricValue('CALORIES'), icon: <Flame className="text-orange-500 w-6 h-6" />, color: 'bg-orange-50 text-orange-600' },
+        { label: 'Sleep', value: metricValue('SLEEP_HOURS', ' hrs'), icon: <Moon className="text-indigo-500 w-6 h-6" />, color: 'bg-indigo-50 text-indigo-600' },
     ];
 
     return (
@@ -78,9 +93,9 @@ export default function PatientDashboard() {
                     <p className="text-slate-500 mt-2 font-medium">Here is what's happening with your health today.</p>
                 </div>
                 <div className="flex gap-3">
-                    <button disabled title="Coming soon" className="px-5 py-2.5 bg-white border border-slate-200 text-slate-400 font-semibold rounded-xl cursor-not-allowed shadow-sm">
-                        Download Report
-                    </button>
+                    <Link href="/dashboard/health" className="px-5 py-2.5 bg-white border border-slate-200 text-secondary font-semibold rounded-xl hover:border-primary/40 hover:text-primary transition-all shadow-sm flex items-center gap-2">
+                        <Activity className="w-4 h-4" /> Health Data
+                    </Link>
                 </div>
             </header>
 

@@ -10,6 +10,7 @@ import {
     LogOut,
     UserCircle,
     ShieldAlert,
+    HeartPulse,
     X
 } from 'lucide-react';
 
@@ -26,6 +27,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onClose }) => {
         { name: 'Dashboard', icon: <LayoutDashboard size={20} />, path: '/dashboard', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
         { name: 'AI Chat', icon: <MessageSquare size={20} />, path: '/dashboard/chat', roles: ['ROLE_PATIENT'] },
         { name: 'Appointments', icon: <Calendar size={20} />, path: '/dashboard/appointments', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
+        { name: 'Health', icon: <HeartPulse size={20} />, path: '/dashboard/health', roles: ['ROLE_PATIENT'] },
         { name: 'Profile', icon: <UserCircle size={20} />, path: '/dashboard/profile', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
         { name: 'Admin Console', icon: <ShieldAlert size={20} className="text-rose-500" />, path: '/admin', roles: ['ROLE_ADMIN'] },
     ];
