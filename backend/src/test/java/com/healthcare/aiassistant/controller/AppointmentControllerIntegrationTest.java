@@ -119,17 +119,17 @@ class AppointmentControllerIntegrationTest {
         // 5. Build security principals
         patientPrincipal = new UserDetailsImpl(
                 patientUser.getId(), patientUser.getUsername(), patientUser.getEmail(),
-                patientUser.getFullName(), patientUser.getPassword(), true,
+                patientUser.getFullName(), patientUser.getPassword(), true, true,
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_PATIENT")));
 
         doctorPrincipal = new UserDetailsImpl(
                 doctorUser.getId(), doctorUser.getUsername(), doctorUser.getEmail(),
-                doctorUser.getFullName(), doctorUser.getPassword(), true,
+                doctorUser.getFullName(), doctorUser.getPassword(), true, true,
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_DOCTOR")));
 
         otherPatientPrincipal = new UserDetailsImpl(
                 otherPatientUser.getId(), otherPatientUser.getUsername(), otherPatientUser.getEmail(),
-                otherPatientUser.getFullName(), otherPatientUser.getPassword(), true,
+                otherPatientUser.getFullName(), otherPatientUser.getPassword(), true, true,
                 Collections.singletonList(new SimpleGrantedAuthority("ROLE_PATIENT")));
 
         // 6. Future slot — tomorrow at 10:00 AM (always within 09:00–16:30 working hours)
