@@ -6,11 +6,10 @@ import com.healthcare.aiassistant.repository.DoctorRepository;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.repository.AppointmentRepository;
 import com.healthcare.aiassistant.repository.RoleRepository;
-import com.healthcare.aiassistant.repository.AuditLogRepository;
 import com.healthcare.aiassistant.repository.ChatMessageRepository;
 import com.healthcare.aiassistant.model.Role;
 import com.healthcare.aiassistant.model.ERole;
-import com.healthcare.aiassistant.model.AuditLog;
+import com.healthcare.aiassistant.payload.dto.AuditLogDTO;
 import com.healthcare.aiassistant.payload.dto.UserResponseDTO;
 import com.healthcare.aiassistant.service.AuditService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +39,6 @@ public class AdminController {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
-
-    @Autowired
-    private AuditLogRepository auditLogRepository;
 
     @Autowired
     private ChatMessageRepository chatMessageRepository;
@@ -118,8 +114,8 @@ public class AdminController {
 
     @GetMapping("/audit")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<AuditLog>> getAuditLogs() {
-        return ResponseEntity.ok(auditLogRepository.findAllByOrderByTimestampDesc());
+    public ResponseEntity<List<AuditLogDTO>> getAuditLogs() {
+        return ResponseEntity.ok(auditService.getRecentLogs());
     }
 
     @PostMapping("/doctors/add")

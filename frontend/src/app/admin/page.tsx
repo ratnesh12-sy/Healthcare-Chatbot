@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import api from '@/lib/api';
 import { Users, UserPlus, FileText, Activity, ShieldAlert } from 'lucide-react';
 
@@ -103,7 +104,7 @@ export default function AdminDashboard() {
                             <ShieldAlert className="text-primary w-5 h-5" />
                             Recent Security Audit Logs
                         </h2>
-                        <button className="text-sm font-bold text-primary hover:underline">View All</button>
+                        <Link href="/admin/audit" className="text-sm font-bold text-primary hover:underline">View All</Link>
                     </div>
                     <div className="divide-y divide-slate-100">
                         {auditLogs.length === 0 ? (
