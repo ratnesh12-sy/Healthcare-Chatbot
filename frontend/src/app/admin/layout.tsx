@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Users, UserCheck, Settings, ShieldAlert, LogOut, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Users, UserCheck, Settings, ShieldAlert, ScrollText, LogOut, ArrowLeft } from 'lucide-react';
 
 export default function AdminLayout({
     children,
@@ -64,6 +64,10 @@ export default function AdminLayout({
                     <div className="pt-8 pb-2">
                         <p className="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 pb-2">System</p>
                     </div>
+                    <Link href="/admin/audit" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
+                        <ScrollText size={20} />
+                        Audit Logs
+                    </Link>
                     <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
                         <Settings size={20} />
                         Global Settings
