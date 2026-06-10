@@ -111,9 +111,57 @@ public class AdminController {
                         u.getUsername(),
                         u.getEmail(),
                         u.getFullName(),
-                        u.getRole() != null ? u.getRole().getName().name() : "UNKNOWN"
+                        u.getRole() != null ? u.getRole().getName().name() : "UNKNOWN",
+                        u.getPhoneNumber(),
+                        u.getAuthProvider(),
+                        u.getAvatarUrl(),
+                        u.getEnabled() == null || u.getEnabled(),
+                        u.getCreatedAt()
                 ))
                 .collect(Collectors.toList());
+    }
+
+    @PatchMapping("/users/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> updateUserStatus(@PathVariable Long id, @RequestBody Map<String, Boolean> payload,
+                                              @AuthenticationPrincipal UserDetails userDetails) {
+        Boolean enabled = payload.get("enabled");
+        if (enabled == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Missing 'enabled' field."));
+        }
+
+        Optional<User> userOpt = userRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User user = userOpt.get();
+
+        // Self-suspension guard: an admin cannot disable their own account (lockout prevention).
+        if (!enabled && user.getUsername().equals(userDetails.getUsername())) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
+                    .body(Map.of("error", "You cannot suspend your own account."));
+        }
+
+        user.setEnabled(enabled);
+        userRepository.save(user);
+        auditService.logAction(userDetails.getUsername(),
+                enabled ? "USER_REACTIVATED" : "USER_SUSPENDED",
+                id,
+                enabled ? "Account reactivated" : "Account suspended (login blocked)");
+
+        return ResponseEntity.ok(new UserResponseDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFullName(),
+                user.getRole() != null ? user.getRole().getName().name() : "UNKNOWN",
+                user.getPhoneNumber(),
+                user.getAuthProvider(),
+                user.getAvatarUrl(),
+                user.getEnabled(),
+                user.getCreatedAt()
+        ));
     }
 
     @GetMapping("/audit")
