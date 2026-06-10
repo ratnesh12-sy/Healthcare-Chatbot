@@ -49,6 +49,10 @@ public class User {
 
     private Boolean isProfileComplete = true;
 
+    // Account status. false = suspended: blocks login and existing sessions.
+    @Column(nullable = false)
+    private Boolean enabled = true;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private Role role;
@@ -184,6 +188,14 @@ public class User {
 
     public void setIsProfileComplete(Boolean isProfileComplete) {
         this.isProfileComplete = isProfileComplete;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 
     public String getGoogleSub() {

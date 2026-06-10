@@ -116,6 +116,9 @@ public class AuthController {
         } catch (org.springframework.security.authentication.BadCredentialsException e) {
             return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("Invalid username or password"));
+        } catch (org.springframework.security.authentication.DisabledException e) {
+            return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
+                    .body(new MessageResponse("Your account has been suspended. Please contact an administrator."));
         } catch (Exception e) {
             return org.springframework.http.ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
                     .body(new MessageResponse("Login failed. Please try again."));
