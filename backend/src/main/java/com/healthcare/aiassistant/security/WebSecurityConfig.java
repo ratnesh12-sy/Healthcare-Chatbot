@@ -25,6 +25,9 @@ public class WebSecurityConfig {
     @Autowired
     UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    com.healthcare.aiassistant.service.SettingsService settingsService;
+
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
         return new AuthTokenFilter();
@@ -64,6 +67,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/me").authenticated()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/public/**").permitAll()
                         .requestMatchers("/api/test/**").permitAll()
                         .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/health").permitAll()
                         // Cron-triggered push dispatch — unauthenticated but guarded by a shared-secret header.
@@ -88,6 +92,8 @@ public class WebSecurityConfig {
 
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        // After authentication is resolved, gate non-admins out when maintenance mode is on.
+        http.addFilterAfter(new MaintenanceModeFilter(settingsService), AuthTokenFilter.class);
 
         return http.build();
     }

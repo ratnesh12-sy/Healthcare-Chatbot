@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import Link from 'next/link';
-import { LayoutDashboard, Users, UserCheck, Settings, ShieldAlert, ScrollText, LogOut, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Users, UserCheck, Settings, ShieldAlert, ScrollText, LogOut } from 'lucide-react';
 
 export default function AdminLayout({
     children,
@@ -75,13 +75,9 @@ export default function AdminLayout({
                 </nav>
 
                 <div className="p-4 border-t border-slate-800 space-y-2">
-                    <Link href="/admin" className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-all font-bold">
-                        <ArrowLeft size={20} />
-                        Back to Dashboard
-                    </Link>
                     <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all font-bold">
                         <LogOut size={20} />
-                        Secure Exit
+                        Logout
                     </button>
                 </div>
             </aside>

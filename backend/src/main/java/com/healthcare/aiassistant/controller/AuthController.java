@@ -58,6 +58,9 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    com.healthcare.aiassistant.service.SettingsService settingsService;
+
     @Value("${app.cookie.secure:false}")
     private boolean cookieSecure;
 
@@ -73,7 +76,7 @@ public class AuthController {
             .secure(cookieSecure)
             .sameSite(cookieSecure ? "None" : "Lax")
             .path("/")
-            .maxAge(expired ? 0 : 7 * 24 * 60 * 60);
+            .maxAge(expired ? 0 : jwtUtils.getSessionMillis() / 1000);
 
         if (cookieDomain != null && !cookieDomain.isBlank()) {
             builder.domain(cookieDomain);
@@ -169,6 +172,19 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        // Registration toggle (admin setting).
+        if (!settingsService.getBoolean(com.healthcare.aiassistant.service.SettingsService.REGISTRATION_ENABLED)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.FORBIDDEN)
+                    .body(new MessageResponse("New registrations are currently disabled."));
+        }
+
+        // Minimum password length (admin setting).
+        int minLen = settingsService.getInt(com.healthcare.aiassistant.service.SettingsService.MIN_PASSWORD_LENGTH);
+        if (signUpRequest.getPassword() == null || signUpRequest.getPassword().length() < minLen) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Password must be at least " + minLen + " characters."));
+        }
+
         if (userRepository.existsByUsernameIgnoreCase(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
@@ -228,6 +244,10 @@ public class AuthController {
 
     @PostMapping("/google")
     public ResponseEntity<?> googleSignIn(@RequestBody Map<String, String> body) {
+        if (!settingsService.getBoolean(com.healthcare.aiassistant.service.SettingsService.GOOGLE_SIGNIN_ENABLED)) {
+            return ResponseEntity.status(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(new MessageResponse("Google sign-in is currently disabled."));
+        }
         String idTokenString = body.get("idToken");
         if (idTokenString == null || idTokenString.isBlank()) {
             return ResponseEntity.badRequest().body(new MessageResponse("Missing Google credential."));
