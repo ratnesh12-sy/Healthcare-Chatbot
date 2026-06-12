@@ -4,19 +4,45 @@ import Sidebar from '@/components/Sidebar';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { ChatProvider } from '@/context/ChatContext';
 import { useAuth } from '@/context/AuthContext';
-import { Search, ChevronDown, Menu } from 'lucide-react';
+import { Search, ChevronDown, Menu, Wrench } from 'lucide-react';
 import NotificationBell from '@/components/NotificationBell';
+import AnnouncementBanner from '@/components/AnnouncementBanner';
+import PlatformFooter from '@/components/PlatformFooter';
+import { usePublicSettings } from '@/lib/usePublicSettings';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const { user } = useAuth();
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    
+    const settings = usePublicSettings();
+    const isAdmin = user?.roles?.includes('ROLE_ADMIN');
+
+    // Maintenance mode: non-admins are locked out with a friendly screen (admins keep access).
+    if (settings.maintenanceMode === 'true' && user && !isAdmin) {
+        return (
+            <ProtectedRoute>
+                <div className="min-h-screen flex flex-col items-center justify-center bg-light text-center px-6">
+                    <div className="w-20 h-20 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center mb-6 shadow-inner border border-amber-100">
+                        <Wrench size={40} />
+                    </div>
+                    <h1 className="text-2xl font-extrabold text-secondary mb-2">Under Maintenance</h1>
+                    <p className="text-slate-500 max-w-md font-medium">
+                        {settings.platformName || 'The platform'} is temporarily unavailable while we perform maintenance. Please check back soon.
+                    </p>
+                    {settings.supportEmail && (
+                        <a href={`mailto:${settings.supportEmail}`} className="mt-6 text-primary font-bold hover:underline">{settings.supportEmail}</a>
+                    )}
+                </div>
+            </ProtectedRoute>
+        );
+    }
+
     return (
         <ProtectedRoute>
             <ChatProvider>
             <div className="flex bg-light min-h-screen text-secondary">
                 <Sidebar isMobileOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
                 <div className="flex-1 flex flex-col overflow-hidden w-full relative">
+                    <AnnouncementBanner />
                     {/* Top Header */}
                     <header className="h-20 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 z-0">
                         <div className="flex items-center gap-4">
@@ -59,6 +85,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             {children}
                         </div>
                     </main>
+                    <PlatformFooter />
                 </div>
             </div>
             </ChatProvider>

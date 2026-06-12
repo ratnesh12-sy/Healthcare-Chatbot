@@ -47,6 +47,9 @@ public class AppointmentService {
     @Autowired
     private Clock clock;
 
+    @Autowired
+    private SettingsService settingsService;
+
     // ── Booking ──────────────────────────────────────────────────
 
     @Transactional
@@ -88,6 +91,26 @@ public class AppointmentService {
             throw new SlotAlreadyBookedException("This time slot is already booked");
         }
 
+        // 6c. Minimum booking lead time (admin setting; 0 = none).
+        int leadHours = settingsService.getInt(SettingsService.LEAD_TIME_HOURS);
+        if (leadHours > 0 && normalized.isBefore(now.plusHours(leadHours))) {
+            throw new PastSlotException("Appointments must be booked at least " + leadHours + " hour(s) in advance");
+        }
+
+        // 6d. Per-patient daily cap (admin setting; 0 = unlimited).
+        int maxPerDay = settingsService.getInt(SettingsService.MAX_PER_PATIENT_PER_DAY);
+        if (maxPerDay > 0) {
+            long sameDay = appointmentRepository.countByPatientAndAppointmentDateBetweenAndStatusIn(
+                    patient,
+                    normalized.toLocalDate().atStartOfDay(),
+                    normalized.toLocalDate().atTime(LocalTime.MAX),
+                    List.of(AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED));
+            if (sameDay >= maxPerDay) {
+                throw new SlotAlreadyBookedException(
+                        "You have reached the limit of " + maxPerDay + " appointment(s) for that day");
+            }
+        }
+
         // 7. Build entity
         Appointment appointment = new Appointment();
         appointment.setPatient(patient);
@@ -95,7 +118,8 @@ public class AppointmentService {
         appointment.setAppointmentDate(normalized);
         appointment.setSymptomsSummary(symptomsSummary);
         appointment.setStatus(AppointmentStatus.PENDING);
-        appointment.setDurationMinutes(SLOT_DURATION_MINUTES);
+        int duration = settingsService.getInt(SettingsService.DEFAULT_DURATION_MINUTES);
+        appointment.setDurationMinutes(duration > 0 ? duration : SLOT_DURATION_MINUTES);
         appointment.setCreatedAt(now);
 
         // 8. Save — DB constraint is sole source of truth
@@ -132,6 +156,13 @@ public class AppointmentService {
         // Status check — only PENDING can be cancelled
         if (appointment.getStatus() != AppointmentStatus.PENDING) {
             throw new com.healthcare.aiassistant.exception.InvalidAppointmentStatusException("Appointment is already cancelled");
+        }
+
+        // Cancellation window (admin setting; 0 = no restriction).
+        int cancelWindow = settingsService.getInt(SettingsService.CANCELLATION_WINDOW_HOURS);
+        if (cancelWindow > 0 && LocalDateTime.now(clock).plusHours(cancelWindow).isAfter(appointment.getAppointmentDate())) {
+            throw new com.healthcare.aiassistant.exception.InvalidAppointmentStatusException(
+                    "Appointments can only be cancelled at least " + cancelWindow + " hour(s) before the slot");
         }
 
         appointment.setStatus(AppointmentStatus.CANCELLED);

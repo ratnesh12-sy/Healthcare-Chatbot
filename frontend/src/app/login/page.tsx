@@ -5,11 +5,13 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Activity, Eye, EyeOff } from 'lucide-react';
 import GoogleSignInButton from '@/components/GoogleSignInButton';
+import { usePublicSettings } from '@/lib/usePublicSettings';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useAuth();
+    const settings = usePublicSettings();
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -95,11 +97,13 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <GoogleSignInButton onError={setError} />
+                {settings.googleSignInEnabled !== 'false' && <GoogleSignInButton onError={setError} />}
 
-                <p className="mt-10 text-center text-gray-600 text-sm">
-                    Don't have an account? <Link href="/signup" className="text-primary font-bold hover:text-teal-600 transition-colors">Create account</Link>
-                </p>
+                {settings.registrationEnabled !== 'false' && (
+                    <p className="mt-10 text-center text-gray-600 text-sm">
+                        Don't have an account? <Link href="/signup" className="text-primary font-bold hover:text-teal-600 transition-colors">Create account</Link>
+                    </p>
+                )}
             </motion.div>
         </div>
     );

@@ -4,7 +4,6 @@ import com.healthcare.aiassistant.model.ChatMessage;
 import com.healthcare.aiassistant.model.User;
 import com.healthcare.aiassistant.payload.openai.OpenAiMessage;
 import com.healthcare.aiassistant.payload.openai.OpenAiRequest;
-import com.healthcare.aiassistant.repository.SystemSettingRepository;
 import com.healthcare.aiassistant.payload.openai.OpenAiResponse;
 import com.healthcare.aiassistant.security.config.OpenAiProperties;
 import org.slf4j.Logger;
@@ -28,7 +27,7 @@ public class AiChatService {
     private OpenAiProperties openAiProperties;
 
     @Autowired
-    private SystemSettingRepository systemSettingRepository;
+    private SettingsService settingsService;
 
     @Autowired
     private ChatService chatService;
@@ -36,18 +35,17 @@ public class AiChatService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     public ChatMessage getAiResponse(User user, String userMessage) {
-        // Fetch dynamic settings from Database gracefully
-        String apiKey = systemSettingRepository.findBySettingKey("apiKey")
-                .map(s -> s.getSettingValue())
-                .orElse(openAiProperties.getApiKey());
-                
-        String aiModel = systemSettingRepository.findBySettingKey("aiModel")
-                .map(s -> s.getSettingValue())
-                .orElse(openAiProperties.getModel());
-                
-        String systemPrompt = systemSettingRepository.findBySettingKey("medicalDisclaimer")
-                .map(s -> s.getSettingValue())
-                .orElse("You are a professional healthcare assistant. Analyze symptoms and provide possible conditions, precautions, and doctor recommendations. Always advise consulting a real doctor.");
+        // Global AI kill-switch (admin setting).
+        if (!settingsService.getBoolean(SettingsService.AI_ENABLED)) {
+            chatService.saveMessage(user, userMessage, false);
+            return chatService.saveMessage(user,
+                    "The AI assistant is currently unavailable. Please try again later or contact your provider.", true);
+        }
+
+        // Dynamic settings (cached). API key stays env-only — never stored in the DB.
+        String apiKey = openAiProperties.getApiKey();
+        String aiModel = settingsService.getString(SettingsService.AI_MODEL);
+        String systemPrompt = settingsService.getString(SettingsService.AI_SYSTEM_PROMPT);
 
         // 1. Prepare Request
         List<OpenAiMessage> messages = new ArrayList<>();

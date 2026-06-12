@@ -27,6 +27,11 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             Doctor doctor, LocalDateTime appointmentDate,
             Collection<AppointmentStatus> statuses);
 
+    // Per-patient daily booking cap (admin setting).
+    long countByPatientAndAppointmentDateBetweenAndStatusIn(
+            User patient, LocalDateTime start, LocalDateTime end,
+            Collection<AppointmentStatus> statuses);
+
     // Dashboard count queries — avoid loading all appointments into memory
     long countByDoctorAndAppointmentDateBetween(Doctor doctor, LocalDateTime start, LocalDateTime end);
     List<Appointment> findByDoctorAndAppointmentDateBetweenOrderByAppointmentDateAsc(

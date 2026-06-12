@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.healthcare.aiassistant.security.config.HealthcareProperties;
+import com.healthcare.aiassistant.service.SettingsService;
 
 import java.security.Key;
 import java.util.Date;
@@ -21,13 +22,22 @@ public class JwtUtils {
     @Autowired
     private HealthcareProperties healthcareProperties;
 
+    @Autowired
+    private SettingsService settingsService;
+
+    /** Token lifetime in ms — admin {@code sessionHours} setting overrides the property default. */
+    public long getSessionMillis() {
+        int hours = settingsService.getInt(SettingsService.SESSION_HOURS);
+        return hours > 0 ? hours * 3600_000L : healthcareProperties.getJwt().getExpiration();
+    }
+
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + healthcareProperties.getJwt().getExpiration()))
+                .setExpiration(new Date((new Date()).getTime() + getSessionMillis()))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
