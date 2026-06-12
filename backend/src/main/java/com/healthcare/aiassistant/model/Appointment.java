@@ -1,6 +1,8 @@
 package com.healthcare.aiassistant.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDateTime;
 
@@ -13,10 +15,12 @@ public class Appointment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User patient;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Doctor doctor;
 
     private LocalDateTime appointmentDate;

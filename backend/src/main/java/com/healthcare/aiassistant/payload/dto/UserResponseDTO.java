@@ -17,6 +17,7 @@ public class UserResponseDTO {
     private String avatarUrl;
     private Boolean enabled;
     private LocalDateTime createdAt;
+    private LocalDateTime deletedAt;
 
     public UserResponseDTO() {
     }
@@ -122,5 +123,13 @@ public class UserResponseDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 }

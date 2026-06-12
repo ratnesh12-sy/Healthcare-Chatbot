@@ -1,6 +1,8 @@
 package com.healthcare.aiassistant.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "doctors")
@@ -12,6 +14,7 @@ public class Doctor {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     private String specialization;

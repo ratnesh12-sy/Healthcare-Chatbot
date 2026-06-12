@@ -286,7 +286,10 @@ public class DoctorVerificationService {
      * Single source of truth — never expose findAll() for public endpoints.
      */
     public List<Doctor> getVerifiedDoctors() {
-        return doctorRepository.findByVerificationStatus(ERequestStatus.APPROVED);
+        // Exclude doctors whose user account has been soft-deleted (anonymized/hidden).
+        return doctorRepository.findByVerificationStatus(ERequestStatus.APPROVED).stream()
+                .filter(d -> d.getUser() != null && d.getUser().getDeletedAt() == null)
+                .collect(java.util.stream.Collectors.toList());
     }
 
     // ── File Handling Helpers ─────────────────────────────────────

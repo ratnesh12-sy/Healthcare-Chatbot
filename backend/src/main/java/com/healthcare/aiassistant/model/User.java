@@ -59,6 +59,9 @@ public class User {
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
+    // Non-null = soft-deleted: anonymized, hidden from the app, login blocked. Records retained.
+    private LocalDateTime deletedAt;
+
     // ── OAuth (Sign in with Google) ──
     @Size(max = 255)
     private String googleSub;
@@ -140,6 +143,14 @@ public class User {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
     }
 
     public String getPhoneNumber() {

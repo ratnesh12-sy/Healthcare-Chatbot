@@ -1,6 +1,8 @@
 package com.healthcare.aiassistant.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,8 +12,11 @@ public class AuditLog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // Nullable + SET NULL: when the acting admin is deleted, the audit row survives
+    // with a null admin reference (the security trail is preserved).
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_user_id", nullable = false)
+    @JoinColumn(name = "admin_user_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private User adminUser;
 
     @Column(nullable = false, length = 100)

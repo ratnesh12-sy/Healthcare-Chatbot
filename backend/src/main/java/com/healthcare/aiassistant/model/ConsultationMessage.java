@@ -1,6 +1,8 @@
 package com.healthcare.aiassistant.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,10 +16,12 @@ public class ConsultationMessage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "appointment_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Appointment appointment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private User sender; // Can be null if senderType is AI
 
     @Enumerated(EnumType.STRING)

@@ -5,6 +5,7 @@ import com.healthcare.aiassistant.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,4 +17,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     Boolean existsByEmail(String email);
     long countByRole(Role role);
+
+    // Soft-delete partitioning for the admin user views.
+    List<User> findByDeletedAtIsNull();
+    List<User> findByDeletedAtIsNotNull();
+
+    // Active-only counts for admin stats (exclude soft-deleted accounts).
+    long countByDeletedAtIsNull();
+    long countByRoleAndDeletedAtIsNull(Role role);
 }
