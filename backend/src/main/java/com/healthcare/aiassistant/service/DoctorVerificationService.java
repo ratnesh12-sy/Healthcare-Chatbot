@@ -51,6 +51,9 @@ public class DoctorVerificationService {
     private AuditService auditService;
 
     @Autowired
+    private EmailService emailService;
+
+    @Autowired
     private VerificationStateMachine stateMachine;
 
     @Autowired
@@ -209,6 +212,16 @@ public class DoctorVerificationService {
             doctor.setVerificationStatus(newStatus);
             doctorRepository.save(doctor);
         }
+
+        // 5b. Email the doctor about the verification result (account-status email).
+        String docName = doctorUser.getFullName() != null ? doctorUser.getFullName() : doctorUser.getUsername();
+        boolean approved = newStatus == ERequestStatus.APPROVED;
+        emailService.send(doctorUser.getEmail(),
+                approved ? "Your doctor verification was approved" : "Update on your doctor verification",
+                "Dr. " + docName + ",\n\n" + (approved
+                        ? "Your verification has been approved. You can now accept appointments on HealthCare AI Assistant."
+                        : "Your verification was not approved at this time. Please review your submitted documents or contact support if you have questions.")
+                        + "\n\n— HealthCare AI Assistant");
 
         // 6. Structured audit logging with before/after
         String auditDetails = String.format(

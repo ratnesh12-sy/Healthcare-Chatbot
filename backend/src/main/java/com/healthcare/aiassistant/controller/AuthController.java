@@ -58,6 +58,9 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+    @Autowired
+    com.healthcare.aiassistant.service.EmailService emailService;
+
     @Value("${app.cookie.secure:false}")
     private boolean cookieSecure;
 
@@ -222,6 +225,13 @@ public class AuthController {
 
         user.setRole(role);
         userRepository.save(user);
+
+        // Welcome email (sent regardless of the notification preference — it's the account confirmation).
+        emailService.send(user.getEmail(), "Welcome to HealthCare AI Assistant",
+                "Hi " + (user.getFullName() != null ? user.getFullName() : user.getUsername()) + ",\n\n"
+                        + "Your HealthCare AI Assistant account has been created successfully. "
+                        + "You can now sign in and book appointments, chat with the AI assistant, and manage your health.\n\n"
+                        + "— The HealthCare AI Assistant Team");
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

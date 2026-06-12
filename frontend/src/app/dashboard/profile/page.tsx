@@ -19,6 +19,7 @@ interface ProfileData {
     emergencyContactName: string | null;
     emergencyContactPhone: string | null;
     profileCompleted: boolean;
+    emailNotificationsEnabled: boolean;
 }
 
 const PROFILE_FIELDS: (keyof ProfileData)[] = [
@@ -82,6 +83,7 @@ function PatientProfile() {
                         emergencyContactName: null,
                         emergencyContactPhone: null,
                         profileCompleted: false,
+                        emailNotificationsEnabled: true,
                     });
                 }
             } finally {
@@ -90,6 +92,11 @@ function PatientProfile() {
         };
         fetchProfile();
     }, [user]);
+
+    const toggleEmailNotifications = () => {
+        if (!profile) return;
+        setProfile({ ...profile, emailNotificationsEnabled: !profile.emailNotificationsEnabled });
+    };
 
     const handleChange = (field: keyof ProfileData, value: string) => {
         if (!profile) return;
@@ -119,6 +126,7 @@ function PatientProfile() {
                 currentMedications: profile.currentMedications || null,
                 emergencyContactName: profile.emergencyContactName || null,
                 emergencyContactPhone: profile.emergencyContactPhone || null,
+                emailNotificationsEnabled: profile.emailNotificationsEnabled,
             });
             setProfile(res.data);
             setMessage({ type: 'success', text: 'Profile saved successfully!' });
@@ -314,6 +322,29 @@ function PatientProfile() {
                             <FieldInput label="Contact Phone" value={profile.emergencyContactPhone || ''}
                                 onChange={(v) => handleChange('emergencyContactPhone', v)} placeholder="9876543210" />
                         </div>
+                    </div>
+
+                    {/* Notification Preferences */}
+                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100">
+                        <h3 className="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
+                            <Bell className="text-amber-500 w-6 h-6" />
+                            Notifications
+                        </h3>
+                        <div
+                            onClick={toggleEmailNotifications}
+                            className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors"
+                        >
+                            <div className="pr-4">
+                                <h4 className="font-bold text-secondary text-sm flex items-center gap-2">
+                                    <Mail size={15} className="text-slate-400" /> Email notifications
+                                </h4>
+                                <p className="text-xs text-slate-500 font-medium mt-0.5">Receive appointment confirmations and reminders by email.</p>
+                            </div>
+                            <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${profile.emailNotificationsEnabled ? 'bg-green-500' : 'bg-slate-300'}`}>
+                                <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${profile.emailNotificationsEnabled ? 'right-1' : 'left-1'}`}></div>
+                            </div>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-3">Changes are saved when you click <span className="font-semibold">Save Changes</span>.</p>
                     </div>
                 </div>
             </div>
