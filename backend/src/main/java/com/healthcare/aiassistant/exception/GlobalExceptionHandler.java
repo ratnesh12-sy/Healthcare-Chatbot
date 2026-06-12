@@ -106,6 +106,12 @@ public class GlobalExceptionHandler {
                 .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getMessage()));
     }
 
+    @ExceptionHandler(org.springframework.web.server.ResponseStatusException.class)
+    public ResponseEntity<?> handleResponseStatus(org.springframework.web.server.ResponseStatusException ex) {
+        return ResponseEntity.status(ex.getStatusCode())
+                .body(com.healthcare.aiassistant.payload.dto.ApiResponse.error(ex.getReason()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGenericException(Exception ex) {
         // Log full details internally, return generic message externally
