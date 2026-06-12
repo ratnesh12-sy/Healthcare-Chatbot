@@ -3,10 +3,11 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
-import { Calendar, Clock, CalendarCheck, CalendarDays, PlusCircle, X, Loader2, CheckCircle, Activity, ShieldAlert, AlertCircle, Lock, CalendarPlus } from 'lucide-react';
+import { Calendar, Clock, CalendarCheck, CalendarDays, PlusCircle, X, Loader2, CheckCircle, Activity, ShieldAlert, AlertCircle, Lock, CalendarPlus, Stethoscope } from 'lucide-react';
 import { DoctorService } from '@/lib/doctorService';
 import { downloadAppointmentIcs } from '@/lib/calendar';
 import BookingPanel from '@/components/booking/BookingPanel';
+import ClinicalRecordModal from '@/components/ClinicalRecordModal';
 import toast, { Toaster } from 'react-hot-toast';
 
 interface Doctor {
@@ -80,6 +81,7 @@ export default function AppointmentsPage() {
     const [expandedSymptoms, setExpandedSymptoms] = useState<Set<number>>(new Set());
     const [selectedAppointment, setSelectedAppointment] = useState<AppointmentDTO | null>(null);
     const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
+    const [clinicalApptId, setClinicalApptId] = useState<number | null>(null);
 
     const isPatient = user?.roles?.[0] === 'ROLE_PATIENT';
     const isDoctor = user?.roles?.[0] === 'ROLE_DOCTOR';
@@ -436,6 +438,7 @@ export default function AppointmentsPage() {
                                                     onDoctorUpdateStatus={handleDoctorUpdateStatus}
                                                     onDoctorCancel={handleDoctorCancel}
                                                     onSelect={setSelectedAppointment}
+                                                    onOpenClinical={setClinicalApptId}
                                                 />
                                             ))}
                                         </div>
@@ -459,6 +462,7 @@ export default function AppointmentsPage() {
                                         onDoctorUpdateStatus={handleDoctorUpdateStatus}
                                         onDoctorCancel={handleDoctorCancel}
                                         onSelect={setSelectedAppointment}
+                                        onOpenClinical={setClinicalApptId}
                                     />
                                 ))}
                             </div>
@@ -511,6 +515,14 @@ export default function AppointmentsPage() {
                     </div>
                 )}
             </AnimatePresence>
+
+            {clinicalApptId !== null && (
+                <ClinicalRecordModal
+                    appointmentId={clinicalApptId}
+                    canEdit={isDoctor}
+                    onClose={() => setClinicalApptId(null)}
+                />
+            )}
         </div>
     );
 }
@@ -518,7 +530,7 @@ export default function AppointmentsPage() {
 /* === REUSABLE APPOINTMENT CARD === */
 function AppointmentCard({
     apt, isPatient, isDoctor, isDoctorVerified = true, cancellingId, expandedSymptoms,
-    onToggleSymptom, onCancel, onDoctorUpdateStatus, onDoctorCancel, onSelect
+    onToggleSymptom, onCancel, onDoctorUpdateStatus, onDoctorCancel, onSelect, onOpenClinical
 }: {
     apt: AppointmentDTO;
     isPatient: boolean;
@@ -531,6 +543,7 @@ function AppointmentCard({
     onDoctorUpdateStatus: (id: number, current: string, next: string) => void;
     onDoctorCancel: (id: number) => void;
     onSelect: (apt: AppointmentDTO) => void;
+    onOpenClinical: (id: number) => void;
 }) {
     const style = STATUS_STYLES[apt.status] || STATUS_STYLES.PENDING;
     const expanded = expandedSymptoms.has(apt.id);
@@ -591,6 +604,16 @@ function AppointmentCard({
                 }`}>
                     {apt.status}
                 </span>
+
+                {/* Notes & prescription (doctor edits, patient views) */}
+                {apt.status !== 'CANCELLED' && (
+                    <button
+                        onClick={(e) => { e.stopPropagation(); onOpenClinical(apt.id); }}
+                        className="text-secondary text-sm font-bold hover:text-primary transition-colors flex items-center gap-1"
+                    >
+                        <Stethoscope size={14} /> {isDoctor ? 'Notes & Rx' : 'View Notes & Rx'}
+                    </button>
+                )}
 
                 {/* Patient: add to calendar (upcoming only) */}
                 {isPatient && (apt.status === 'PENDING' || apt.status === 'CONFIRMED') && (
