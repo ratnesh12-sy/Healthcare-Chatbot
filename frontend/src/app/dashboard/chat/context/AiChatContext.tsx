@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { flushSync } from 'react-dom';
 import api from '@/lib/api';
 import { Message } from '../types';
 
@@ -65,35 +64,63 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
         setMessages(prev => [...prev, userMsg]);
         setIsTyping(true);
 
-        // Appends streamed text to the live AI bubble, creating it on the first token.
-        // flushSync forces React to commit each token synchronously — without it, React 18's
-        // concurrent scheduler batches the async updates from the read loop and only paints
-        // once at the end (looked like the whole reply popping in at once in production).
+        // Typewriter reveal. Tokens arrive from the network in lumpy bursts (often a whole
+        // sentence at once), so painting each burst directly looked sentence-by-sentence.
+        // Instead we accumulate into `fullText` and reveal it smoothly on a ~16ms timer —
+        // a few chars per tick, adaptive so it always catches up just after the last token.
+        // (setTimeout, not requestAnimationFrame: rAF is paused in background tabs, which would
+        // stall the reveal and hang the await; setTimeout keeps progressing.)
         let placeholderAdded = false;
-        const appendToken = (token: string) => {
+        let receivedToken = false;
+        let fullText = '';
+        let displayedLen = 0;
+        let streamEnded = false;
+        let doneMeta: { id?: number; timestamp?: string } | null = null;
+        let revealPromise: Promise<void> | null = null;
+
+        const updateBubble = (text: string) => {
+            setMessages(prev => {
+                const copy = [...prev];
+                const last = copy[copy.length - 1];
+                if (last?.streaming) copy[copy.length - 1] = { ...last, message: text };
+                return copy;
+            });
+        };
+
+        // Reveals buffered text frame-by-frame; resolves once the stream has ended AND
+        // everything received has been shown.
+        const startReveal = () => new Promise<void>((resolve) => {
+            const step = () => {
+                if (displayedLen < fullText.length) {
+                    const remaining = fullText.length - displayedLen;
+                    const inc = Math.min(Math.max(2, Math.ceil(remaining / 12)), 40);
+                    displayedLen = Math.min(fullText.length, displayedLen + inc);
+                    updateBubble(fullText.slice(0, displayedLen));
+                }
+                if (streamEnded && displayedLen >= fullText.length) {
+                    resolve();
+                    return;
+                }
+                setTimeout(step, 16);
+            };
+            setTimeout(step, 16);
+        });
+
+        const onToken = (token: string) => {
+            receivedToken = true;
+            fullText += token;
             if (!placeholderAdded) {
                 placeholderAdded = true;
-                flushSync(() => {
-                    setIsTyping(false); // hide the typing dot once real text starts flowing
-                    setMessages(prev => [...prev, {
-                        message: token, isFromAi: true, timestamp: new Date(),
-                        isOcrAnalysis: hasOcr, streaming: true
-                    }]);
-                });
-            } else {
-                flushSync(() => {
-                    setMessages(prev => {
-                        const copy = [...prev];
-                        const last = copy[copy.length - 1];
-                        if (last?.streaming) copy[copy.length - 1] = { ...last, message: last.message + token };
-                        return copy;
-                    });
-                });
+                setIsTyping(false); // hide the typing dot once real text starts flowing
+                setMessages(prev => [...prev, {
+                    message: '', isFromAi: true, timestamp: new Date(),
+                    isOcrAnalysis: hasOcr, streaming: true
+                }]);
+                revealPromise = startReveal();
             }
         };
 
-        // Clears the streaming flag (and stamps id/timestamp from the server) once
-        // finished. Safe to call multiple times — no-ops after the flag is cleared.
+        // Clears the streaming flag (and stamps id/timestamp from the server) once finished.
         const finalize = (meta: { id?: number; timestamp?: string } | null) => {
             setMessages(prev => {
                 const copy = [...prev];
@@ -101,6 +128,7 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
                 if (last?.streaming) {
                     copy[copy.length - 1] = {
                         ...last,
+                        message: fullText || last.message,
                         streaming: false,
                         id: meta?.id ?? last.id,
                         timestamp: meta?.timestamp ? new Date(meta.timestamp) : last.timestamp
@@ -110,7 +138,6 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
             });
         };
 
-        let receivedToken = false;
         try {
             const res = await fetch(`${API_BASE}/chat/ai-chat/stream`, {
                 method: 'POST',
@@ -150,10 +177,9 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
                     try { data = JSON.parse(dataStr); } catch { continue; }
 
                     if (eventName === 'token' && typeof data.c === 'string') {
-                        receivedToken = true;
-                        appendToken(data.c);
+                        onToken(data.c);
                     } else if (eventName === 'done') {
-                        finalize(data);
+                        doneMeta = data;
                         stop = true;
                     } else if (eventName === 'error') {
                         if (!receivedToken) erroredBeforeToken = true;
@@ -167,14 +193,18 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
             // ERR_INCOMPLETE_CHUNKED_ENCODING in devtools).
             try { await reader.cancel(); } catch { /* already closed */ }
 
-            // Ensure the bubble is never left in a perpetual "streaming" state.
-            if (placeholderAdded) finalize(null);
+            // Let the typewriter finish revealing what arrived, then clear the streaming flag.
+            streamEnded = true;
+            if (revealPromise) await revealPromise;
+            if (placeholderAdded) finalize(doneMeta);
 
             // Server signalled failure before producing anything → fall back.
             if (erroredBeforeToken && !receivedToken) throw new Error('stream-error');
         } catch (err) {
+            streamEnded = true; // unblock any running reveal loop
             // Only fall back when nothing was rendered; a mid-stream drop keeps partial text.
             if (!receivedToken) await sendBlocking(finalMessage, hasOcr);
+            else if (placeholderAdded) finalize(doneMeta);
         } finally {
             setIsTyping(false);
         }
