@@ -116,17 +116,25 @@ public class AiChatService {
         SseEmitter emitter = new SseEmitter(120_000L);
 
         aiExecutor.execute(() -> {
-            String apiKey = systemSettingRepository.findBySettingKey("apiKey")
-                    .map(s -> s.getSettingValue())
-                    .orElse(openAiProperties.getApiKey());
+            // Respect the global AI kill-switch (admin setting), same as getAiResponse.
+            // Emitting an error lets the frontend fall back to the blocking endpoint,
+            // which renders the user-facing "unavailable" message.
+            if (!settingsService.getBoolean(SettingsService.AI_ENABLED)) {
+                try {
+                    emitter.send(SseEmitter.event().name("error")
+                            .data(Map.of("message", "The AI assistant is currently unavailable."),
+                                    MediaType.APPLICATION_JSON));
+                } catch (Exception ignored) {
+                    // client already gone
+                }
+                emitter.complete();
+                return;
+            }
 
-            String aiModel = systemSettingRepository.findBySettingKey("aiModel")
-                    .map(s -> s.getSettingValue())
-                    .orElse(openAiProperties.getModel());
-
-            String systemPrompt = systemSettingRepository.findBySettingKey("medicalDisclaimer")
-                    .map(s -> s.getSettingValue())
-                    .orElse("You are a professional healthcare assistant. Analyze symptoms and provide possible conditions, precautions, and doctor recommendations. Always advise consulting a real doctor.");
+            // Dynamic settings (cached). API key stays env-only — never stored in the DB.
+            String apiKey = openAiProperties.getApiKey();
+            String aiModel = settingsService.getString(SettingsService.AI_MODEL);
+            String systemPrompt = settingsService.getString(SettingsService.AI_SYSTEM_PROMPT);
 
             List<OpenAiMessage> messages = new ArrayList<>();
             messages.add(new OpenAiMessage("system", systemPrompt));
