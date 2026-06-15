@@ -14,6 +14,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
@@ -57,5 +60,21 @@ public class ChatController {
         } else {
             return ResponseEntity.badRequest().body("AI service is currently unavailable. Please check API Key configuration.");
         }
+    }
+
+    /**
+     * Streaming variant of {@link #aiChat}. Returns Server-Sent Events so the
+     * frontend can render the reply token-by-token. The blocking /ai-chat endpoint
+     * above is kept as a fallback for clients/proxies that can't stream.
+     */
+    @PostMapping(value = "/ai-chat/stream", produces = "text/event-stream")
+    @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
+    public SseEmitter aiChatStream(@AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody ChatRequest chatRequest, HttpServletResponse httpResponse) {
+        // Disable proxy buffering (Render/nginx + Vercel /api rewrite) so tokens flush live.
+        httpResponse.setHeader("X-Accel-Buffering", "no");
+        User user = userRepository.findByUsername(userDetails.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return aiChatService.streamAiResponse(user, chatRequest.getMessage());
     }
 }
