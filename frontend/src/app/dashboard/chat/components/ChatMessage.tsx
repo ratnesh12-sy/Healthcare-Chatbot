@@ -29,8 +29,8 @@ export default function ChatMessage({ message, onOpenReminder }: ChatMessageProp
                             <span className={`text-[10px] font-medium ${message.isFromAi ? 'text-slate-400' : 'text-white/70'}`}>
                                 {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
-                            {message.isFromAi && onOpenReminder && (
-                                <button 
+                            {message.isFromAi && !message.streaming && onOpenReminder && (
+                                <button
                                     onClick={() => onOpenReminder(message.message)}
                                     className="flex items-center gap-1 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-md transition-colors"
                                 >
@@ -40,14 +40,14 @@ export default function ChatMessage({ message, onOpenReminder }: ChatMessageProp
                         </div>
                     </div>
                         {/* Medical Disclaimer after OCR analysis responses */}
-                        {message.isFromAi && message.isOcrAnalysis && (
+                        {message.isFromAi && !message.streaming && message.isOcrAnalysis && (
                             <div className="ocr-disclaimer">
                                 ⚠️ This analysis is for informational purposes only and is not a medical diagnosis. Always consult a qualified healthcare professional.
                             </div>
                         )}
-                        
-                        {/* Doctor Suggestions */}
-                        {message.isFromAi && (
+
+                        {/* Doctor Suggestions — only once the full reply has streamed in */}
+                        {message.isFromAi && !message.streaming && (
                             <DoctorSuggestion aiMessage={message.message} />
                         )}
                     </div>
