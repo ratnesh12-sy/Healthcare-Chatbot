@@ -2,6 +2,7 @@ package com.healthcare.aiassistant.controller;
 
 import com.healthcare.aiassistant.model.ChatMessage;
 import com.healthcare.aiassistant.model.User;
+import com.healthcare.aiassistant.payload.dto.ChatMessageDTO;
 import com.healthcare.aiassistant.payload.request.ChatRequest;
 import com.healthcare.aiassistant.repository.UserRepository;
 import com.healthcare.aiassistant.service.AiChatService;
@@ -34,7 +35,7 @@ public class ChatController {
 
     @GetMapping("/history")
     @PreAuthorize("hasRole('PATIENT') or hasRole('DOCTOR') or hasRole('ADMIN')")
-    public List<ChatMessage> getHistory(@AuthenticationPrincipal UserDetails userDetails) {
+    public List<ChatMessageDTO> getHistory(@AuthenticationPrincipal UserDetails userDetails) {
         User user = userRepository.findByUsername(userDetails.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
         return chatService.getChatHistory(user);
@@ -46,7 +47,7 @@ public class ChatController {
             @RequestBody ChatRequest chatRequest) {
         User user = userRepository.findByUsername(userDetails.getUsername()).get();
         ChatMessage saved = chatService.saveMessage(user, chatRequest.getMessage(), chatRequest.getIsFromAi());
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.ok(ChatMessageDTO.from(saved));
     }
 
     @PostMapping("/ai-chat")
@@ -56,7 +57,7 @@ public class ChatController {
         User user = userRepository.findByUsername(userDetails.getUsername()).get();
         ChatMessage response = aiChatService.getAiResponse(user, chatRequest.getMessage());
         if (response != null) {
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ChatMessageDTO.from(response));
         } else {
             return ResponseEntity.badRequest().body("AI service is currently unavailable. Please check API Key configuration.");
         }
