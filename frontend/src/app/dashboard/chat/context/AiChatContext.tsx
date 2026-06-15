@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { flushSync } from 'react-dom';
 import api from '@/lib/api';
 import { Message } from '../types';
 
@@ -65,21 +66,28 @@ export function AiChatProvider({ children }: { children: ReactNode }) {
         setIsTyping(true);
 
         // Appends streamed text to the live AI bubble, creating it on the first token.
+        // flushSync forces React to commit each token synchronously — without it, React 18's
+        // concurrent scheduler batches the async updates from the read loop and only paints
+        // once at the end (looked like the whole reply popping in at once in production).
         let placeholderAdded = false;
         const appendToken = (token: string) => {
             if (!placeholderAdded) {
                 placeholderAdded = true;
-                setIsTyping(false); // hide the typing dot once real text starts flowing
-                setMessages(prev => [...prev, {
-                    message: token, isFromAi: true, timestamp: new Date(),
-                    isOcrAnalysis: hasOcr, streaming: true
-                }]);
+                flushSync(() => {
+                    setIsTyping(false); // hide the typing dot once real text starts flowing
+                    setMessages(prev => [...prev, {
+                        message: token, isFromAi: true, timestamp: new Date(),
+                        isOcrAnalysis: hasOcr, streaming: true
+                    }]);
+                });
             } else {
-                setMessages(prev => {
-                    const copy = [...prev];
-                    const last = copy[copy.length - 1];
-                    if (last?.streaming) copy[copy.length - 1] = { ...last, message: last.message + token };
-                    return copy;
+                flushSync(() => {
+                    setMessages(prev => {
+                        const copy = [...prev];
+                        const last = copy[copy.length - 1];
+                        if (last?.streaming) copy[copy.length - 1] = { ...last, message: last.message + token };
+                        return copy;
+                    });
                 });
             }
         };
