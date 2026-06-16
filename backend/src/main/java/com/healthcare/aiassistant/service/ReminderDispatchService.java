@@ -30,15 +30,18 @@ public class ReminderDispatchService {
     private final PushNotificationService pushNotificationService;
     private final PushProperties pushProperties;
     private final Clock clock;
+    private final EmailService emailService;
 
     public ReminderDispatchService(ReminderRepository reminderRepository,
                                    PushNotificationService pushNotificationService,
                                    PushProperties pushProperties,
-                                   Clock clock) {
+                                   Clock clock,
+                                   EmailService emailService) {
         this.reminderRepository = reminderRepository;
         this.pushNotificationService = pushNotificationService;
         this.pushProperties = pushProperties;
         this.clock = clock;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -58,6 +61,10 @@ public class ReminderDispatchService {
             }
             pushNotificationService.sendToUser(
                     r.getUser().getId(), "Health reminder", r.getText(), "/dashboard");
+            // Also email the reminder if the user opted into email notifications.
+            if (Boolean.TRUE.equals(r.getUser().getEmailNotificationsEnabled())) {
+                emailService.send(r.getUser().getEmail(), "Health reminder", r.getText());
+            }
             r.setLastNotifiedAt(now);
             r.setSnoozeUntil(null);
             advance(r, now);

@@ -30,10 +30,14 @@ public class UserProfileDTO {
     private String email;
     private String username;
     private Boolean profileCompleted;
+    private Boolean emailNotificationsEnabled;
 
     public UserProfileDTO() {}
 
     // --- Getters and Setters ---
+
+    public Boolean getEmailNotificationsEnabled() { return emailNotificationsEnabled; }
+    public void setEmailNotificationsEnabled(Boolean emailNotificationsEnabled) { this.emailNotificationsEnabled = emailNotificationsEnabled; }
 
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }

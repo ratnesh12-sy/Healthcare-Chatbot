@@ -50,6 +50,22 @@ public class AppointmentService {
     @Autowired
     private SettingsService settingsService;
 
+    @Autowired
+    private EmailService emailService;
+
+    /** Emails the patient about an appointment change, if they have email notifications enabled. */
+    private void notifyByEmail(User patient, AppointmentDTO dto, String action) {
+        if (patient == null || patient.getEmailNotificationsEnabled() == null || !patient.getEmailNotificationsEnabled()) {
+            return;
+        }
+        String who = patient.getFullName() != null ? patient.getFullName() : patient.getUsername();
+        String subject = "Appointment " + action + " — " + dto.getDoctorName();
+        String body = "Hi " + who + ",\n\n"
+                + "Your appointment with " + dto.getDoctorName() + " on " + dto.getAppointmentDate()
+                + " has been " + action + ".\n\n— HealthCare AI Assistant";
+        emailService.send(patient.getEmail(), subject, body);
+    }
+
     // ── Booking ──────────────────────────────────────────────────
 
     @Transactional
@@ -138,7 +154,9 @@ public class AppointmentService {
         // 10. Auto-create reminders (T-24h and morning-of), atomically with the booking.
         reminderService.createForAppointment(appointment);
 
-        return mapToDTO(appointment);
+        AppointmentDTO dto = mapToDTO(appointment);
+        notifyByEmail(patient, dto, "booked");
+        return dto;
     }
 
     // ── Cancellation ────────────────────────────────────────────
@@ -174,7 +192,9 @@ public class AppointmentService {
         log.info("event=appointment_cancelled requestId={} appointmentId={} userId={} status=SUCCESS",
                 MDC.get("requestId"), appointment.getId(), currentUserId);
 
-        return mapToDTO(appointment);
+        AppointmentDTO dto = mapToDTO(appointment);
+        notifyByEmail(appointment.getPatient(), dto, "cancelled");
+        return dto;
     }
 
     @Autowired

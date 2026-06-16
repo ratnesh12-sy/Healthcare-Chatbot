@@ -65,6 +65,9 @@ public class UserProfileService {
         if (dto.getDateOfBirth() != null) {
             user.setDateOfBirth(dto.getDateOfBirth());
         }
+        if (dto.getEmailNotificationsEnabled() != null) {
+            user.setEmailNotificationsEnabled(dto.getEmailNotificationsEnabled());
+        }
         userRepository.save(user);
 
         // --- Upsert UserProfile ---
@@ -149,6 +152,7 @@ public class UserProfileService {
         dto.setUsername(user.getUsername());
         dto.setPhoneNumber(user.getPhoneNumber());
         dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setEmailNotificationsEnabled(user.getEmailNotificationsEnabled());
 
         // Medical fields (null-safe)
         if (profile != null) {
