@@ -65,7 +65,7 @@ function SlotGroup({ label, icon, slots, selectedSlot, onSlotSelect }: {
             <div className="flex items-center gap-2 mb-3">
                 {icon}
                 <h4 className="text-sm font-bold text-slate-600 uppercase tracking-wider">{label}</h4>
-                <span className="text-xs text-slate-400 font-semibold">
+                <span className="text-xs text-muted font-semibold">
                     ({slots.filter(s => s.available).length} available)
                 </span>
             </div>
@@ -95,7 +95,7 @@ export default function TimeSlotsGrid({ slots, loading, selectedSlot, onSlotSele
                     <Calendar className="w-8 h-8" />
                 </div>
                 <h3 className="text-lg font-bold text-slate-700 mb-1">No slots available for this day</h3>
-                <p className="text-sm text-slate-500 max-w-xs">The doctor has no availability on this date. Try selecting a different day.</p>
+                <p className="text-sm text-muted max-w-xs">The doctor has no availability on this date. Try selecting a different day.</p>
             </div>
         );
     }
@@ -106,7 +106,7 @@ export default function TimeSlotsGrid({ slots, loading, selectedSlot, onSlotSele
         <div className="space-y-6">
             <SlotGroup label="Morning" icon={<Sun className="w-4 h-4 text-amber-500" />} slots={morning} selectedSlot={selectedSlot} onSlotSelect={onSlotSelect} />
             <SlotGroup label="Afternoon" icon={<CloudSun className="w-4 h-4 text-orange-500" />} slots={afternoon} selectedSlot={selectedSlot} onSlotSelect={onSlotSelect} />
-            <SlotGroup label="Evening" icon={<Moon className="w-4 h-4 text-indigo-500" />} slots={evening} selectedSlot={selectedSlot} onSlotSelect={onSlotSelect} />
+            <SlotGroup label="Evening" icon={<Moon className="w-4 h-4 text-primary" />} slots={evening} selectedSlot={selectedSlot} onSlotSelect={onSlotSelect} />
         </div>
     );
 }

@@ -11,20 +11,20 @@ export default function ChatHeader() {
                     <Bot className="text-primary w-7 h-7 md:w-8 md:h-8" />
                     Health AI Assistant
                 </h1>
-                <p className="text-slate-500 mt-1 font-medium text-sm md:text-base">
+                <p className="text-muted mt-1 font-medium text-sm md:text-base">
                     Ask questions, check symptoms, or upload a medical report.
                 </p>
             </div>
             <div className="flex items-center gap-3">
                 <button 
                     onClick={clearHistory}
-                    className="hidden sm:flex items-center gap-2 text-slate-500 hover:text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium"
+                    className="hidden sm:flex items-center gap-2 text-muted hover:text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-50 transition-colors text-sm font-medium"
                     title="Clear chat history"
                 >
                     <Trash2 size={16} /> Clear
                 </button>
                 {isConnected ? (
-                    <div className="hidden sm:flex items-center gap-2 bg-green-50 text-green-700 px-4 py-1.5 rounded-full text-sm font-bold border border-green-100 shadow-sm">
+                    <div className="hidden sm:flex items-center gap-2 bg-pastel-mint text-pastel-mintInk px-4 py-1.5 rounded-full text-sm font-bold border border-green-100 shadow-sm">
                         <span className="relative flex h-2.5 w-2.5">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
@@ -32,7 +32,7 @@ export default function ChatHeader() {
                         AI Online
                     </div>
                 ) : (
-                    <div className="hidden sm:flex items-center gap-2 bg-slate-50 text-slate-500 px-4 py-1.5 rounded-full text-sm font-bold border border-slate-200 shadow-sm">
+                    <div className="hidden sm:flex items-center gap-2 bg-slate-50 text-muted px-4 py-1.5 rounded-full text-sm font-bold border border-line shadow-sm">
                         <span className="relative flex h-2.5 w-2.5 rounded-full bg-slate-400"></span>
                         Offline
                     </div>

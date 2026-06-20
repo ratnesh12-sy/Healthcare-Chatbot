@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <Wrench size={40} />
                     </div>
                     <h1 className="text-2xl font-extrabold text-secondary mb-2">Under Maintenance</h1>
-                    <p className="text-slate-500 max-w-md font-medium">
+                    <p className="text-muted max-w-md font-medium">
                         {settings.platformName || 'The platform'} is temporarily unavailable while we perform maintenance. Please check back soon.
                     </p>
                     {settings.supportEmail && (
@@ -44,37 +44,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <div className="flex-1 flex flex-col overflow-hidden w-full relative">
                     <AnnouncementBanner />
                     {/* Top Header */}
-                    <header className="h-20 bg-white shadow-sm flex items-center justify-between px-4 md:px-8 z-0">
+                    <header className="h-20 bg-white border-b border-line flex items-center justify-between px-4 md:px-8 z-0">
                         <div className="flex items-center gap-4">
                             {/* Mobile Hamburger Toggle */}
-                            <button 
-                                className="md:hidden p-2 text-gray-500 hover:text-primary transition-colors hover:bg-gray-50 rounded-lg"
+                            <button
+                                className="md:hidden p-2 text-muted hover:text-primary transition-colors hover:bg-surface rounded-xl"
                                 onClick={() => setIsSidebarOpen(true)}
                             >
                                 <Menu size={24} />
                             </button>
-                            
+
                             {/* Search Bar - Hidden on mobile */}
-                            <div className="hidden md:flex items-center bg-gray-100 px-4 py-2 rounded-full w-96">
-                                <Search className="w-5 h-5 text-gray-400" />
-                                <input 
-                                    type="text" 
-                                    placeholder="Search appointments, patients..." 
-                                    className="bg-transparent border-none outline-none ml-3 w-full text-sm placeholder-gray-400 text-secondary"
+                            <div className="hidden md:flex items-center bg-surface border border-line px-4 py-2.5 rounded-2xl w-96 focus-within:ring-2 focus-within:ring-primary/15 focus-within:border-primary transition-all">
+                                <Search className="w-5 h-5 text-muted" />
+                                <input
+                                    type="text"
+                                    placeholder="Search appointments, doctors..."
+                                    className="bg-transparent border-none outline-none ml-3 w-full text-sm placeholder-muted text-secondary"
                                 />
                             </div>
                         </div>
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4 md:gap-6">
                             <NotificationBell />
                             <div className="flex items-center gap-3 cursor-pointer select-none">
-                                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold border-2 border-white shadow-sm">
+                                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-soft-sm">
                                     {user?.fullName?.charAt(0) || user?.username?.charAt(0) || 'U'}
                                 </div>
                                 <div className="hidden md:block">
-                                    <p className="text-sm font-semibold">{user?.fullName || user?.username}</p>
-                                    <p className="text-xs text-gray-500 capitalize">{user?.roles?.[0]?.replace('ROLE_', '').toLowerCase() || 'Patient'}</p>
+                                    <p className="text-sm font-bold text-secondary">{user?.fullName || user?.username}</p>
+                                    <p className="text-xs text-muted capitalize">{user?.roles?.[0]?.replace('ROLE_', '').toLowerCase() || 'Patient'}</p>
                                 </div>
-                                <ChevronDown className="w-4 h-4 text-gray-400" />
+                                <ChevronDown className="w-4 h-4 text-muted" />
                             </div>
                         </div>
                     </header>

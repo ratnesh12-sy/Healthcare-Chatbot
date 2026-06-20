@@ -21,7 +21,7 @@ export default function CalendarPicker({ selectedDate, maxDays, onDateSelect, on
     };
 
     return (
-        <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
+        <div className="bg-white rounded-2xl border border-line p-4 shadow-sm">
             <DayPicker
                 mode="single"
                 selected={selectedDate}

@@ -37,11 +37,11 @@ export default function LoginPage() {
                 className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl"
             >
                 <div className="text-center mb-10">
-                    <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-teal-500/10">
+                    <div className="w-16 h-16 bg-primary-soft rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-primary/10">
                         <Activity className="w-8 h-8" />
                     </div>
                     <h2 className="text-3xl font-extrabold text-dark tracking-tight">Welcome Back</h2>
-                    <p className="text-gray-500 mt-3">Sign in to access your HealthAI assistant</p>
+                    <p className="text-muted mt-3">Sign in to access your HealthAI assistant</p>
                 </div>
 
                 {error && (
@@ -61,7 +61,7 @@ export default function LoginPage() {
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="your_username"
                             required
                         />
@@ -73,7 +73,7 @@ export default function LoginPage() {
                                 type={showPassword ? "text" : "password"}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="block w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 pr-10 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="••••••••"
                                 required
                             />
@@ -82,13 +82,13 @@ export default function LoginPage() {
                                 onClick={() => setShowPassword(prev => !prev)}
                                 aria-label="Toggle password visibility"
                                 tabIndex={-1}
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-gray-600 cursor-pointer transition-colors"
                             >
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </button>
                         </div>
                         <div className="text-right mt-2">
-                            <Link href="/forgot-password" className="text-sm text-primary font-semibold hover:text-teal-600 transition-colors">
+                            <Link href="/forgot-password" className="text-sm text-primary font-semibold hover:text-[#5d4bd6] transition-colors">
                                 Forgot password?
                             </Link>
                         </div>
@@ -106,7 +106,7 @@ export default function LoginPage() {
 
                 {settings.registrationEnabled !== 'false' && (
                     <p className="mt-10 text-center text-gray-600 text-sm">
-                        Don't have an account? <Link href="/signup" className="text-primary font-bold hover:text-teal-600 transition-colors">Create account</Link>
+                        Don't have an account? <Link href="/signup" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">Create account</Link>
                     </p>
                 )}
             </motion.div>

@@ -167,14 +167,14 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
 
                 {/* Slots */}
                 <div className="lg:col-span-8">
-                    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm min-h-[300px]">
+                    <div className="bg-white rounded-2xl border border-line p-6 shadow-sm min-h-[300px]">
                         {!selectedDate ? (
                             <div className="flex flex-col items-center justify-center h-full py-16 text-center">
                                 <div className="w-14 h-14 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center mb-4">
                                     <span className="text-2xl">📅</span>
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-700 mb-1">Select a date</h3>
-                                <p className="text-sm text-slate-500">Pick a date from the calendar to see available time slots.</p>
+                                <p className="text-sm text-muted">Pick a date from the calendar to see available time slots.</p>
                             </div>
                         ) : error ? (
                             <div className="flex flex-col items-center justify-center h-full py-16 text-center">
@@ -182,7 +182,7 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                                     <AlertCircle className="w-7 h-7" />
                                 </div>
                                 <h3 className="text-lg font-bold text-slate-700 mb-1">Something went wrong</h3>
-                                <p className="text-sm text-slate-500 mb-4">{error}</p>
+                                <p className="text-sm text-muted mb-4">{error}</p>
                                 <button
                                     onClick={() => fetchSlots(format(selectedDate, 'yyyy-MM-dd'), false)}
                                     className="px-5 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors"
@@ -196,7 +196,7 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                                     <h3 className="text-lg font-bold text-slate-800">
                                         {format(selectedDate, 'EEEE, MMMM d, yyyy')}
                                     </h3>
-                                    <span className="text-xs font-semibold text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+                                    <span className="text-xs font-semibold text-muted bg-slate-100 px-3 py-1 rounded-full">
                                         Dr. {doctorName}
                                     </span>
                                 </div>
@@ -214,16 +214,16 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
 
             {/* Booking Confirmation Section */}
             {selectedSlot && selectedDate && (
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
+                <div className="bg-white rounded-2xl border border-line p-6 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
                     <h3 className="text-lg font-bold text-slate-800 mb-4">Confirm Your Appointment</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Doctor</p>
+                        <div className="bg-slate-50 rounded-xl p-4 border border-line">
+                            <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Doctor</p>
                             <p className="text-sm font-bold text-slate-800">Dr. {doctorName}</p>
                         </div>
-                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
-                            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Date</p>
+                        <div className="bg-slate-50 rounded-xl p-4 border border-line">
+                            <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Date</p>
                             <p className="text-sm font-bold text-slate-800">{format(selectedDate, 'MMMM d, yyyy')}</p>
                         </div>
                         <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
@@ -239,14 +239,14 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                             onChange={(e) => setSymptoms(e.target.value)}
                             rows={3}
                             placeholder="E.g. Fever for 3 days, persistent cough, headache..."
-                            className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-slate-700"
+                            className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-slate-700"
                         />
                     </div>
 
                     <button
                         onClick={handleBook}
                         disabled={booking}
-                        className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-teal-600 transition-all shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-[#5d4bd6] transition-all shadow-md hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                         {booking ? (
                             <>

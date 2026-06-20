@@ -6,7 +6,6 @@ import {
     LayoutDashboard,
     MessageSquare,
     Calendar,
-    Users,
     LogOut,
     UserCircle,
     ShieldAlert,
@@ -29,53 +28,62 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onClose }) => {
         { name: 'Appointments', icon: <Calendar size={20} />, path: '/dashboard/appointments', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
         { name: 'Health', icon: <HeartPulse size={20} />, path: '/dashboard/health', roles: ['ROLE_PATIENT'] },
         { name: 'Profile', icon: <UserCircle size={20} />, path: '/dashboard/profile', roles: ['ROLE_PATIENT', 'ROLE_DOCTOR'] },
-        { name: 'Admin Console', icon: <ShieldAlert size={20} className="text-rose-500" />, path: '/admin', roles: ['ROLE_ADMIN'] },
+        { name: 'Admin Console', icon: <ShieldAlert size={20} />, path: '/admin', roles: ['ROLE_ADMIN'] },
     ];
 
     const userRole = user?.roles?.[0];
+    const initial = user?.fullName?.charAt(0) || user?.username?.charAt(0) || 'U';
+    const roleLabel = userRole?.replace('ROLE_', '').toLowerCase() || 'patient';
 
     const sidebarContent = (
-        <div className="w-64 bg-white shadow-soft min-h-screen flex flex-col">
-            <div className="p-6 text-2xl font-extrabold flex items-center justify-between">
+        <div className="w-64 bg-white border-r border-line min-h-screen flex flex-col">
+            <div className="px-5 pt-6 pb-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white text-xl">
-                        H
+                    <div className="w-11 h-11 rounded-2xl bg-primary flex items-center justify-center text-white shadow-soft">
+                        <HeartPulse size={22} />
                     </div>
-                    <span className="text-secondary">HealthAI</span>
+                    <span className="font-display text-xl font-extrabold text-secondary">HealthAI</span>
                 </div>
                 {onClose && (
-                    <button onClick={onClose} className="md:hidden text-gray-400 hover:text-gray-600 p-1">
+                    <button onClick={onClose} className="md:hidden text-muted hover:text-secondary p-1">
                         <X size={24} />
                     </button>
                 )}
             </div>
 
-            <nav className="flex-1 px-4 py-4 space-y-2">
-                {menuItems.filter(item => userRole && item.roles.includes(userRole)).map((item) => (
-                    <Link
-                        key={item.path}
-                        href={item.path}
-                        onClick={onClose}
-                        className={`flex items-center gap-3 px-6 py-3.5 transition-all relative ${pathname === item.path
-                            ? 'text-white'
-                            : 'text-secondary/70 hover:text-primary hover:bg-surface'
-                            }`}
-                    >
-                        {pathname === item.path && (
-                            <div className="absolute inset-0 bg-primary rounded-r-full -ml-4" />
-                        )}
-                        <div className="relative z-10 flex items-center gap-3">
+            <nav className="flex-1 px-3 py-3 space-y-1.5">
+                {menuItems.filter(item => userRole && item.roles.includes(userRole)).map((item) => {
+                    const isActive = pathname === item.path;
+                    return (
+                        <Link
+                            key={item.path}
+                            href={item.path}
+                            onClick={onClose}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-2xl font-semibold transition-all ${isActive
+                                ? 'bg-primary-soft text-primary'
+                                : 'text-muted hover:bg-surface hover:text-secondary'
+                                }`}
+                        >
                             {item.icon}
-                            <span className="font-semibold">{item.name}</span>
-                        </div>
-                    </Link>
-                ))}
+                            <span>{item.name}</span>
+                        </Link>
+                    );
+                })}
             </nav>
 
-            <div className="p-4 border-t">
+            <div className="p-3 space-y-2">
+                <div className="flex items-center gap-3 p-3 rounded-2xl bg-surface">
+                    <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white font-bold text-sm">
+                        {initial.toUpperCase()}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold text-secondary truncate">{user?.fullName || user?.username}</p>
+                        <p className="text-xs text-muted capitalize">{roleLabel}</p>
+                    </div>
+                </div>
                 <button
                     onClick={logout}
-                    className="flex items-center gap-3 px-4 py-3 w-full text-left text-red-500 hover:bg-red-50 rounded-lg transition-colors font-medium"
+                    className="flex items-center gap-3 px-4 py-3 w-full text-left text-rose-500 hover:bg-rose-50 rounded-2xl transition-colors font-semibold"
                 >
                     <LogOut size={20} />
                     <span>Logout</span>
@@ -96,7 +104,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onClose }) => {
                 <div className="md:hidden fixed inset-0 z-50">
                     {/* Dark overlay */}
                     <div
-                        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+                        className="absolute inset-0 bg-secondary/40 backdrop-blur-sm"
                         onClick={onClose}
                     />
                     {/* Sidebar panel */}

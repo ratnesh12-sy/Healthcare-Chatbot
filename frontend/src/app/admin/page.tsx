@@ -43,7 +43,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
                 <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Command Center</h1>
-                <p className="text-slate-500 mt-2 font-medium">Platform overview and high-level artificial intelligence metrics.</p>
+                <p className="text-muted mt-2 font-medium">Platform overview and high-level artificial intelligence metrics.</p>
             </div>
 
             {error && (
@@ -57,31 +57,31 @@ export default function AdminDashboard() {
 
             {/* Metrics Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-                <div className="bg-white p-6 rounded-3xl shadow-soft border border-slate-100 flex flex-col relative overflow-hidden group">
+                <div className="bg-white p-6 rounded-3xl shadow-soft border border-line flex flex-col relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-                    <div className="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-sm border border-blue-200">
+                    <div className="w-12 h-12 bg-pastel-sky text-pastel-skyInk rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-sm border border-blue-200">
                         <Users size={24} />
                     </div>
                     <h3 className="text-4xl font-extrabold text-secondary relative z-10">{stats.totalUsers}</h3>
-                    <p className="text-sm font-bold text-slate-500 mt-1 relative z-10 uppercase tracking-wider">Total Evaluated Patients</p>
+                    <p className="text-sm font-bold text-muted mt-1 relative z-10 uppercase tracking-wider">Total Evaluated Patients</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-3xl shadow-soft border border-slate-100 flex flex-col relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-teal-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-                    <div className="w-12 h-12 bg-teal-100 text-teal-600 rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-sm border border-teal-200">
+                <div className="bg-white p-6 rounded-3xl shadow-soft border border-line flex flex-col relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-primary-soft rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                    <div className="w-12 h-12 bg-primary-soft text-[#5d4bd6] rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-sm border border-primary-soft">
                         <UserPlus size={24} />
                     </div>
                     <h3 className="text-4xl font-extrabold text-secondary relative z-10">{stats.totalDoctors}</h3>
-                    <p className="text-sm font-bold text-slate-500 mt-1 relative z-10 uppercase tracking-wider">Registered Specialists</p>
+                    <p className="text-sm font-bold text-muted mt-1 relative z-10 uppercase tracking-wider">Registered Specialists</p>
                 </div>
 
-                <div className="bg-white p-6 rounded-3xl shadow-soft border border-slate-100 flex flex-col relative overflow-hidden group">
+                <div className="bg-white p-6 rounded-3xl shadow-soft border border-line flex flex-col relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
-                    <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-sm border border-purple-200">
+                    <div className="w-12 h-12 bg-primary-soft text-primary rounded-2xl flex items-center justify-center mb-4 relative z-10 shadow-sm border border-purple-200">
                         <FileText size={24} />
                     </div>
                     <h3 className="text-4xl font-extrabold text-secondary relative z-10">{stats.totalAppointments}</h3>
-                    <p className="text-sm font-bold text-slate-500 mt-1 relative z-10 uppercase tracking-wider">Platform Appointments</p>
+                    <p className="text-sm font-bold text-muted mt-1 relative z-10 uppercase tracking-wider">Platform Appointments</p>
                 </div>
 
                 <div className="bg-slate-900 p-6 rounded-3xl shadow-2xl border flex flex-col relative overflow-hidden group border-rose-500/30">
@@ -92,31 +92,31 @@ export default function AdminDashboard() {
                     <div className="flex items-end gap-3 relative z-10">
                         <h3 className="text-4xl font-extrabold text-white">{stats.aiQueriesProcessed}</h3>
                     </div>
-                    <p className="text-sm font-bold text-slate-400 mt-1 relative z-10 uppercase tracking-wider">AI API Queries Handled</p>
+                    <p className="text-sm font-bold text-muted mt-1 relative z-10 uppercase tracking-wider">AI API Queries Handled</p>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
                 {/* Audit Logs Quick View */}
-                <div className="lg:col-span-2 bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="lg:col-span-2 bg-white rounded-3xl shadow-soft border border-line overflow-hidden">
+                    <div className="p-6 border-b border-line flex items-center justify-between bg-surface">
                         <h2 className="text-lg font-extrabold text-secondary flex items-center gap-2">
                             <ShieldAlert className="text-primary w-5 h-5" />
                             Recent Security Audit Logs
                         </h2>
                         <Link href="/admin/audit" className="text-sm font-bold text-primary hover:underline">View All</Link>
                     </div>
-                    <div className="divide-y divide-slate-100">
+                    <div className="divide-y divide-line">
                         {auditLogs.length === 0 ? (
-                            <div className="p-8 text-center text-slate-400 font-medium">No recent security events logged.</div>
+                            <div className="p-8 text-center text-muted font-medium">No recent security events logged.</div>
                         ) : (
                             auditLogs.map((log, i) => (
                                 <div key={i} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between">
                                     <div className="flex flex-col">
                                         <span className="font-bold text-secondary text-sm">{log.actionType}</span>
-                                        <span className="text-xs text-slate-500 font-medium">{log.details}</span>
+                                        <span className="text-xs text-muted font-medium">{log.details}</span>
                                     </div>
-                                    <span className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-full uppercase">
+                                    <span className="text-xs font-bold text-muted bg-slate-100 px-3 py-1 rounded-full uppercase">
                                         {new Date(log.timestamp).toLocaleDateString()}
                                     </span>
                                 </div>
@@ -126,8 +126,8 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* System Status Panel */}
-                <div className="lg:col-span-1 bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden">
-                    <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+                <div className="lg:col-span-1 bg-white rounded-3xl shadow-soft border border-line overflow-hidden">
+                    <div className="p-6 border-b border-line bg-surface">
                         <h2 className="text-lg font-extrabold text-secondary">Service Health</h2>
                     </div>
                     <div className="p-6 space-y-6">

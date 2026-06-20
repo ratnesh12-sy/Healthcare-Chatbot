@@ -26,10 +26,10 @@ export default function Home() {
     return (
         <main className="min-h-screen bg-white">
             {/* Navigation */}
-            <nav className="fixed top-0 w-full z-50 glass bg-white/50 border-b border-gray-100">
+            <nav className="fixed top-0 w-full z-50 glass bg-white/50 border-b border-line">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
                     <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-teal-500/20">
+                        <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20">
                             <Activity className="w-6 h-6" />
                         </div>
                         <span className="text-xl font-bold text-dark tracking-tight">HealthAI</span>
@@ -59,7 +59,7 @@ export default function Home() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
                             exit={{ opacity: 0, height: 0 }}
-                            className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
+                            className="md:hidden bg-white border-t border-line overflow-hidden"
                         >
                             <div className="px-6 py-4 flex flex-col gap-4">
                                 <Link onClick={() => setIsMobileMenuOpen(false)} href="#features" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">Features</Link>
@@ -80,7 +80,7 @@ export default function Home() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-50 border border-teal-100 text-teal-700 text-sm font-semibold mb-6">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-soft border border-primary-soft text-[#5040c0] text-sm font-semibold mb-6">
                            <HeartPulse className="w-4 h-4" />
                            Trusted by 100,000+ users worldwide
                         </div>
@@ -108,7 +108,7 @@ export default function Home() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="relative"
                     >
-                        <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl bg-teal-50 border-8 border-white">
+                        <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl bg-primary-soft border-8 border-white">
                             <Image 
                                 src="/doctor.png" 
                                 alt="Professional Healthcare Assistant" 
@@ -127,7 +127,7 @@ export default function Home() {
                             className="absolute -left-10 md:-left-20 bottom-10 z-20 glass p-5 rounded-2xl max-w-[240px]"
                         >
                             <div className="flex items-center gap-4 mb-2">
-                                <div className="p-2 bg-teal-100 rounded-lg text-primary">
+                                <div className="p-2 bg-primary-soft rounded-lg text-primary">
                                     <Clock className="w-6 h-6" />
                                 </div>
                                 <div className="font-bold text-dark leading-tight">24/7 Available Instant Response</div>
@@ -145,7 +145,7 @@ export default function Home() {
                                     <CheckCircle2 className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <div className="text-xs text-gray-500 uppercase font-bold tracking-wider">Health Verified</div>
+                                    <div className="text-xs text-muted uppercase font-bold tracking-wider">Health Verified</div>
                                     <div className="font-bold text-dark">AI Diagnosis Ready</div>
                                 </div>
                             </div>
@@ -206,7 +206,7 @@ export default function Home() {
                             Start Your Free Consultation
                         </Link>
                     </div>
-                    <div className="text-gray-400 space-y-4">
+                    <div className="text-muted space-y-4">
                         <div className="flex items-center gap-2 text-white text-xl font-bold">
                             <Activity className="w-6 h-6 text-primary" />
                             HealthAI
@@ -234,9 +234,9 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
     return (
         <motion.div
             whileHover={{ y: -5 }}
-            className="bg-white p-10 rounded-3xl border border-gray-100 text-left card-hover"
+            className="bg-white p-10 rounded-3xl border border-line text-left card-hover"
         >
-            <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mb-6">
+            <div className="w-16 h-16 bg-primary-soft rounded-2xl flex items-center justify-center text-primary mb-6">
                 {icon}
             </div>
             <h3 className="text-xl font-bold mb-3 text-dark">{title}</h3>

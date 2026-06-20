@@ -211,7 +211,7 @@ export default function DoctorOnboardingPage() {
                             <ShieldCheck className="w-8 h-8" />
                         </div>
                         <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Submit Verification</h2>
-                        <p className="text-slate-500 mt-2">Your profile is complete. Upload your license document to get verified.</p>
+                        <p className="text-muted mt-2">Your profile is complete. Upload your license document to get verified.</p>
                     </div>
 
                     {error && (
@@ -234,7 +234,7 @@ export default function DoctorOnboardingPage() {
                                 type="text"
                                 value={formData.licenseNumber}
                                 onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                                className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-slate-50 border border-line rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
                                 placeholder="e.g. MED123456"
                                 required
                             />
@@ -245,7 +245,7 @@ export default function DoctorOnboardingPage() {
                             <select
                                 value={formData.specialization}
                                 onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                                className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none appearance-none"
+                                className="block w-full px-4 py-3 bg-slate-50 border border-line rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none appearance-none"
                                 required
                             >
                                 <option value="" disabled>Select your specialization</option>
@@ -263,7 +263,7 @@ export default function DoctorOnboardingPage() {
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
                                 License Document <span className="text-red-500">*</span>
-                                <span className="text-slate-400 font-normal"> (PDF, JPG, PNG — max 5MB)</span>
+                                <span className="text-muted font-normal"> (PDF, JPG, PNG — max 5MB)</span>
                             </label>
 
                             {!selectedFile ? (
@@ -272,12 +272,12 @@ export default function DoctorOnboardingPage() {
                                     className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
                                         fileError
                                             ? 'border-red-300 bg-red-50/50 hover:border-red-400'
-                                            : 'border-slate-200 bg-slate-50/50 hover:border-blue-400 hover:bg-blue-50/30'
+                                            : 'border-line bg-surface hover:border-blue-400 hover:bg-blue-50/30'
                                     }`}
                                 >
-                                    <Upload className={`w-8 h-8 mx-auto mb-2 ${fileError ? 'text-red-400' : 'text-slate-400'}`} />
+                                    <Upload className={`w-8 h-8 mx-auto mb-2 ${fileError ? 'text-red-400' : 'text-muted'}`} />
                                     <p className="text-sm font-semibold text-slate-600">Click to upload document</p>
-                                    <p className="text-xs text-slate-400 mt-1">PDF, JPG, or PNG up to 5MB</p>
+                                    <p className="text-xs text-muted mt-1">PDF, JPG, or PNG up to 5MB</p>
                                 </div>
                             ) : (
                                 <motion.div
@@ -288,12 +288,12 @@ export default function DoctorOnboardingPage() {
                                     {getFileIcon(selectedFile)}
                                     <div className="flex-1 min-w-0">
                                         <p className="text-sm font-bold text-slate-700 truncate">{selectedFile.name}</p>
-                                        <p className="text-xs text-slate-500">{formatFileSize(selectedFile.size)}</p>
+                                        <p className="text-xs text-muted">{formatFileSize(selectedFile.size)}</p>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={clearFile}
-                                        className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                        className="p-1.5 text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                         title="Remove file"
                                     >
                                         <X className="w-4 h-4" />
@@ -347,7 +347,7 @@ export default function DoctorOnboardingPage() {
                         <Stethoscope className="w-8 h-8" />
                     </div>
                     <h2 className="text-3xl font-extrabold text-slate-800 tracking-tight">Complete Your Profile</h2>
-                    <p className="text-slate-500 mt-2">Before accessing your dashboard, please provide your professional details.</p>
+                    <p className="text-muted mt-2">Before accessing your dashboard, please provide your professional details.</p>
                 </div>
 
                 {error && (
@@ -366,7 +366,7 @@ export default function DoctorOnboardingPage() {
                         <select
                             value={formData.specialization}
                             onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                            className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none appearance-none cursor-pointer pr-10"
+                            className="block w-full px-4 py-3 bg-slate-50 border border-line rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none appearance-none cursor-pointer pr-10"
                             required
                         >
                             <option value="" disabled>Select your specialization</option>
@@ -378,7 +378,7 @@ export default function DoctorOnboardingPage() {
                             <option value="Pediatrician">Pediatrician</option>
                             <option value="Psychiatrist">Psychiatrist</option>
                         </select>
-                        <div className="pointer-events-none absolute right-3 top-[38px] text-slate-400">
+                        <div className="pointer-events-none absolute right-3 top-[38px] text-muted">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                         </div>
                     </div>
@@ -391,7 +391,7 @@ export default function DoctorOnboardingPage() {
                                 min="0"
                                 value={formData.experience}
                                 onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                                className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-slate-50 border border-line rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
                                 placeholder="e.g. 5"
                                 required
                             />
@@ -402,7 +402,7 @@ export default function DoctorOnboardingPage() {
                                 type="text"
                                 value={formData.licenseNumber}
                                 onChange={(e) => setFormData({ ...formData, licenseNumber: e.target.value })}
-                                className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-slate-50 border border-line rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
                                 placeholder="e.g. MED123456"
                                 required
                             />
@@ -414,7 +414,7 @@ export default function DoctorOnboardingPage() {
                         <textarea
                             value={formData.bio}
                             onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                            className="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-slate-50 border border-line rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all outline-none"
                             placeholder="Briefly describe your background, expertise, and patient care philosophy..."
                             rows={4}
                         />
@@ -423,7 +423,7 @@ export default function DoctorOnboardingPage() {
                     {/* Document Upload Section */}
                     <div>
                         <label className="block text-sm font-semibold text-slate-700 mb-1.5 ml-1">
-                            Verification Document <span className="text-slate-400 font-normal">(PDF, JPG, PNG — max 5MB)</span>
+                            Verification Document <span className="text-muted font-normal">(PDF, JPG, PNG — max 5MB)</span>
                         </label>
 
                         {!selectedFile ? (
@@ -432,12 +432,12 @@ export default function DoctorOnboardingPage() {
                                 className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
                                     fileError
                                         ? 'border-red-300 bg-red-50/50 hover:border-red-400'
-                                        : 'border-slate-200 bg-slate-50/50 hover:border-blue-400 hover:bg-blue-50/30'
+                                        : 'border-line bg-surface hover:border-blue-400 hover:bg-blue-50/30'
                                 }`}
                             >
-                                <Upload className={`w-8 h-8 mx-auto mb-2 ${fileError ? 'text-red-400' : 'text-slate-400'}`} />
+                                <Upload className={`w-8 h-8 mx-auto mb-2 ${fileError ? 'text-red-400' : 'text-muted'}`} />
                                 <p className="text-sm font-semibold text-slate-600">Click to upload document</p>
-                                <p className="text-xs text-slate-400 mt-1">PDF, JPG, or PNG up to 5MB</p>
+                                <p className="text-xs text-muted mt-1">PDF, JPG, or PNG up to 5MB</p>
                             </div>
                         ) : (
                             <motion.div
@@ -448,12 +448,12 @@ export default function DoctorOnboardingPage() {
                                 {getFileIcon(selectedFile)}
                                 <div className="flex-1 min-w-0">
                                     <p className="text-sm font-bold text-slate-700 truncate">{selectedFile.name}</p>
-                                    <p className="text-xs text-slate-500">{formatFileSize(selectedFile.size)}</p>
+                                    <p className="text-xs text-muted">{formatFileSize(selectedFile.size)}</p>
                                 </div>
                                 <button
                                     type="button"
                                     onClick={clearFile}
-                                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                    className="p-1.5 text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                                     title="Remove file"
                                 >
                                     <X className="w-4 h-4" />

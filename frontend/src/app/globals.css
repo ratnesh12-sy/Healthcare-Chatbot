@@ -2,60 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
 
 :root {
-  --foreground-rgb: 15, 23, 42; /* Navy */
-  --background-rgb: 248, 250, 252; /* Slate 50 */
-  --primary: 0, 167, 167; /* Figma Teal */
+  --foreground-rgb: 59, 54, 80;    /* Calm ink */
+  --background-rgb: 245, 243, 251;  /* Soft lilac-cream */
+  --primary: 109, 90, 230;          /* Lilac */
 }
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: white;
+  background: #F5F3FB;
   font-family: 'Inter', sans-serif;
 }
 
+@layer base {
+  h1, h2, h3 { font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+}
+
+/* ── Chat bubbles ─────────────────────────────────────────── */
 .chat-bubble-user {
-  @apply bg-primary text-white p-3 rounded-lg rounded-tr-none max-w-[80%] self-end;
+  @apply bg-primary text-white p-3.5 rounded-2xl rounded-tr-md max-w-[80%] self-end shadow-soft-sm;
 }
-
 .chat-bubble-ai {
-  @apply bg-gray-100 text-gray-800 p-3 rounded-lg rounded-tl-none max-w-[80%] self-start;
+  @apply bg-white text-secondary p-3.5 rounded-2xl rounded-tl-md max-w-[80%] self-start border border-line shadow-soft-sm;
 }
 
-.glass {
-  @apply bg-white/70 backdrop-blur-lg border border-white/30 shadow-xl;
-}
+/* ── Surfaces ─────────────────────────────────────────────── */
+.glass { @apply bg-white/70 backdrop-blur-lg border border-white/30 shadow-xl; }
+.card-soft { @apply bg-white border border-line rounded-3xl shadow-soft; }
+.card-hover { @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-soft; }
 
-.card-hover {
-  @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:border-primary/20;
-}
-
+/* ── Buttons ──────────────────────────────────────────────── */
 .btn-primary {
-  @apply px-8 py-3 bg-primary text-white font-semibold rounded-full hover:bg-opacity-90 transition-all shadow-lg hover:shadow-teal-500/20 active:scale-95;
+  @apply px-6 py-3 bg-primary text-white font-bold rounded-2xl transition-all shadow-soft hover:bg-[#5d4bd6] active:scale-95;
+}
+.btn-secondary {
+  @apply px-6 py-3 bg-surface text-secondary font-bold rounded-2xl border border-line transition-all hover:bg-primary-soft active:scale-95;
 }
 
-.btn-secondary {
-  @apply px-8 py-3 bg-light text-dark font-semibold rounded-full hover:bg-gray-200 transition-all active:scale-95;
+/* ── Inputs ───────────────────────────────────────────────── */
+.input-soft {
+  @apply w-full bg-white border border-line rounded-2xl px-4 py-3 text-secondary outline-none transition-all focus:ring-2 focus:ring-primary/20 focus:border-primary;
 }
+
+/* ── Status pills ─────────────────────────────────────────── */
+.pill { @apply inline-flex items-center gap-1 text-[11.5px] font-bold px-3 py-1 rounded-full; }
+.pill-mint  { @apply bg-pastel-mint text-pastel-mintInk; }
+.pill-amber { @apply bg-pastel-sun text-pastel-sunInk; }
+.pill-rose  { @apply bg-pastel-rose text-pastel-roseInk; }
+.pill-sky   { @apply bg-pastel-sky text-pastel-skyInk; }
+.pill-lilac { @apply bg-primary-soft text-primary; }
+
+/* Tinted icon chip */
+.chip { @apply w-11 h-11 rounded-2xl grid place-items-center; }
 
 /* OCR Progress Bar */
 @keyframes ocr-shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
-
 .ocr-progress-bar {
-  background: linear-gradient(90deg, #0d9488 25%, #14b8a6 50%, #0d9488 75%);
+  background: linear-gradient(90deg, #6D5AE6 25%, #8B7BF0 50%, #6D5AE6 75%);
   background-size: 200% 100%;
   animation: ocr-shimmer 1.5s ease-in-out infinite;
 }
-
 .ocr-privacy-notice {
   @apply flex items-center gap-1.5 text-xs text-slate-400 py-1.5 px-3;
 }
-
 .ocr-disclaimer {
   @apply mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed;
 }

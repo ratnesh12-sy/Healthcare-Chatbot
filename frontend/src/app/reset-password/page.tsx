@@ -46,11 +46,11 @@ function ResetPasswordForm() {
     if (done) {
         return (
             <div className="text-center">
-                <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-teal-500/10">
+                <div className="w-16 h-16 bg-primary-soft rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-primary/10">
                     <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h2 className="text-3xl font-extrabold text-dark tracking-tight">Password updated</h2>
-                <p className="text-gray-500 mt-3 mb-8">Your password has been reset. Redirecting you to sign in…</p>
+                <p className="text-muted mt-3 mb-8">Your password has been reset. Redirecting you to sign in…</p>
                 <Link href="/login" className="block">
                     <button className="w-full btn-primary py-4">Go to sign in</button>
                 </Link>
@@ -61,11 +61,11 @@ function ResetPasswordForm() {
     return (
         <>
             <div className="text-center mb-8">
-                <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-teal-500/10">
+                <div className="w-16 h-16 bg-primary-soft rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-primary/10">
                     <Activity className="w-8 h-8" />
                 </div>
                 <h2 className="text-3xl font-extrabold text-dark tracking-tight">Set a new password</h2>
-                <p className="text-gray-500 mt-3">Choose a strong password for your account.</p>
+                <p className="text-muted mt-3">Choose a strong password for your account.</p>
             </div>
 
             {error && (
@@ -86,7 +86,7 @@ function ResetPasswordForm() {
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="block w-full px-4 py-3 pr-10 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 pr-10 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="••••••••"
                             required
                         />
@@ -95,7 +95,7 @@ function ResetPasswordForm() {
                             onClick={() => setShowPassword((prev) => !prev)}
                             aria-label="Toggle password visibility"
                             tabIndex={-1}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-gray-600 cursor-pointer transition-colors"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
@@ -107,7 +107,7 @@ function ResetPasswordForm() {
                         type={showPassword ? 'text' : 'password'}
                         value={confirm}
                         onChange={(e) => setConfirm(e.target.value)}
-                        className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                        className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                         placeholder="••••••••"
                         required
                     />
@@ -120,7 +120,7 @@ function ResetPasswordForm() {
                     {loading ? 'Updating...' : 'Update password'}
                 </button>
                 <p className="text-center text-gray-600 text-sm">
-                    <Link href="/login" className="text-primary font-bold hover:text-teal-600 transition-colors">
+                    <Link href="/login" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">
                         Back to sign in
                     </Link>
                 </p>
@@ -137,7 +137,7 @@ export default function ResetPasswordPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl"
             >
-                <Suspense fallback={<p className="text-center text-gray-500">Loading…</p>}>
+                <Suspense fallback={<p className="text-center text-muted">Loading…</p>}>
                     <ResetPasswordForm />
                 </Suspense>
             </motion.div>

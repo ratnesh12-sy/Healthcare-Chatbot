@@ -286,19 +286,19 @@ export default function ChatInput() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="border-t border-slate-100 bg-slate-50 overflow-hidden"
+                        className="border-t border-line bg-slate-50 overflow-hidden"
                     >
                         <div className="px-4 md:px-5 py-3">
                             <div className="flex items-start gap-3">
                                 {ocrPreview && (
-                                    <div className="w-14 h-14 rounded-xl overflow-hidden border border-slate-200 flex-shrink-0 bg-white">
+                                    <div className="w-14 h-14 rounded-xl overflow-hidden border border-line flex-shrink-0 bg-white">
                                         <img src={ocrPreview} alt="Report preview" className="w-full h-full object-cover" />
                                     </div>
                                 )}
                                 
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <ImageIcon className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                                        <ImageIcon className="w-4 h-4 text-muted flex-shrink-0" />
                                         <span className="text-sm font-semibold text-slate-700 truncate">{ocrFile?.name || 'Upload'}</span>
                                     </div>
                                     {ocrLoading && (
@@ -306,19 +306,19 @@ export default function ChatInput() {
                                             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                                                 <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${Math.max(ocrProgress, 5)}%` }} />
                                             </div>
-                                            <p className="text-xs text-slate-500 mt-1 font-medium">Extracting text... {ocrProgress}%</p>
+                                            <p className="text-xs text-muted mt-1 font-medium">Extracting text... {ocrProgress}%</p>
                                         </div>
                                     )}
                                     {ocrText && !ocrLoading && (
-                                        <p className="text-xs text-slate-500 mt-1 truncate">✅ {ocrText.substring(0, 150)}{ocrText.length > 150 ? '...' : ''}</p>
+                                        <p className="text-xs text-muted mt-1 truncate">✅ {ocrText.substring(0, 150)}{ocrText.length > 150 ? '...' : ''}</p>
                                     )}
                                     {ocrError && <p className="text-xs text-red-500 mt-1 font-medium">❌ {ocrError}</p>}
                                 </div>
-                                <button onClick={clearOcr} className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-lg transition-colors flex-shrink-0">
+                                <button onClick={clearOcr} className="p-1.5 text-muted hover:text-slate-600 hover:bg-slate-200 rounded-lg transition-colors flex-shrink-0">
                                     <X size={16} />
                                 </button>
                             </div>
-                            <div className="flex items-center gap-1.5 mt-1.5 text-xs text-slate-500 font-medium">
+                            <div className="flex items-center gap-1.5 mt-1.5 text-xs text-muted font-medium">
                                 <Lock className="w-3 h-3" />
                                 <span>Your report is processed locally in your browser for privacy</span>
                             </div>
@@ -327,7 +327,7 @@ export default function ChatInput() {
                 )}
             </AnimatePresence>
 
-            <form onSubmit={handleSubmit} className="p-3 md:p-5 bg-white border-t border-slate-100 flex gap-2 md:gap-4 items-end">
+            <form onSubmit={handleSubmit} className="p-3 md:p-5 bg-white border-t border-line flex gap-2 md:gap-4 items-end">
                 <input
                     ref={fileInputRef}
                     type="file"
@@ -336,7 +336,7 @@ export default function ChatInput() {
                     className="hidden"
                 />
                 
-                <div className="flex-1 bg-slate-50 border border-slate-200 rounded-3xl flex items-center shadow-inner focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden p-1">
+                <div className="flex-1 bg-slate-50 border border-line rounded-3xl flex items-center shadow-inner focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden p-1">
                     <textarea
                         value={input + (interimTranscript ? (input ? ' ' : '') + interimTranscript : '')}
                         onChange={(e) => {
@@ -368,7 +368,7 @@ export default function ChatInput() {
                         className={`p-3 md:p-4 rounded-2xl transition-all shadow-md flex-shrink-0 ${
                             !recognition ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
                             : isListening ? 'bg-red-50 text-red-500 border border-red-200 animate-pulse hover:bg-red-100'
-                            : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
+                            : 'bg-slate-100 text-muted hover:bg-slate-200 hover:text-slate-700'
                         }`}
                     >
                         {isListening ? <MicOff size={20} /> : <Mic size={20} />}
@@ -382,7 +382,7 @@ export default function ChatInput() {
                         className={`p-3 md:p-4 rounded-2xl transition-all shadow-md flex-shrink-0 ${
                             ocrLoading ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
                             : ocrText ? 'bg-primary/10 text-primary border border-primary/20'
-                            : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
+                            : 'bg-slate-100 text-muted hover:bg-slate-200 hover:text-slate-700'
                         }`}
                     >
                         <Paperclip size={20} />
@@ -391,7 +391,7 @@ export default function ChatInput() {
                     <button
                         type="submit"
                         disabled={isTyping || (!input.trim() && !interimTranscript && !ocrText)}
-                        className="bg-primary text-white p-3 md:p-4 rounded-2xl hover:bg-teal-600 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 flex-shrink-0"
+                        className="bg-primary text-white p-3 md:p-4 rounded-2xl hover:bg-[#5d4bd6] transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 flex-shrink-0"
                     >
                         <Send size={20} className={isTyping ? "animate-pulse" : ""} />
                     </button>

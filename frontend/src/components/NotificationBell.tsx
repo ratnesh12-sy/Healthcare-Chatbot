@@ -89,7 +89,7 @@ export default function NotificationBell() {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((o) => !o)}
-        className="relative p-2 text-gray-400 hover:text-primary transition-colors"
+        className="relative p-2 text-muted hover:text-primary transition-colors"
         aria-label={count > 0 ? `${count} notifications` : "Notifications"}
       >
         <Bell className="w-6 h-6" />
@@ -101,16 +101,16 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden">
-          <div className="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-2">
+        <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-line z-50 overflow-hidden">
+          <div className="px-4 py-3 border-b border-line flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Bell className="w-4 h-4 text-indigo-600" />
+              <Bell className="w-4 h-4 text-primary" />
               <h3 className="font-bold text-secondary text-sm">Notifications</h3>
             </div>
             {pushState === "off" && (
               <button
                 onClick={enablePush}
-                className="flex items-center gap-1 text-[11px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-lg transition-colors"
+                className="flex items-center gap-1 text-[11px] font-bold text-primary hover:text-[#5040c0] bg-primary-soft hover:bg-primary-soft px-2 py-1 rounded-lg transition-colors"
               >
                 <BellRing className="w-3 h-3" /> Enable alerts
               </button>
@@ -121,14 +121,14 @@ export default function NotificationBell() {
               </span>
             )}
             {pushState === "denied" && (
-              <span className="text-[11px] font-semibold text-slate-400" title="Allow notifications in your browser settings">
+              <span className="text-[11px] font-semibold text-muted" title="Allow notifications in your browser settings">
                 Alerts blocked
               </span>
             )}
           </div>
           <div className="max-h-80 overflow-y-auto">
             {count === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-slate-400">
+              <div className="px-4 py-8 text-center text-sm text-muted">
                 You&apos;re all caught up 🎉
               </div>
             ) : (
@@ -137,7 +137,7 @@ export default function NotificationBell() {
                   key={r.id}
                   className="px-4 py-3 flex items-start gap-3 hover:bg-slate-50 border-b border-slate-50 last:border-0"
                 >
-                  <div className="mt-0.5 p-1.5 bg-indigo-50 text-indigo-600 rounded-lg flex-shrink-0">
+                  <div className="mt-0.5 p-1.5 bg-primary-soft text-primary rounded-lg flex-shrink-0">
                     <Clock className="w-4 h-4" />
                   </div>
                   <p className="flex-1 text-sm text-slate-700 font-medium">{r.text}</p>

@@ -12,15 +12,15 @@ export default function DoctorSuggestion({ aiMessage }: DoctorSuggestionProps) {
     if (!suggestions || suggestions.length === 0) return null;
 
     return (
-        <div className="mt-3 bg-indigo-50/50 border border-indigo-100 rounded-xl p-3 shadow-sm">
+        <div className="mt-3 bg-primary-soft/50 border border-primary-soft rounded-xl p-3 shadow-sm">
             <div className="flex items-center gap-2 mb-2">
-                <Stethoscope size={16} className="text-indigo-500" />
-                <span className="text-xs font-bold text-indigo-700 uppercase tracking-wider">Suggested Actions</span>
+                <Stethoscope size={16} className="text-primary" />
+                <span className="text-xs font-bold text-[#5040c0] uppercase tracking-wider">Suggested Actions</span>
             </div>
             <ul className="space-y-1.5">
                 {suggestions.map((suggestion, idx) => (
                     <li key={idx} className="text-sm text-slate-700 flex items-start gap-2">
-                        <span className="text-indigo-400 font-bold mt-0.5">•</span>
+                        <span className="text-primary font-bold mt-0.5">•</span>
                         <span className="leading-tight">{suggestion}</span>
                     </li>
                 ))}

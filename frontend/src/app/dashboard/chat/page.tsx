@@ -28,7 +28,7 @@ function ChatContent() {
     return (
         <>
             <ChatHeader />
-            <div className="flex-1 bg-white rounded-3xl shadow-soft border border-slate-100 overflow-hidden flex flex-col relative">
+            <div className="flex-1 bg-white rounded-3xl shadow-soft border border-line overflow-hidden flex flex-col relative">
                 <ChatMessageList 
                     onOpenReminder={openReminder}
                     emptyState={
@@ -37,7 +37,7 @@ function ChatContent() {
                                 <Sparkles className="w-10 h-10 text-primary" />
                             </div>
                             <h2 className="text-2xl font-bold text-secondary mb-3">How can I help you today?</h2>
-                            <p className="text-slate-500 max-w-md mx-auto mb-10 leading-relaxed text-sm md:text-base">
+                            <p className="text-muted max-w-md mx-auto mb-10 leading-relaxed text-sm md:text-base">
                                 I'm your intelligent medical assistant. I can help analyze symptoms, provide lifestyle advice, or <strong>analyze your medical reports</strong>.
                             </p>
                             
@@ -46,7 +46,7 @@ function ChatContent() {
                                     <button 
                                         key={idx}
                                         onClick={() => sendMessage(suggestion, suggestion, false)}
-                                        className="p-4 bg-white border border-slate-200 rounded-2xl text-left hover:border-primary/50 hover:shadow-md transition-all group"
+                                        className="p-4 bg-white border border-line rounded-2xl text-left hover:border-primary/50 hover:shadow-md transition-all group"
                                     >
                                         <p className="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors">{suggestion}</p>
                                     </button>

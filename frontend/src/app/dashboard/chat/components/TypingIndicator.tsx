@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 export default function TypingIndicator() {
     return (
         <div className="flex justify-start">
-            <div className="bg-gray-100 p-4 rounded-2xl rounded-tl-sm flex items-center gap-2 shadow-sm border border-slate-100">
+            <div className="bg-gray-100 p-4 rounded-2xl rounded-tl-sm flex items-center gap-2 shadow-sm border border-line">
                 <div className="flex gap-1.5 px-2 py-1">
                     {[0, 1, 2].map((i) => (
                         <motion.div
@@ -20,7 +20,7 @@ export default function TypingIndicator() {
                         />
                     ))}
                 </div>
-                <span className="text-gray-500 text-sm font-medium ml-1">AI is typing...</span>
+                <span className="text-muted text-sm font-medium ml-1">AI is typing...</span>
             </div>
         </div>
     );

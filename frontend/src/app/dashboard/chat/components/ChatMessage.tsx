@@ -23,16 +23,16 @@ export default function ChatMessage({ message, onOpenReminder }: ChatMessageProp
                     {message.isFromAi ? <Bot size={18} /> : <User size={18} />}
                 </div>
                 <div>
-                    <div className={message.isFromAi ? 'chat-bubble-ai border border-slate-200 shadow-sm' : 'chat-bubble-user shadow-soft'}>
+                    <div className={message.isFromAi ? 'chat-bubble-ai border border-line shadow-sm' : 'chat-bubble-user shadow-soft'}>
                         <p className="whitespace-pre-wrap leading-relaxed text-sm md:text-base">{message.message}</p>
                         <div className="flex items-center gap-3 mt-2">
-                            <span className={`text-[10px] font-medium ${message.isFromAi ? 'text-slate-400' : 'text-white/70'}`}>
+                            <span className={`text-[10px] font-medium ${message.isFromAi ? 'text-muted' : 'text-white/70'}`}>
                                 {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                             {message.isFromAi && !message.streaming && onOpenReminder && (
                                 <button
                                     onClick={() => onOpenReminder(message.message)}
-                                    className="flex items-center gap-1 text-[11px] font-semibold text-indigo-500 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-md transition-colors"
+                                    className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-[#5040c0] bg-primary-soft hover:bg-primary-soft px-2.5 py-1 rounded-md transition-colors"
                                 >
                                     <BellPlus size={12} /> Save as Reminder
                                 </button>

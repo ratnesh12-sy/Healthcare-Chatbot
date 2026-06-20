@@ -121,8 +121,8 @@ export default function DoctorProfile() {
                     <X className="w-8 h-8" />
                 </div>
                 <h2 className="text-xl font-bold text-slate-800 mb-2">Couldn&apos;t load your profile</h2>
-                <p className="text-slate-500 mb-6">{error || 'Something went wrong. Please try again.'}</p>
-                <button onClick={loadProfile} className="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors">
+                <p className="text-muted mb-6">{error || 'Something went wrong. Please try again.'}</p>
+                <button onClick={loadProfile} className="px-6 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-[#5040c0] transition-colors">
                     Try Again
                 </button>
             </div>
@@ -144,7 +144,7 @@ export default function DoctorProfile() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative bg-gradient-to-r from-slate-800 to-indigo-900 rounded-3xl p-8 md:p-10 overflow-hidden"
+                className="relative bg-gradient-to-r from-slate-800 to-[#5040c0] rounded-3xl p-8 md:p-10 overflow-hidden"
             >
                 {/* Decorative circles */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4" />
@@ -216,13 +216,13 @@ export default function DoctorProfile() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4"
+                        className="bg-white p-6 rounded-2xl shadow-sm border border-line flex items-center gap-4"
                     >
                         <div className="p-3 bg-blue-50 rounded-xl">
                             <Users className="w-6 h-6 text-blue-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-semibold text-slate-500">Total Appointments</p>
+                            <p className="text-sm font-semibold text-muted">Total Appointments</p>
                             <h3 className="text-2xl font-extrabold text-slate-800">{profile.totalAppointments}</h3>
                         </div>
                     </motion.div>
@@ -230,13 +230,13 @@ export default function DoctorProfile() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.15 }}
-                        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-4"
+                        className="bg-white p-6 rounded-2xl shadow-sm border border-line flex items-center gap-4"
                     >
                         <div className="p-3 bg-green-50 rounded-xl">
                             <CheckCircle className="w-6 h-6 text-green-600" />
                         </div>
                         <div>
-                            <p className="text-sm font-semibold text-slate-500">Completed</p>
+                            <p className="text-sm font-semibold text-muted">Completed</p>
                             <h3 className="text-2xl font-extrabold text-slate-800">{profile.completedAppointments}</h3>
                         </div>
                     </motion.div>
@@ -250,27 +250,27 @@ export default function DoctorProfile() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"
+                    className="bg-white p-8 rounded-3xl shadow-sm border border-line"
                 >
                     <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                        <Award className="w-5 h-5 text-indigo-500" />
+                        <Award className="w-5 h-5 text-primary" />
                         Professional Details
                     </h3>
                     <div className="space-y-5">
-                        <DetailRow icon={<Stethoscope className="w-4 h-4 text-teal-500" />} label="Specialization" value={specialization} />
+                        <DetailRow icon={<Stethoscope className="w-4 h-4 text-primary" />} label="Specialization" value={specialization} />
                         <DetailRow icon={<Clock className="w-4 h-4 text-blue-500" />} label="Experience" value={experience || '—'} />
                         <DetailRow icon={<FileText className="w-4 h-4 text-purple-500" />} label="License Number" value={profile.licenseNumber || 'Not provided'} />
-                        <DetailRow icon={<Mail className="w-4 h-4 text-slate-400" />} label="Email" value={profile.email} />
+                        <DetailRow icon={<Mail className="w-4 h-4 text-muted" />} label="Email" value={profile.email} />
                         <DetailRow
                             icon={<Shield className="w-4 h-4 text-green-500" />}
                             label="Verification"
                             value={
                                 <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-bold ${
                                     profile.verificationStatus === 'APPROVED'
-                                        ? 'bg-green-100 text-green-700'
+                                        ? 'bg-pastel-mint text-pastel-mintInk'
                                         : profile.verificationStatus === 'REJECTED'
                                         ? 'bg-red-100 text-red-700'
-                                        : 'bg-amber-100 text-amber-700'
+                                        : 'bg-pastel-sun text-pastel-sunInk'
                                 }`}>
                                     {profile.verificationStatus === 'APPROVED' ? '✅ Approved'
                                         : profile.verificationStatus === 'REJECTED' ? '❌ Rejected'
@@ -286,7 +286,7 @@ export default function DoctorProfile() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.25 }}
-                    className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col"
+                    className="bg-white p-8 rounded-3xl shadow-sm border border-line flex flex-col"
                 >
                     <h3 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
                         <FileText className="w-5 h-5 text-blue-500" />
@@ -297,12 +297,12 @@ export default function DoctorProfile() {
                         onChange={(e) => setBio(e.target.value)}
                         placeholder="No bio added yet. Click to add one."
                         rows={6}
-                        className="flex-1 w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 transition-all text-slate-700 font-medium resize-none placeholder:italic placeholder:text-slate-400"
+                        className="flex-1 w-full p-4 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-slate-700 font-medium resize-none placeholder:italic placeholder:text-muted"
                     />
                     <button
                         onClick={handleSaveBio}
                         disabled={savingBio || bio === (profile.bio || '')}
-                        className="mt-4 w-full py-3 bg-indigo-600 text-white font-bold rounded-xl hover:bg-indigo-700 transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+                        className="mt-4 w-full py-3 bg-primary text-white font-bold rounded-xl hover:bg-[#5040c0] transition-colors shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
                     >
                         {savingBio ? 'Saving...' : 'Save Bio'}
                     </button>
@@ -314,10 +314,10 @@ export default function DoctorProfile() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100"
+                className="bg-white p-8 rounded-3xl shadow-sm border border-line"
             >
                 <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-                    <Stethoscope className="w-5 h-5 text-teal-500" />
+                    <Stethoscope className="w-5 h-5 text-primary" />
                     Weekly Availability
                 </h3>
                 <div className="grid grid-cols-7 gap-3">
@@ -329,7 +329,7 @@ export default function DoctorProfile() {
                                 className={`flex flex-col items-center p-4 rounded-xl border transition-all ${
                                     hasSlots
                                         ? 'bg-green-50 border-green-200 text-green-700'
-                                        : 'bg-slate-50 border-slate-200 text-slate-400'
+                                        : 'bg-slate-50 border-line text-muted'
                                 }`}
                             >
                                 <span className="text-sm font-bold">{day.label}</span>
@@ -344,7 +344,7 @@ export default function DoctorProfile() {
                     })}
                 </div>
                 {Object.values(schedule).every(slots => slots.length === 0) && (
-                    <p className="text-center text-sm text-slate-400 mt-4 italic">
+                    <p className="text-center text-sm text-muted mt-4 italic">
                         No schedule configured yet. Set up your availability from the Dashboard.
                     </p>
                 )}
@@ -358,7 +358,7 @@ function DetailRow({ icon, label, value }: { icon: React.ReactNode; label: strin
         <div className="flex items-start gap-3">
             <div className="mt-0.5 shrink-0">{icon}</div>
             <div className="flex-1">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{label}</p>
+                <p className="text-xs font-semibold text-muted uppercase tracking-wider">{label}</p>
                 <p className="text-sm font-semibold text-slate-700 mt-0.5">{value}</p>
             </div>
         </div>

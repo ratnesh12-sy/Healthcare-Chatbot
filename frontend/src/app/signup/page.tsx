@@ -39,11 +39,11 @@ export default function SignupPage() {
                 className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl"
             >
                 <div className="text-center mb-10">
-                    <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-teal-500/10">
+                    <div className="w-16 h-16 bg-primary-soft rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-primary/10">
                         <Activity className="w-8 h-8" />
                     </div>
                     <h2 className="text-3xl font-extrabold text-dark tracking-tight">Join Us</h2>
-                    <p className="text-gray-500 mt-3">Create your HealthAI account today</p>
+                    <p className="text-muted mt-3">Create your HealthAI account today</p>
                 </div>
 
                 {error && (
@@ -64,7 +64,7 @@ export default function SignupPage() {
                                 type="text"
                                 value={formData.fullName}
                                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="John Doe"
                                 required
                             />
@@ -75,7 +75,7 @@ export default function SignupPage() {
                                 type="text"
                                 value={formData.username}
                                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="johndoe"
                                 required
                             />
@@ -87,7 +87,7 @@ export default function SignupPage() {
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="email@example.com"
                             required
                         />
@@ -98,7 +98,7 @@ export default function SignupPage() {
                             type="password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="••••••••"
                             required
                         />
@@ -108,7 +108,7 @@ export default function SignupPage() {
                         <select
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none appearance-none"
+                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none appearance-none"
                         >
                             <option value="patient">Patient</option>
                             <option value="doctor">Doctor</option>
@@ -126,7 +126,7 @@ export default function SignupPage() {
                 <GoogleSignInButton onError={setError} />
 
                 <p className="mt-10 text-center text-gray-600 text-sm">
-                    Already have an account? <Link href="/login" className="text-primary font-bold hover:text-teal-600 transition-colors">Log in</Link>
+                    Already have an account? <Link href="/login" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">Log in</Link>
                 </p>
             </motion.div>
         </div>

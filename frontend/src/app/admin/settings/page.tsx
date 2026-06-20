@@ -27,7 +27,7 @@ const DEFAULTS: Config = {
 
 function Section({ icon, title, accent, children }: { icon: React.ReactNode; title: string; accent: string; children: React.ReactNode }) {
     return (
-        <div className="bg-white p-7 rounded-3xl shadow-soft border border-slate-100 space-y-5">
+        <div className="bg-white p-7 rounded-3xl shadow-soft border border-line space-y-5">
             <h2 className="text-lg font-extrabold text-secondary flex items-center gap-3">
                 <span className={accent}>{icon}</span>
                 {title}
@@ -42,17 +42,17 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
         <div>
             <label className="block text-sm font-bold text-slate-700 mb-1.5">{label}</label>
             {children}
-            {hint && <p className="text-xs text-slate-400 font-medium mt-1.5">{hint}</p>}
+            {hint && <p className="text-xs text-muted font-medium mt-1.5">{hint}</p>}
         </div>
     );
 }
 
 function Toggle({ on, onClick, label, hint }: { on: boolean; onClick: () => void; label: string; hint?: string }) {
     return (
-        <div onClick={onClick} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+        <div onClick={onClick} className="flex items-center justify-between p-4 bg-slate-50 border border-line rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
             <div className="pr-4">
                 <h4 className="font-bold text-secondary text-sm">{label}</h4>
-                {hint && <p className="text-xs text-slate-500 font-medium mt-0.5">{hint}</p>}
+                {hint && <p className="text-xs text-muted font-medium mt-0.5">{hint}</p>}
             </div>
             <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${on ? 'bg-green-500' : 'bg-slate-300'}`}>
                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${on ? 'right-1' : 'left-1'}`}></div>
@@ -61,7 +61,7 @@ function Toggle({ on, onClick, label, hint }: { on: boolean; onClick: () => void
     );
 }
 
-const inputCls = "w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-secondary font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none";
+const inputCls = "w-full bg-slate-50 border border-line p-3 rounded-xl text-secondary font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none";
 
 export default function SettingsPage() {
     const [config, setConfig] = useState<Config>(DEFAULTS);
@@ -101,7 +101,7 @@ export default function SettingsPage() {
     if (loading) {
         return (
             <div className="flex items-center justify-center p-20">
-                <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-line border-t-primary rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -113,7 +113,7 @@ export default function SettingsPage() {
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Global Settings</h1>
-                    <p className="text-slate-500 mt-2 font-medium">Configure platform behavior. Changes apply immediately on save.</p>
+                    <p className="text-muted mt-2 font-medium">Configure platform behavior. Changes apply immediately on save.</p>
                 </div>
                 <button
                     onClick={save}
@@ -161,7 +161,7 @@ export default function SettingsPage() {
                 </Section>
 
                 {/* Appointments */}
-                <Section icon={<CalendarClock size={22} />} title="Appointments" accent="text-teal-500">
+                <Section icon={<CalendarClock size={22} />} title="Appointments" accent="text-primary">
                     <Field label="Default duration (minutes)" hint="Length assigned to new bookings.">
                         <input type="number" min={5} step={5} name="defaultDurationMinutes" value={config.defaultDurationMinutes} onChange={onChange} className={inputCls} />
                     </Field>

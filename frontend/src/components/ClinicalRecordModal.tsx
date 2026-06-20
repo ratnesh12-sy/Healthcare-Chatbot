@@ -128,82 +128,82 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
                     className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
                 <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }}
                     className="bg-white rounded-3xl w-full max-w-2xl relative z-10 shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+                    <div className="p-6 border-b border-line bg-slate-50 flex items-center justify-between">
                         <h3 className="text-lg font-extrabold text-secondary flex items-center gap-2">
                             <Stethoscope className="text-primary w-5 h-5" /> Clinical Record
                         </h3>
-                        <button onClick={onClose} className="p-2 text-slate-400 hover:text-slate-600 bg-white rounded-full shadow-sm"><X size={18} /></button>
+                        <button onClick={onClose} className="p-2 text-muted hover:text-slate-600 bg-white rounded-full shadow-sm"><X size={18} /></button>
                     </div>
 
                     {loading ? (
-                        <div className="p-12 text-center text-slate-400 font-bold">Loading…</div>
+                        <div className="p-12 text-center text-muted font-bold">Loading…</div>
                     ) : (
                         <div className="p-6 space-y-6 overflow-y-auto">
                             {record && (
-                                <p className="text-sm text-slate-500 font-medium">
+                                <p className="text-sm text-muted font-medium">
                                     {record.patientName} · {record.doctorName} · {new Date(record.appointmentDate).toLocaleString()}
                                 </p>
                             )}
 
                             {/* Notes */}
                             <div>
-                                <h4 className="font-bold text-secondary flex items-center gap-2 mb-2"><FileText size={16} className="text-slate-400" /> Doctor's Notes</h4>
+                                <h4 className="font-bold text-secondary flex items-center gap-2 mb-2"><FileText size={16} className="text-muted" /> Doctor's Notes</h4>
                                 {canEdit ? (
                                     <textarea rows={4} value={note} onChange={e => setNote(e.target.value)}
                                         placeholder="Clinical observations, diagnosis, advice…"
-                                        className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm text-secondary outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
+                                        className="w-full bg-slate-50 border border-line p-3 rounded-xl text-sm text-secondary outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
                                 ) : (
-                                    <p className="text-sm text-slate-700 bg-slate-50 border border-slate-100 rounded-xl p-3 whitespace-pre-wrap">{record?.noteContent || 'No notes recorded.'}</p>
+                                    <p className="text-sm text-slate-700 bg-slate-50 border border-line rounded-xl p-3 whitespace-pre-wrap">{record?.noteContent || 'No notes recorded.'}</p>
                                 )}
                             </div>
 
                             {/* Prescription */}
                             <div>
-                                <h4 className="font-bold text-secondary flex items-center gap-2 mb-2"><Pill size={16} className="text-slate-400" /> Prescription</h4>
+                                <h4 className="font-bold text-secondary flex items-center gap-2 mb-2"><Pill size={16} className="text-muted" /> Prescription</h4>
 
                                 {canEdit ? (
                                     <div className="space-y-3">
                                         {items.map((it, idx) => (
-                                            <div key={idx} className="grid grid-cols-12 gap-2 items-start bg-slate-50 border border-slate-100 rounded-xl p-3">
-                                                <input value={it.medicationName} onChange={e => updateItem(idx, 'medicationName', e.target.value)} placeholder="Medication" className="col-span-12 sm:col-span-3 bg-white border border-slate-200 p-2 rounded-lg text-sm outline-none" />
-                                                <input value={it.dosage} onChange={e => updateItem(idx, 'dosage', e.target.value)} placeholder="500mg" className="col-span-4 sm:col-span-2 bg-white border border-slate-200 p-2 rounded-lg text-sm outline-none" />
-                                                <select value={it.frequency} onChange={e => updateItem(idx, 'frequency', e.target.value)} className="col-span-8 sm:col-span-3 bg-white border border-slate-200 p-2 rounded-lg text-sm outline-none">
+                                            <div key={idx} className="grid grid-cols-12 gap-2 items-start bg-slate-50 border border-line rounded-xl p-3">
+                                                <input value={it.medicationName} onChange={e => updateItem(idx, 'medicationName', e.target.value)} placeholder="Medication" className="col-span-12 sm:col-span-3 bg-white border border-line p-2 rounded-lg text-sm outline-none" />
+                                                <input value={it.dosage} onChange={e => updateItem(idx, 'dosage', e.target.value)} placeholder="500mg" className="col-span-4 sm:col-span-2 bg-white border border-line p-2 rounded-lg text-sm outline-none" />
+                                                <select value={it.frequency} onChange={e => updateItem(idx, 'frequency', e.target.value)} className="col-span-8 sm:col-span-3 bg-white border border-line p-2 rounded-lg text-sm outline-none">
                                                     {FREQUENCIES.map(f => <option key={f} value={f}>{f}</option>)}
                                                 </select>
-                                                <input type="number" min={0} value={it.durationDays} onChange={e => updateItem(idx, 'durationDays', e.target.value)} placeholder="days" className="col-span-4 sm:col-span-1 bg-white border border-slate-200 p-2 rounded-lg text-sm outline-none" />
-                                                <input value={it.instructions} onChange={e => updateItem(idx, 'instructions', e.target.value)} placeholder="After food" className="col-span-7 sm:col-span-2 bg-white border border-slate-200 p-2 rounded-lg text-sm outline-none" />
-                                                <button onClick={() => removeItem(idx)} className="col-span-1 p-2 text-slate-400 hover:text-rose-500 justify-self-end" title="Remove"><Trash2 size={16} /></button>
+                                                <input type="number" min={0} value={it.durationDays} onChange={e => updateItem(idx, 'durationDays', e.target.value)} placeholder="days" className="col-span-4 sm:col-span-1 bg-white border border-line p-2 rounded-lg text-sm outline-none" />
+                                                <input value={it.instructions} onChange={e => updateItem(idx, 'instructions', e.target.value)} placeholder="After food" className="col-span-7 sm:col-span-2 bg-white border border-line p-2 rounded-lg text-sm outline-none" />
+                                                <button onClick={() => removeItem(idx)} className="col-span-1 p-2 text-muted hover:text-rose-500 justify-self-end" title="Remove"><Trash2 size={16} /></button>
                                             </div>
                                         ))}
                                         <button onClick={addItem} className="flex items-center gap-2 text-sm font-bold text-primary hover:underline"><Plus size={16} /> Add medication</button>
-                                        <textarea rows={2} value={generalInstructions} onChange={e => setGeneralInstructions(e.target.value)} placeholder="General instructions (e.g. take after meals)…" className="w-full bg-slate-50 border border-slate-200 p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none mt-2" />
+                                        <textarea rows={2} value={generalInstructions} onChange={e => setGeneralInstructions(e.target.value)} placeholder="General instructions (e.g. take after meals)…" className="w-full bg-slate-50 border border-line p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none mt-2" />
                                     </div>
                                 ) : (
                                     record?.prescription?.items?.length ? (
                                         <div className="space-y-2">
                                             {record.prescription.items.map((i: any, idx: number) => (
-                                                <div key={idx} className="bg-slate-50 border border-slate-100 rounded-xl p-3 text-sm">
-                                                    <p className="font-bold text-secondary">{i.medicationName} {i.dosage && <span className="text-slate-500 font-medium">· {i.dosage}</span>}</p>
-                                                    <p className="text-xs text-slate-500 mt-0.5">{i.frequency}{i.durationDays ? ` · ${i.durationDays} days` : ''}{i.instructions ? ` · ${i.instructions}` : ''}</p>
+                                                <div key={idx} className="bg-slate-50 border border-line rounded-xl p-3 text-sm">
+                                                    <p className="font-bold text-secondary">{i.medicationName} {i.dosage && <span className="text-muted font-medium">· {i.dosage}</span>}</p>
+                                                    <p className="text-xs text-muted mt-0.5">{i.frequency}{i.durationDays ? ` · ${i.durationDays} days` : ''}{i.instructions ? ` · ${i.instructions}` : ''}</p>
                                                 </div>
                                             ))}
-                                            {record.prescription.generalInstructions && <p className="text-xs text-slate-500 italic mt-1">{record.prescription.generalInstructions}</p>}
+                                            {record.prescription.generalInstructions && <p className="text-xs text-muted italic mt-1">{record.prescription.generalInstructions}</p>}
                                         </div>
-                                    ) : <p className="text-sm text-slate-400">No prescription issued.</p>
+                                    ) : <p className="text-sm text-muted">No prescription issued.</p>
                                 )}
                             </div>
                         </div>
                     )}
 
                     {!loading && (
-                        <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-end gap-3">
+                        <div className="p-4 border-t border-line bg-surface flex items-center justify-end gap-3">
                             {(canEdit || hasContent) && (
-                                <button onClick={printRx} className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-slate-600 bg-white border border-slate-200 hover:border-slate-300 transition-colors">
+                                <button onClick={printRx} className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-slate-600 bg-white border border-line hover:border-slate-300 transition-colors">
                                     <Printer size={16} /> Print
                                 </button>
                             )}
                             {canEdit && (
-                                <button onClick={save} disabled={saving} className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white bg-primary hover:bg-teal-600 transition-colors disabled:opacity-50">
+                                <button onClick={save} disabled={saving} className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-white bg-primary hover:bg-[#5d4bd6] transition-colors disabled:opacity-50">
                                     <Save size={16} /> {saving ? 'Saving…' : 'Save'}
                                 </button>
                             )}

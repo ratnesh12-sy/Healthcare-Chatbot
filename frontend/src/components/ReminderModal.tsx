@@ -131,18 +131,18 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-lg bg-white rounded-3xl shadow-xl border border-slate-100 p-6 z-10"
+          className="relative w-full max-w-lg bg-white rounded-3xl shadow-xl border border-line p-6 z-10"
         >
           <div className="flex justify-between items-center mb-5">
             <div className="flex items-center gap-3 text-secondary">
-              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+              <div className="p-2 bg-primary-soft text-primary rounded-xl">
                 <Clock className="w-5 h-5" />
               </div>
               <h2 id="modal-title" className="text-xl font-bold">Save Reminder</h2>
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+              className="p-2 text-muted hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -180,19 +180,19 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
                   }}
                   maxLength={120}
                   placeholder="E.g., Schedule an iron blood test"
-                  className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium text-slate-800"
+                  className="w-full p-3 bg-slate-50 border border-line rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-800"
                 />
               </div>
 
               {suggestions.length > 0 && (
                 <div className="mb-6">
-                  <p className="text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wider">Suggested from Chat</p>
+                  <p className="text-xs font-semibold text-muted mb-2 uppercase tracking-wider">Suggested from Chat</p>
                   <div className="flex flex-wrap gap-2">
                     {suggestions.map((suggestion, idx) => (
                       <button
                         key={idx}
                         onClick={() => setText(suggestion)}
-                        className="text-left px-3 py-1.5 bg-indigo-50/50 hover:bg-indigo-100 border border-indigo-100 text-indigo-700 text-sm rounded-lg transition-colors"
+                        className="text-left px-3 py-1.5 bg-primary-soft/50 hover:bg-primary-soft border border-primary-soft text-[#5040c0] text-sm rounded-lg transition-colors"
                       >
                         {suggestion}
                       </button>
@@ -202,27 +202,27 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
               )}
 
               {schedule?.hasSchedule && (
-                <div className="mb-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4">
+                <div className="mb-5 rounded-2xl border border-primary-soft bg-primary-soft/40 p-4">
                   <label className="flex items-center justify-between gap-2 cursor-pointer">
-                    <span className="flex items-center gap-2 text-sm font-bold text-indigo-700">
+                    <span className="flex items-center gap-2 text-sm font-bold text-[#5040c0]">
                       <Repeat className="w-4 h-4" /> Schedule reminders
                     </span>
                     <input
                       type="checkbox"
                       checked={useSchedule}
                       onChange={(e) => setUseSchedule(e.target.checked)}
-                      className="w-4 h-4 accent-indigo-600"
+                      className="w-4 h-4 accent-primary"
                     />
                   </label>
 
                   {useSchedule && (
                     <div className="mt-3 grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-500 mb-1">Frequency</label>
+                        <label className="block text-[11px] font-semibold text-muted mb-1">Frequency</label>
                         <select
                           value={everyMinutes}
                           onChange={(e) => setEveryMinutes(parseInt(e.target.value))}
-                          className="w-full p-2 text-sm bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-500"
+                          className="w-full p-2 text-sm bg-white border border-line rounded-lg outline-none focus:border-primary"
                         >
                           {!INTERVAL_OPTIONS.some((o) => o.value === everyMinutes) && (
                             <option value={everyMinutes}>{`Every ${everyMinutes} min`}</option>
@@ -233,33 +233,33 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
                         </select>
                       </div>
                       <div>
-                        <label className="block text-[11px] font-semibold text-slate-500 mb-1">For (days)</label>
+                        <label className="block text-[11px] font-semibold text-muted mb-1">For (days)</label>
                         <input
                           type="number"
                           min={1}
                           max={90}
                           value={durationDays}
                           onChange={(e) => setDurationDays(parseInt(e.target.value) || 1)}
-                          className="w-full p-2 text-sm bg-white border border-slate-200 rounded-lg outline-none focus:border-indigo-500"
+                          className="w-full p-2 text-sm bg-white border border-line rounded-lg outline-none focus:border-primary"
                         />
                       </div>
                     </div>
                   )}
 
                   {schedule.summary && (
-                    <p className="mt-2 text-[11px] text-indigo-600/80">
+                    <p className="mt-2 text-[11px] text-primary/80">
                       Detected: &ldquo;{schedule.summary}&rdquo;{schedule.source === "ai" ? " · AI" : ""}
                     </p>
                   )}
                 </div>
               )}
 
-              <div className="flex justify-end pt-4 border-t border-slate-100">
+              <div className="flex justify-end pt-4 border-t border-line">
                 <button
                   onClick={handleSave}
                   disabled={loading || !text.trim()}
                   aria-label="Save Reminder"
-                  className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-md active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
+                  className="flex items-center gap-2 bg-primary hover:bg-[#5040c0] text-white px-6 py-2.5 rounded-xl font-semibold shadow-md active:scale-95 transition-all disabled:opacity-50 disabled:active:scale-100"
                 >
                   <Save className="w-4 h-4" />
                   {loading ? "Saving..." : "Save"}

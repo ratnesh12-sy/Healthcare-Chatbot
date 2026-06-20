@@ -31,13 +31,13 @@ export default function ForgotPasswordPage() {
                 className="max-w-md w-full bg-white p-10 rounded-3xl shadow-2xl"
             >
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-teal-500/10">
+                    <div className="w-16 h-16 bg-primary-soft rounded-2xl flex items-center justify-center text-primary mx-auto mb-6 shadow-lg shadow-primary/10">
                         {sent ? <MailCheck className="w-8 h-8" /> : <Activity className="w-8 h-8" />}
                     </div>
                     <h2 className="text-3xl font-extrabold text-dark tracking-tight">
                         {sent ? 'Check your email' : 'Forgot password?'}
                     </h2>
-                    <p className="text-gray-500 mt-3">
+                    <p className="text-muted mt-3">
                         {sent
                             ? "If an account with that email exists, we've sent a link to reset your password."
                             : "Enter your email and we'll send you a link to reset your password."}
@@ -46,11 +46,11 @@ export default function ForgotPasswordPage() {
 
                 {sent ? (
                     <div className="space-y-4">
-                        <p className="text-sm text-gray-500 text-center">
+                        <p className="text-sm text-muted text-center">
                             Didn't get it? Check your spam folder, or{' '}
                             <button
                                 onClick={() => setSent(false)}
-                                className="text-primary font-semibold hover:text-teal-600 transition-colors"
+                                className="text-primary font-semibold hover:text-[#5d4bd6] transition-colors"
                             >
                                 try a different email
                             </button>
@@ -68,7 +68,7 @@ export default function ForgotPasswordPage() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="you@example.com"
                                 required
                             />
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
                         </button>
                         <p className="text-center text-gray-600 text-sm">
                             Remember your password?{' '}
-                            <Link href="/login" className="text-primary font-bold hover:text-teal-600 transition-colors">
+                            <Link href="/login" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">
                                 Sign in
                             </Link>
                         </p>

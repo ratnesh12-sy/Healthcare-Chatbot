@@ -179,12 +179,12 @@ function PatientProfile() {
             <div className="flex justify-between items-end">
                 <div>
                     <h1 className="text-3xl font-extrabold text-secondary tracking-tight">Your Profile</h1>
-                    <p className="text-slate-500 mt-2 font-medium">Manage your personal and medical information.</p>
+                    <p className="text-muted mt-2 font-medium">Manage your personal and medical information.</p>
                 </div>
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="px-5 py-2 bg-primary text-white font-semibold rounded-xl hover:bg-teal-600 transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-5 py-2 bg-primary text-white font-semibold rounded-xl hover:bg-[#5d4bd6] transition-all shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {saving ? 'Saving...' : 'Save Changes'}
                 </button>
@@ -194,7 +194,7 @@ function PatientProfile() {
             {message && (
                 <div className={`p-4 rounded-xl font-medium text-sm border ${
                     message.type === 'success'
-                        ? 'bg-green-50 text-green-700 border-green-200'
+                        ? 'bg-pastel-mint text-pastel-mintInk border-green-200'
                         : 'bg-red-50 text-red-700 border-red-200'
                 } animate-in fade-in slide-in-from-top-2 duration-300`}>
                     {message.text}
@@ -204,7 +204,7 @@ function PatientProfile() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {/* Left Column: Avatar & Completeness */}
                 <div className="md:col-span-1 space-y-6">
-                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100 flex flex-col items-center text-center relative overflow-hidden">
+                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-line flex flex-col items-center text-center relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-24 bg-surface"></div>
                         <div className="relative mt-8 mb-4">
                             <div className="w-32 h-32 bg-primary rounded-full flex items-center justify-center text-white text-4xl font-bold shadow-lg border-4 border-white relative z-10">
@@ -212,17 +212,17 @@ function PatientProfile() {
                             </div>
                         </div>
                         <h2 className="text-xl font-extrabold text-secondary">{profile.fullName || profile.username}</h2>
-                        <p className="text-slate-500 font-medium capitalize mt-1">
+                        <p className="text-muted font-medium capitalize mt-1">
                             {user?.roles?.[0]?.replace('ROLE_', '').toLowerCase() || 'Patient'}
                         </p>
-                        <div className="mt-6 w-full flex items-center justify-center gap-2 bg-green-50 text-green-700 py-2 rounded-xl text-sm font-bold border border-green-100">
+                        <div className="mt-6 w-full flex items-center justify-center gap-2 bg-pastel-mint text-pastel-mintInk py-2 rounded-xl text-sm font-bold border border-green-100">
                             <ShieldCheck size={16} />
                             Verified Account
                         </div>
                     </div>
 
                     {/* Profile Completeness */}
-                    <div className="bg-white p-6 rounded-3xl shadow-soft border border-slate-100">
+                    <div className="bg-white p-6 rounded-3xl shadow-soft border border-line">
                         <h3 className="text-lg font-bold text-secondary mb-4">Profile Completeness</h3>
                         <div className="relative w-full h-3 bg-slate-100 rounded-full overflow-hidden">
                             <div
@@ -237,7 +237,7 @@ function PatientProfile() {
                                 }}
                             />
                         </div>
-                        <p className="text-sm text-slate-500 mt-3 font-medium text-center">
+                        <p className="text-sm text-muted mt-3 font-medium text-center">
                             <span className="font-extrabold text-secondary">{completeness}%</span> complete
                         </p>
                     </div>
@@ -246,7 +246,7 @@ function PatientProfile() {
                 {/* Right Column: Forms */}
                 <div className="md:col-span-2 space-y-6">
                     {/* Personal Information */}
-                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100">
+                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-line">
                         <h3 className="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
                             <User className="text-primary w-6 h-6" />
                             Personal Information
@@ -256,17 +256,17 @@ function PatientProfile() {
                                 onChange={(v) => handleChange('fullName', v)} />
                             <FieldInput label="Username" value={profile.username} disabled />
                             <FieldInput label="Email" value={profile.email} disabled type="email"
-                                icon={<Mail className="absolute left-4 top-3.5 text-slate-400 w-5 h-5" />} className="md:col-span-2" />
+                                icon={<Mail className="absolute left-4 top-3.5 text-muted w-5 h-5" />} className="md:col-span-2" />
                             <FieldInput label="Phone (10 digits)" value={profile.phoneNumber || ''} error={errors.phoneNumber}
                                 onChange={(v) => handleChange('phoneNumber', v)} placeholder="9876543210" />
                             <FieldInput label="Date of Birth" value={profile.dateOfBirth || ''} error={errors.dateOfBirth}
                                 onChange={(v) => handleChange('dateOfBirth', v)} type="date" />
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-slate-500">Gender</label>
+                                <label className="text-sm font-semibold text-muted">Gender</label>
                                 <select
                                     value={profile.gender || ''}
                                     onChange={(e) => handleChange('gender', e.target.value)}
-                                    className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
+                                    className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
                                 >
                                     <option value="">Select</option>
                                     <option value="MALE">Male</option>
@@ -278,18 +278,18 @@ function PatientProfile() {
                     </div>
 
                     {/* Medical Information */}
-                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100">
+                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-line">
                         <h3 className="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
                             <Heart className="text-red-500 w-6 h-6" />
                             Medical Information
                         </h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-sm font-semibold text-slate-500">Blood Group</label>
+                                <label className="text-sm font-semibold text-muted">Blood Group</label>
                                 <select
                                     value={profile.bloodGroup || ''}
                                     onChange={(e) => handleChange('bloodGroup', e.target.value)}
-                                    className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
+                                    className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
                                 >
                                     <option value="">Select</option>
                                     {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(bg => (
@@ -311,7 +311,7 @@ function PatientProfile() {
                     </div>
 
                     {/* Emergency Contact */}
-                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100">
+                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-line">
                         <h3 className="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
                             <Phone className="text-green-600 w-6 h-6" />
                             Emergency Contact
@@ -325,26 +325,26 @@ function PatientProfile() {
                     </div>
 
                     {/* Notification Preferences */}
-                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-slate-100">
+                    <div className="bg-white p-8 rounded-3xl shadow-soft border border-line">
                         <h3 className="text-xl font-bold text-secondary mb-6 flex items-center gap-2">
                             <Bell className="text-amber-500 w-6 h-6" />
                             Notifications
                         </h3>
                         <div
                             onClick={toggleEmailNotifications}
-                            className="flex items-center justify-between p-4 bg-slate-50 border border-slate-100 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors"
+                            className="flex items-center justify-between p-4 bg-slate-50 border border-line rounded-xl cursor-pointer hover:bg-slate-100 transition-colors"
                         >
                             <div className="pr-4">
                                 <h4 className="font-bold text-secondary text-sm flex items-center gap-2">
-                                    <Mail size={15} className="text-slate-400" /> Email notifications
+                                    <Mail size={15} className="text-muted" /> Email notifications
                                 </h4>
-                                <p className="text-xs text-slate-500 font-medium mt-0.5">Receive appointment confirmations and reminders by email.</p>
+                                <p className="text-xs text-muted font-medium mt-0.5">Receive appointment confirmations and reminders by email.</p>
                             </div>
                             <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${profile.emailNotificationsEnabled ? 'bg-green-500' : 'bg-slate-300'}`}>
                                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${profile.emailNotificationsEnabled ? 'right-1' : 'left-1'}`}></div>
                             </div>
                         </div>
-                        <p className="text-xs text-slate-400 mt-3">Changes are saved when you click <span className="font-semibold">Save Changes</span>.</p>
+                        <p className="text-xs text-muted mt-3">Changes are saved when you click <span className="font-semibold">Save Changes</span>.</p>
                     </div>
                 </div>
             </div>
@@ -360,7 +360,7 @@ function FieldInput({ label, value, onChange, disabled, type = "text", placehold
 }) {
     return (
         <div className={`space-y-2 ${className}`}>
-            <label className="text-sm font-semibold text-slate-500">{label}</label>
+            <label className="text-sm font-semibold text-muted">{label}</label>
             <div className="relative">
                 {icon}
                 <input
@@ -370,8 +370,8 @@ function FieldInput({ label, value, onChange, disabled, type = "text", placehold
                     disabled={disabled}
                     placeholder={placeholder}
                     className={`w-full p-3.5 ${icon ? 'pl-12' : ''} ${
-                        disabled ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-slate-50'
-                    } border ${error ? 'border-red-400 ring-2 ring-red-100' : 'border-slate-200'} rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium`}
+                        disabled ? 'bg-slate-100 text-muted cursor-not-allowed' : 'bg-slate-50'
+                    } border ${error ? 'border-red-400 ring-2 ring-red-100' : 'border-line'} rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium`}
                 />
             </div>
             {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
@@ -385,7 +385,7 @@ function FieldTextarea({ label, value, onChange, placeholder, icon, className = 
 }) {
     return (
         <div className={`space-y-2 ${className}`}>
-            <label className="text-sm font-semibold text-slate-500 flex items-center gap-1.5">
+            <label className="text-sm font-semibold text-muted flex items-center gap-1.5">
                 {icon}
                 {label}
             </label>
@@ -394,7 +394,7 @@ function FieldTextarea({ label, value, onChange, placeholder, icon, className = 
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
                 rows={3}
-                className="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium resize-none"
+                className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium resize-none"
             />
         </div>
     );

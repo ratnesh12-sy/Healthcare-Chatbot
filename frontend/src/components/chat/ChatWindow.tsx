@@ -90,11 +90,11 @@ export default function ChatWindow({ appointmentId }: ChatWindowProps) {
           return (
             <div key={idx} className={`flex w-full ${isMe ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[70%] p-3 shadow-sm ${
-                  isMe ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm' : 'bg-white text-gray-800 border border-gray-200 rounded-2xl rounded-tl-sm'
+                  isMe ? 'bg-blue-600 text-white rounded-2xl rounded-tr-sm' : 'bg-white text-gray-800 border border-line rounded-2xl rounded-tl-sm'
                 }`}
               >
                 {!isMe && (
-                  <div className="text-xs font-bold text-gray-500 mb-1">
+                  <div className="text-xs font-bold text-muted mb-1">
                     {msg.senderType === 'DOCTOR' ? '👨‍⚕️ Doctor' : '🧑 Patient'}
                   </div>
                 )}
@@ -119,7 +119,7 @@ export default function ChatWindow({ appointmentId }: ChatWindowProps) {
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-100 flex items-center gap-2">
+      <div className="p-4 bg-white border-t border-line flex items-center gap-2">
         <textarea
           className="flex-1 border rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none overflow-hidden"
           placeholder="Type your message..."

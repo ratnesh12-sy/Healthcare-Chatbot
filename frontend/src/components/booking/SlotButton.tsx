@@ -23,8 +23,8 @@ export default function SlotButton({ time, available, reason, selected, onClick 
                 ${available && selected
                     ? 'bg-primary text-white shadow-lg shadow-primary/30 ring-2 ring-primary scale-105'
                     : available
-                        ? 'bg-white text-slate-700 border border-slate-200 hover:border-primary hover:text-primary hover:shadow-md cursor-pointer focus:ring-primary'
-                        : 'bg-slate-100 text-slate-400 border border-slate-100 cursor-not-allowed'
+                        ? 'bg-white text-slate-700 border border-line hover:border-primary hover:text-primary hover:shadow-md cursor-pointer focus:ring-primary'
+                        : 'bg-slate-100 text-muted border border-line cursor-not-allowed'
                 }
             `}
         >

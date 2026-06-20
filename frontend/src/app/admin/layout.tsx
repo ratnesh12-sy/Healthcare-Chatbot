@@ -26,8 +26,8 @@ export default function AdminLayout({
         return (
             <div className="flex items-center justify-center h-screen bg-slate-50">
                 <div className="text-center space-y-4">
-                    <div className="w-12 h-12 border-4 border-slate-200 border-t-rose-500 rounded-full animate-spin mx-auto"></div>
-                    <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Verifying Clearance…</p>
+                    <div className="w-12 h-12 border-4 border-line border-t-rose-500 rounded-full animate-spin mx-auto"></div>
+                    <p className="text-sm font-bold text-muted uppercase tracking-wider">Verifying Clearance…</p>
                 </div>
             </div>
         );
@@ -62,7 +62,7 @@ export default function AdminLayout({
                         <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>
                     </Link>
                     <div className="pt-8 pb-2">
-                        <p className="px-4 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-800 pb-2">System</p>
+                        <p className="px-4 text-xs font-bold text-muted uppercase tracking-wider border-b border-slate-800 pb-2">System</p>
                     </div>
                     <Link href="/admin/audit" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
                         <ScrollText size={20} />
@@ -75,7 +75,7 @@ export default function AdminLayout({
                 </nav>
 
                 <div className="p-4 border-t border-slate-800 space-y-2">
-                    <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all font-bold">
+                    <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-muted hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all font-bold">
                         <LogOut size={20} />
                         Logout
                     </button>
@@ -84,10 +84,10 @@ export default function AdminLayout({
 
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 shadow-sm">
+                <header className="h-16 bg-white border-b border-line flex items-center justify-between px-8 z-10 shadow-sm">
                     <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">System Operational</span>
+                        <span className="text-xs font-bold text-muted uppercase tracking-wider">System Operational</span>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right">
