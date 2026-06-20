@@ -3,7 +3,9 @@ package com.healthcare.aiassistant.controller;
 import com.healthcare.aiassistant.model.ERole;
 import com.healthcare.aiassistant.model.Role;
 import com.healthcare.aiassistant.model.User;
+import com.healthcare.aiassistant.payload.request.ForgotPasswordRequest;
 import com.healthcare.aiassistant.payload.request.LoginRequest;
+import com.healthcare.aiassistant.payload.request.ResetPasswordRequest;
 import com.healthcare.aiassistant.payload.request.SignupRequest;
 import com.healthcare.aiassistant.payload.response.JwtResponse;
 import com.healthcare.aiassistant.payload.response.MessageResponse;
@@ -63,6 +65,9 @@ public class AuthController {
 
     @Autowired
     com.healthcare.aiassistant.service.EmailService emailService;
+
+    @Autowired
+    com.healthcare.aiassistant.service.PasswordResetService passwordResetService;
 
     @Value("${app.cookie.secure:false}")
     private boolean cookieSecure;
@@ -250,6 +255,30 @@ public class AuthController {
                         + "— The HealthCare AI Assistant Team");
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordResetService.requestReset(request.getEmail());
+        // Always the same response — never reveal whether the email is registered (anti-enumeration).
+        return ResponseEntity.ok(new MessageResponse(
+                "If an account with that email exists, a password reset link has been sent."));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        // Enforce the admin minimum-password-length setting (same as signup).
+        int minLen = settingsService.getInt(com.healthcare.aiassistant.service.SettingsService.MIN_PASSWORD_LENGTH);
+        if (request.getNewPassword() == null || request.getNewPassword().length() < minLen) {
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("Password must be at least " + minLen + " characters."));
+        }
+        boolean ok = passwordResetService.resetPassword(request.getToken(), request.getNewPassword());
+        if (ok) {
+            return ResponseEntity.ok(new MessageResponse("Your password has been reset. You can now sign in."));
+        }
+        return ResponseEntity.badRequest().body(new MessageResponse(
+                "This password reset link is invalid or has expired. Please request a new one."));
     }
 
     @PostMapping("/google")
