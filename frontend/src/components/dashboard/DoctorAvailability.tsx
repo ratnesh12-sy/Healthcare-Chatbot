@@ -140,21 +140,21 @@ export default function DoctorAvailability() {
 
     return (
         <div className="bg-white rounded-3xl shadow-sm border border-line overflow-hidden">
-            <div className="flex border-b border-line bg-slate-50">
+            <div className="flex border-b border-line bg-surface">
                 <button 
-                    className={`flex-1 py-4 font-bold text-sm ${activeTab === 'weekly' ? 'text-primary border-b-2 border-primary bg-white' : 'text-muted hover:text-slate-700'}`}
+                    className={`flex-1 py-4 font-bold text-sm ${activeTab === 'weekly' ? 'text-primary border-b-2 border-primary bg-white' : 'text-muted hover:text-secondary'}`}
                     onClick={() => setActiveTab('weekly')}
                 >
                     Weekly Schedule
                 </button>
                 <button 
-                    className={`flex-1 py-4 font-bold text-sm ${activeTab === 'exceptions' ? 'text-primary border-b-2 border-primary bg-white' : 'text-muted hover:text-slate-700'}`}
+                    className={`flex-1 py-4 font-bold text-sm ${activeTab === 'exceptions' ? 'text-primary border-b-2 border-primary bg-white' : 'text-muted hover:text-secondary'}`}
                     onClick={() => setActiveTab('exceptions')}
                 >
                     Leaves & Exceptions
                 </button>
                 <button 
-                    className={`flex-1 py-4 font-bold text-sm ${activeTab === 'preview' ? 'text-primary border-b-2 border-primary bg-white' : 'text-muted hover:text-slate-700'}`}
+                    className={`flex-1 py-4 font-bold text-sm ${activeTab === 'preview' ? 'text-primary border-b-2 border-primary bg-white' : 'text-muted hover:text-secondary'}`}
                     onClick={() => setActiveTab('preview')}
                 >
                     Preview Mode
@@ -183,7 +183,7 @@ export default function DoctorAvailability() {
                                             
                                             <div className="flex gap-2">
                                                 {TEMPLATES.map((t, idx) => (
-                                                    <button key={idx} onClick={() => applyTemplate(day.id, t.blocks)} className="text-xs font-semibold px-2 py-1 bg-slate-200 text-slate-600 rounded hover:bg-slate-300">
+                                                    <button key={idx} onClick={() => applyTemplate(day.id, t.blocks)} className="text-xs font-semibold px-2 py-1 bg-line text-muted rounded hover:bg-primary-soft">
                                                         {t.label}
                                                     </button>
                                                 ))}
@@ -201,7 +201,7 @@ export default function DoctorAvailability() {
 
                                     <div className="space-y-3">
                                         {(!schedule[day.id] || schedule[day.id].length === 0) ? (
-                                            <div className="p-4 border border-dashed border-slate-300 rounded-xl text-muted text-sm font-semibold flex items-center justify-center bg-white">
+                                            <div className="p-4 border border-dashed border-line rounded-xl text-muted text-sm font-semibold flex items-center justify-center bg-white">
                                                 Day Off (No Shifts)
                                             </div>
                                         ) : (
@@ -213,14 +213,14 @@ export default function DoctorAvailability() {
                                                             type="time" 
                                                             value={block.startTime} 
                                                             onChange={(e) => updateBlock(day.id, idx, 'startTime', e.target.value)}
-                                                            className="px-3 py-1.5 border border-line rounded-lg text-sm font-semibold text-slate-700 outline-none focus:border-primary"
+                                                            className="px-3 py-1.5 border border-line rounded-lg text-sm font-semibold text-secondary outline-none focus:border-primary"
                                                         />
                                                         <span className="text-muted">to</span>
                                                         <input 
                                                             type="time" 
                                                             value={block.endTime} 
                                                             onChange={(e) => updateBlock(day.id, idx, 'endTime', e.target.value)}
-                                                            className="px-3 py-1.5 border border-line rounded-lg text-sm font-semibold text-slate-700 outline-none focus:border-primary"
+                                                            className="px-3 py-1.5 border border-line rounded-lg text-sm font-semibold text-secondary outline-none focus:border-primary"
                                                         />
                                                     </div>
                                                     
@@ -229,7 +229,7 @@ export default function DoctorAvailability() {
                                                         <select 
                                                             value={block.slotDuration}
                                                             onChange={(e) => updateBlock(day.id, idx, 'slotDuration', parseInt(e.target.value))}
-                                                            className="px-3 py-1.5 border border-line rounded-lg text-sm font-semibold text-slate-700 outline-none focus:border-primary bg-slate-50"
+                                                            className="px-3 py-1.5 border border-line rounded-lg text-sm font-semibold text-secondary outline-none focus:border-primary bg-surface"
                                                         >
                                                             <option value={15}>15 mins</option>
                                                             <option value={20}>20 mins</option>
@@ -261,12 +261,12 @@ export default function DoctorAvailability() {
                             <form onSubmit={handleAddException} className="space-y-4">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-600 mb-1">Date</label>
-                                        <input required type="date" value={exDate} onChange={e => setExDate(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-slate-700" />
+                                        <label className="block text-sm font-semibold text-muted mb-1">Date</label>
+                                        <input required type="date" value={exDate} onChange={e => setExDate(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-secondary" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-600 mb-1">Type</label>
-                                        <select value={exIsAvailable ? "true" : "false"} onChange={e => setExIsAvailable(e.target.value === "true")} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-slate-700 bg-slate-50">
+                                        <label className="block text-sm font-semibold text-muted mb-1">Type</label>
+                                        <select value={exIsAvailable ? "true" : "false"} onChange={e => setExIsAvailable(e.target.value === "true")} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-secondary bg-surface">
                                             <option value="false">Full Day Leave</option>
                                             <option value="true">Partial Day Override</option>
                                         </select>
@@ -274,24 +274,24 @@ export default function DoctorAvailability() {
                                 </div>
 
                                 {exIsAvailable && (
-                                    <div className="grid grid-cols-2 gap-4 p-4 bg-slate-50 rounded-xl border border-line">
+                                    <div className="grid grid-cols-2 gap-4 p-4 bg-surface rounded-xl border border-line">
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-600 mb-1">Override Start Time</label>
-                                            <input required type="time" value={exStart} onChange={e => setExStart(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-slate-700" />
+                                            <label className="block text-sm font-semibold text-muted mb-1">Override Start Time</label>
+                                            <input required type="time" value={exStart} onChange={e => setExStart(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-secondary" />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-slate-600 mb-1">Override End Time</label>
-                                            <input required type="time" value={exEnd} onChange={e => setExEnd(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-slate-700" />
+                                            <label className="block text-sm font-semibold text-muted mb-1">Override End Time</label>
+                                            <input required type="time" value={exEnd} onChange={e => setExEnd(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-secondary" />
                                         </div>
                                     </div>
                                 )}
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-600 mb-1">Reason (Optional)</label>
-                                    <input type="text" placeholder="e.g. Sick Leave, Conference" value={exReason} onChange={e => setExReason(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-slate-700" />
+                                    <label className="block text-sm font-semibold text-muted mb-1">Reason (Optional)</label>
+                                    <input type="text" placeholder="e.g. Sick Leave, Conference" value={exReason} onChange={e => setExReason(e.target.value)} className="w-full px-4 py-2 border border-line rounded-xl focus:border-primary outline-none text-secondary" />
                                 </div>
                                 
-                                <button type="submit" className="w-full py-3 bg-secondary text-white font-bold rounded-xl hover:bg-slate-800 transition-colors shadow-sm">
+                                <button type="submit" className="w-full py-3 bg-secondary text-white font-bold rounded-xl hover:bg-dark transition-colors shadow-sm">
                                     Save Override
                                 </button>
                             </form>
@@ -303,9 +303,9 @@ export default function DoctorAvailability() {
                                 <p className="text-sm text-muted">No leaves scheduled.</p>
                             ) : (
                                 exceptions.map(ex => (
-                                    <div key={ex.id} className="flex justify-between items-center p-4 border border-line rounded-xl bg-slate-50 hover:bg-white transition-colors">
+                                    <div key={ex.id} className="flex justify-between items-center p-4 border border-line rounded-xl bg-surface hover:bg-white transition-colors">
                                         <div>
-                                            <div className="font-bold text-slate-700 flex items-center gap-2">
+                                            <div className="font-bold text-secondary flex items-center gap-2">
                                                 {new Date(ex.exceptionDate).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
                                                 {!ex.isAvailable ? (
                                                     <span className="px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded uppercase tracking-wider">Off</span>
@@ -327,12 +327,12 @@ export default function DoctorAvailability() {
 
                 {activeTab === 'preview' && (
                     <div className="space-y-6 animate-in fade-in flex flex-col items-center justify-center py-10">
-                        <div className="w-16 h-16 bg-slate-100 text-muted flex items-center justify-center rounded-full mb-4">
+                        <div className="w-16 h-16 bg-surface text-muted flex items-center justify-center rounded-full mb-4">
                             <Calendar className="w-8 h-8" />
                         </div>
                         <h2 className="text-2xl font-bold text-secondary">Simulation Mode</h2>
                         <p className="text-muted max-w-md text-center">
-                            The Preview feature connects to the live <span className="font-mono text-xs bg-slate-100 px-1 rounded text-primary">GET /api/appointments/available-slots</span> endpoint to show exactly what patients see. 
+                            The Preview feature connects to the live <span className="font-mono text-xs bg-surface px-1 rounded text-primary">GET /api/appointments/available-slots</span> endpoint to show exactly what patients see. 
                         </p>
                         <p className="text-sm text-primary font-semibold bg-primary-soft px-4 py-2 rounded-lg">
                             This tests TreeSet Generation + Exception Overrides + Active Bookings natively.

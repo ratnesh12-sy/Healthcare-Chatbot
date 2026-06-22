@@ -19,7 +19,7 @@ export default function ChatMessage({ message, onOpenReminder }: ChatMessageProp
             className={`flex ${message.isFromAi ? 'justify-start' : 'justify-end'}`}
         >
             <div className={`flex gap-3 items-end max-w-[85%] md:max-w-[80%] ${message.isFromAi ? 'flex-row' : 'flex-row-reverse'}`}>
-                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 ${message.isFromAi ? 'bg-primary text-white' : 'bg-slate-200 text-slate-600'}`}>
+                <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shadow-sm flex-shrink-0 ${message.isFromAi ? 'bg-primary text-white' : 'bg-line text-muted'}`}>
                     {message.isFromAi ? <Bot size={18} /> : <User size={18} />}
                 </div>
                 <div>

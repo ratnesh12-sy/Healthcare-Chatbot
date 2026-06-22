@@ -286,7 +286,7 @@ export default function ChatInput() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="border-t border-line bg-slate-50 overflow-hidden"
+                        className="border-t border-line bg-surface overflow-hidden"
                     >
                         <div className="px-4 md:px-5 py-3">
                             <div className="flex items-start gap-3">
@@ -299,11 +299,11 @@ export default function ChatInput() {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2">
                                         <ImageIcon className="w-4 h-4 text-muted flex-shrink-0" />
-                                        <span className="text-sm font-semibold text-slate-700 truncate">{ocrFile?.name || 'Upload'}</span>
+                                        <span className="text-sm font-semibold text-secondary truncate">{ocrFile?.name || 'Upload'}</span>
                                     </div>
                                     {ocrLoading && (
                                         <div className="mt-2">
-                                            <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-line rounded-full overflow-hidden">
                                                 <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${Math.max(ocrProgress, 5)}%` }} />
                                             </div>
                                             <p className="text-xs text-muted mt-1 font-medium">Extracting text... {ocrProgress}%</p>
@@ -314,7 +314,7 @@ export default function ChatInput() {
                                     )}
                                     {ocrError && <p className="text-xs text-red-500 mt-1 font-medium">❌ {ocrError}</p>}
                                 </div>
-                                <button onClick={clearOcr} className="p-1.5 text-muted hover:text-slate-600 hover:bg-slate-200 rounded-lg transition-colors flex-shrink-0">
+                                <button onClick={clearOcr} className="p-1.5 text-muted hover:text-muted hover:bg-line rounded-lg transition-colors flex-shrink-0">
                                     <X size={16} />
                                 </button>
                             </div>
@@ -336,7 +336,7 @@ export default function ChatInput() {
                     className="hidden"
                 />
                 
-                <div className="flex-1 bg-slate-50 border border-line rounded-3xl flex items-center shadow-inner focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden p-1">
+                <div className="flex-1 bg-surface border border-line rounded-3xl flex items-center shadow-inner focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden p-1">
                     <textarea
                         value={input + (interimTranscript ? (input ? ' ' : '') + interimTranscript : '')}
                         onChange={(e) => {
@@ -366,9 +366,9 @@ export default function ChatInput() {
                         disabled={!recognition}
                         title={!recognition ? "Voice input not supported" : isListening ? "Stop listening" : "Start voice typing"}
                         className={`p-3 md:p-4 rounded-2xl transition-all shadow-md flex-shrink-0 ${
-                            !recognition ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                            !recognition ? 'bg-surface text-muted cursor-not-allowed'
                             : isListening ? 'bg-red-50 text-red-500 border border-red-200 animate-pulse hover:bg-red-100'
-                            : 'bg-slate-100 text-muted hover:bg-slate-200 hover:text-slate-700'
+                            : 'bg-surface text-muted hover:bg-line hover:text-secondary'
                         }`}
                     >
                         {isListening ? <MicOff size={20} /> : <Mic size={20} />}
@@ -380,9 +380,9 @@ export default function ChatInput() {
                         disabled={ocrLoading}
                         title="Upload medical report image"
                         className={`p-3 md:p-4 rounded-2xl transition-all shadow-md flex-shrink-0 ${
-                            ocrLoading ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                            ocrLoading ? 'bg-surface text-muted cursor-not-allowed'
                             : ocrText ? 'bg-primary/10 text-primary border border-primary/20'
-                            : 'bg-slate-100 text-muted hover:bg-slate-200 hover:text-slate-700'
+                            : 'bg-surface text-muted hover:bg-line hover:text-secondary'
                         }`}
                     >
                         <Paperclip size={20} />

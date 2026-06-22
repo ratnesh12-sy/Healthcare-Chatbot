@@ -16,7 +16,7 @@ interface AuditLogEntry {
 
 // Per-action styling for the badge. Unknown action types fall back to slate.
 const ACTION_STYLES: Record<string, { badge: string; icon: JSX.Element }> = {
-    ROLE_UPDATE: { badge: 'bg-pastel-sky text-pastel-skyInk border-blue-200', icon: <UserCog size={14} /> },
+    ROLE_UPDATE: { badge: 'bg-pastel-sky text-pastel-skyInk border-pastel-sky', icon: <UserCog size={14} /> },
     USER_DELETED: { badge: 'bg-pastel-rose text-pastel-roseInk border-rose-200', icon: <UserX size={14} /> },
 };
 
@@ -76,7 +76,7 @@ export default function AuditLogPage() {
         <div className="max-w-7xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight flex items-center gap-3">
+                    <h1 className="text-3xl font-extrabold text-secondary tracking-tight flex items-center gap-3">
                         <ShieldAlert className="text-rose-500 w-8 h-8" />
                         Security Audit Trail
                     </h1>
@@ -87,7 +87,7 @@ export default function AuditLogPage() {
                 <button
                     onClick={fetchLogs}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-white border border-line rounded-xl font-bold text-slate-600 hover:text-secondary hover:border-slate-300 shadow-sm transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2.5 bg-white border border-line rounded-xl font-bold text-muted hover:text-secondary hover:border-line shadow-sm transition-all disabled:opacity-50"
                 >
                     <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
                     Refresh
@@ -119,7 +119,7 @@ export default function AuditLogPage() {
                         <select
                             value={actionFilter}
                             onChange={(e) => setActionFilter(e.target.value)}
-                            className="bg-white border border-line px-4 py-3 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all shadow-sm font-bold text-slate-600 cursor-pointer"
+                            className="bg-white border border-line px-4 py-3 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all shadow-sm font-bold text-muted cursor-pointer"
                         >
                             <option value="ALL">All Actions</option>
                             {actionTypes.map((a) => (
@@ -135,7 +135,7 @@ export default function AuditLogPage() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-line">
+                            <tr className="bg-surface border-b border-line">
                                 <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Timestamp</th>
                                 <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Action</th>
                                 <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Performed By</th>
@@ -154,7 +154,7 @@ export default function AuditLogPage() {
                             )}
                             {!loading && filteredLogs.map((log) => {
                                 const style = ACTION_STYLES[log.actionType] || {
-                                    badge: 'bg-slate-100 text-slate-600 border-line',
+                                    badge: 'bg-surface text-muted border-line',
                                     icon: <Activity size={14} />,
                                 };
                                 return (
@@ -181,10 +181,10 @@ export default function AuditLogPage() {
                                         </td>
                                         <td className="p-4">
                                             {log.targetUserId == null ? (
-                                                <span className="text-xs text-slate-300 font-medium">—</span>
+                                                <span className="text-xs text-muted font-medium">—</span>
                                             ) : (
                                                 <div>
-                                                    <p className="text-sm font-semibold text-slate-700">
+                                                    <p className="text-sm font-semibold text-secondary">
                                                         {log.targetUsername || <span className="italic text-muted">deleted user</span>}
                                                     </p>
                                                     <p className="text-xs text-muted font-medium">ID: {log.targetUserId}</p>
@@ -192,7 +192,7 @@ export default function AuditLogPage() {
                                             )}
                                         </td>
                                         <td className="p-4">
-                                            <p className="text-sm text-slate-600 font-medium max-w-md">{log.details || '—'}</p>
+                                            <p className="text-sm text-muted font-medium max-w-md">{log.details || '—'}</p>
                                         </td>
                                     </tr>
                                 );

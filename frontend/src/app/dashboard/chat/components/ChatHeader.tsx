@@ -32,8 +32,8 @@ export default function ChatHeader() {
                         AI Online
                     </div>
                 ) : (
-                    <div className="hidden sm:flex items-center gap-2 bg-slate-50 text-muted px-4 py-1.5 rounded-full text-sm font-bold border border-line shadow-sm">
-                        <span className="relative flex h-2.5 w-2.5 rounded-full bg-slate-400"></span>
+                    <div className="hidden sm:flex items-center gap-2 bg-surface text-muted px-4 py-1.5 rounded-full text-sm font-bold border border-line shadow-sm">
+                        <span className="relative flex h-2.5 w-2.5 rounded-full bg-line"></span>
                         Offline
                     </div>
                 )}

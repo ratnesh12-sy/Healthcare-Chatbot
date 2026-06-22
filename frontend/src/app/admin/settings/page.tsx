@@ -40,7 +40,7 @@ function Section({ icon, title, accent, children }: { icon: React.ReactNode; tit
 function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
     return (
         <div>
-            <label className="block text-sm font-bold text-slate-700 mb-1.5">{label}</label>
+            <label className="block text-sm font-bold text-secondary mb-1.5">{label}</label>
             {children}
             {hint && <p className="text-xs text-muted font-medium mt-1.5">{hint}</p>}
         </div>
@@ -49,19 +49,19 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 
 function Toggle({ on, onClick, label, hint }: { on: boolean; onClick: () => void; label: string; hint?: string }) {
     return (
-        <div onClick={onClick} className="flex items-center justify-between p-4 bg-slate-50 border border-line rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+        <div onClick={onClick} className="flex items-center justify-between p-4 bg-surface border border-line rounded-xl cursor-pointer hover:bg-surface transition-colors">
             <div className="pr-4">
                 <h4 className="font-bold text-secondary text-sm">{label}</h4>
                 {hint && <p className="text-xs text-muted font-medium mt-0.5">{hint}</p>}
             </div>
-            <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${on ? 'bg-green-500' : 'bg-slate-300'}`}>
+            <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${on ? 'bg-green-500' : 'bg-muted'}`}>
                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${on ? 'right-1' : 'left-1'}`}></div>
             </div>
         </div>
     );
 }
 
-const inputCls = "w-full bg-slate-50 border border-line p-3 rounded-xl text-secondary font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none";
+const inputCls = "w-full bg-surface border border-line p-3 rounded-xl text-secondary font-medium text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none";
 
 export default function SettingsPage() {
     const [config, setConfig] = useState<Config>(DEFAULTS);
@@ -112,7 +112,7 @@ export default function SettingsPage() {
 
             <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Global Settings</h1>
+                    <h1 className="text-3xl font-extrabold text-secondary tracking-tight">Global Settings</h1>
                     <p className="text-muted mt-2 font-medium">Configure platform behavior. Changes apply immediately on save.</p>
                 </div>
                 <button
@@ -149,7 +149,7 @@ export default function SettingsPage() {
                 </Section>
 
                 {/* Access & Security */}
-                <Section icon={<ShieldCheck size={22} />} title="Access & Security" accent="text-blue-500">
+                <Section icon={<ShieldCheck size={22} />} title="Access & Security" accent="text-pastel-skyInk">
                     <Toggle on={isOn('registrationEnabled')} onClick={() => toggle('registrationEnabled')} label="Allow new registrations" hint="When off, the signup endpoint is closed." />
                     <Toggle on={isOn('googleSignInEnabled')} onClick={() => toggle('googleSignInEnabled')} label="Allow Google Sign-In" hint="Hides the Google button and rejects Google logins when off." />
                     <Field label="Session length (hours)" hint="How long a login stays valid. Applies to new logins.">

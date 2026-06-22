@@ -31,7 +31,7 @@ const STATUS_FILTERS = ['ALL', 'PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED']
 
 const STATUS_STYLES: Record<string, { border: string; badge: string; badgeBg: string }> = {
     PENDING:   { border: 'border-l-4 border-orange-400', badge: 'text-orange-700', badgeBg: 'bg-orange-100' },
-    CONFIRMED: { border: 'border-l-4 border-blue-400',   badge: 'text-blue-700',   badgeBg: 'bg-blue-100' },
+    CONFIRMED: { border: 'border-l-4 border-pastel-skyInk', badge: 'text-pastel-skyInk', badgeBg: 'bg-pastel-sky' },
     COMPLETED: { border: 'border-l-4 border-green-400',  badge: 'text-green-700',  badgeBg: 'bg-green-100' },
     CANCELLED: { border: 'border-l-4 border-red-300',    badge: 'text-red-600',    badgeBg: 'bg-red-100' },
 };
@@ -252,7 +252,7 @@ export default function AppointmentsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     className={`sticky top-0 z-20 rounded-2xl p-5 border shadow-sm ${
                         verificationStatus === null || verificationStatus === 'NOT_VERIFIED'
-                            ? 'bg-violet-50 border-violet-200 text-violet-800'
+                            ? 'bg-primary-soft border-primary-soft text-secondary'
                             : verificationStatus === 'PENDING'
                             ? 'bg-amber-50 border-amber-200 text-amber-800'
                             : 'bg-rose-50 border-rose-200 text-rose-800'
@@ -266,7 +266,7 @@ export default function AppointmentsPage() {
                                     <p className="font-bold text-base">⚠️ You are not verified yet</p>
                                     <p className="text-sm font-medium mt-0.5 opacity-80">Submit your credentials to start the verification process.</p>
                                 </div>
-                                <a href="/doctor/onboarding" className="ml-auto px-5 py-2.5 bg-violet-600 text-white font-bold rounded-xl hover:bg-violet-700 transition-colors text-sm shrink-0">
+                                <a href="/doctor/onboarding" className="ml-auto px-5 py-2.5 bg-primary text-white font-bold rounded-xl hover:bg-[#5d4bd6] transition-colors text-sm shrink-0">
                                     Submit Verification
                                 </a>
                             </>
@@ -295,7 +295,7 @@ export default function AppointmentsPage() {
             )}
 
             {isDoctor && !isDoctorVerified && (
-                <div className="flex items-center gap-2 p-3 bg-slate-100 rounded-xl border border-line text-slate-600">
+                <div className="flex items-center gap-2 p-3 bg-surface rounded-xl border border-line text-muted">
                     <Lock size={16} className="shrink-0" />
                     <span className="text-sm font-semibold">🔒 Verification required to manage appointments</span>
                 </div>
@@ -342,12 +342,12 @@ export default function AppointmentsPage() {
                             className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                                 activeFilter === f
                                     ? 'bg-primary text-white shadow-sm'
-                                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                    : 'bg-surface text-muted hover:bg-line'
                             }`}
                         >
                             {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()}
                             <span className={`ml-2 text-xs px-1.5 py-0.5 rounded-full ${
-                                activeFilter === f ? 'bg-white/20' : 'bg-slate-200'
+                                activeFilter === f ? 'bg-white/20' : 'bg-line'
                             }`}>
                                 {filterCounts[f]}
                             </span>
@@ -372,7 +372,7 @@ export default function AppointmentsPage() {
                                     const doc = doctors.find(d => d.id === parseInt(e.target.value));
                                     setSelectedDoctor(doc || null);
                                 }}
-                                className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
+                                className="w-full p-3.5 bg-surface border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
                             >
                                 <option value="">Choose a specialist...</option>
                                 {doctors.map(doc => (
@@ -408,7 +408,7 @@ export default function AppointmentsPage() {
                     >
                         {filtered.length === 0 ? (
                             <div className="p-12 text-center">
-                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-dashed border-line text-slate-300">
+                                <div className="w-16 h-16 bg-surface rounded-full flex items-center justify-center mx-auto mb-4 border border-dashed border-line text-muted">
                                     {EMPTY_MESSAGES[activeFilter]?.icon || <Calendar className="w-8 h-8" />}
                                 </div>
                                 <p className="font-medium text-muted">
@@ -477,18 +477,18 @@ export default function AppointmentsPage() {
                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                         <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                            className="absolute inset-0 bg-secondary/40 backdrop-blur-sm"
                             onClick={() => setSelectedAppointment(null)}
                         />
                         <motion.div
                             initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
                             className="bg-white rounded-3xl w-full max-w-2xl relative z-10 shadow-xl overflow-hidden"
                         >
-                            <div className="p-6 border-b flex justify-between items-center bg-slate-50">
+                            <div className="p-6 border-b flex justify-between items-center bg-surface">
                                 <h3 className="text-xl font-bold text-secondary flex items-center gap-2">
                                     <Activity className="w-5 h-5 text-primary" /> Patient Overview
                                 </h3>
-                                <button onClick={() => setSelectedAppointment(null)} className="p-2 text-muted hover:text-slate-600 bg-white rounded-full shadow-sm">
+                                <button onClick={() => setSelectedAppointment(null)} className="p-2 text-muted hover:text-muted bg-white rounded-full shadow-sm">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -499,15 +499,15 @@ export default function AppointmentsPage() {
                                         <p className="text-muted font-medium">{new Date(selectedAppointment.appointmentDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                     </div>
                                     <span className={`text-xs font-bold px-3 py-1.5 rounded-lg uppercase ${
-                                        STATUS_STYLES[selectedAppointment.status]?.badgeBg || 'bg-slate-100'
-                                    } ${STATUS_STYLES[selectedAppointment.status]?.badge || 'text-slate-600'}`}>
+                                        STATUS_STYLES[selectedAppointment.status]?.badgeBg || 'bg-surface'
+                                    } ${STATUS_STYLES[selectedAppointment.status]?.badge || 'text-muted'}`}>
                                         {selectedAppointment.status}
                                     </span>
                                 </div>
                                 {selectedAppointment.symptomsSummary && selectedAppointment.symptomsSummary.trim() !== '' && (
-                                    <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-                                        <h5 className="font-bold text-blue-900 mb-2">🤖 AI Triage Summary</h5>
-                                        <p className="text-blue-800 leading-relaxed whitespace-pre-wrap">{selectedAppointment.symptomsSummary}</p>
+                                    <div className="bg-pastel-sky border border-primary-soft rounded-2xl p-5">
+                                        <h5 className="font-bold text-secondary mb-2">🤖 AI Triage Summary</h5>
+                                        <p className="text-secondary leading-relaxed whitespace-pre-wrap">{selectedAppointment.symptomsSummary}</p>
                                     </div>
                                 )}
                             </div>
@@ -570,7 +570,7 @@ function AppointmentCard({
                             <Clock size={12} />
                             {new Date(apt.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>
-                        <span className="text-xs text-slate-300">•</span>
+                        <span className="text-xs text-muted">•</span>
                         <span className="text-xs font-semibold text-muted">{apt.durationMinutes} min</span>
                     </div>
 
@@ -579,13 +579,13 @@ function AppointmentCard({
                         <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: 'auto', opacity: 1 }}
-                            className="mt-3 bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm text-blue-800"
+                            className="mt-3 bg-pastel-sky border border-primary-soft rounded-lg p-3 text-sm text-secondary"
                         >
                             🤖 {expanded ? apt.symptomsSummary : apt.symptomsSummary.slice(0, 80) + (apt.symptomsSummary.length > 80 ? '...' : '')}
                             {apt.symptomsSummary.length > 80 && (
                                 <button
                                     onClick={(e) => { e.stopPropagation(); onToggleSymptom(apt.id); }}
-                                    className="ml-2 text-blue-600 font-semibold hover:underline"
+                                    className="ml-2 text-pastel-skyInk font-semibold hover:underline"
                                 >
                                     {expanded ? 'show less' : 'show more'}
                                 </button>
@@ -654,7 +654,7 @@ function AppointmentCard({
                             onClick={(e) => { e.stopPropagation(); onDoctorUpdateStatus(apt.id, apt.status, 'CONFIRMED'); }}
                             disabled={!isDoctorVerified}
                             title={!isDoctorVerified ? 'You must be verified to perform this action' : ''}
-                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'bg-primary text-white hover:bg-primary/90' : 'bg-slate-100 text-muted cursor-not-allowed'}`}
+                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'bg-primary text-white hover:bg-primary/90' : 'bg-surface text-muted cursor-not-allowed'}`}
                         >
                             Confirm
                         </button>
@@ -662,7 +662,7 @@ function AppointmentCard({
                             onClick={(e) => { e.stopPropagation(); onDoctorCancel(apt.id); }}
                             disabled={!isDoctorVerified}
                             title={!isDoctorVerified ? 'You must be verified to perform this action' : ''}
-                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'border border-red-200 text-red-600 hover:bg-red-50' : 'bg-slate-100 text-muted cursor-not-allowed'}`}
+                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'border border-red-200 text-red-600 hover:bg-red-50' : 'bg-surface text-muted cursor-not-allowed'}`}
                         >
                             Decline
                         </button>
@@ -674,7 +674,7 @@ function AppointmentCard({
                             onClick={(e) => { e.stopPropagation(); onDoctorUpdateStatus(apt.id, apt.status, 'COMPLETED'); }}
                             disabled={!isDoctorVerified}
                             title={!isDoctorVerified ? 'You must be verified to perform this action' : ''}
-                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-slate-100 text-muted cursor-not-allowed'}`}
+                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-surface text-muted cursor-not-allowed'}`}
                         >
                             Complete
                         </button>
@@ -682,7 +682,7 @@ function AppointmentCard({
                             onClick={(e) => { e.stopPropagation(); onDoctorCancel(apt.id); }}
                             disabled={!isDoctorVerified}
                             title={!isDoctorVerified ? 'You must be verified to perform this action' : ''}
-                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'border border-red-200 text-red-600 hover:bg-red-50' : 'bg-slate-100 text-muted cursor-not-allowed'}`}
+                            className={`px-3 py-1.5 font-semibold text-xs rounded-lg transition-colors ${isDoctorVerified ? 'border border-red-200 text-red-600 hover:bg-red-50' : 'bg-surface text-muted cursor-not-allowed'}`}
                         >
                             Cancel
                         </button>

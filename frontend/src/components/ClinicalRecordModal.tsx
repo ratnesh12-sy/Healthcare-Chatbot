@@ -95,7 +95,7 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
             </tr>`).join('');
         const html = `<!doctype html><html><head><title>Prescription</title></head>
             <body style="font-family:Arial,sans-serif;color:#1e293b;max-width:720px;margin:24px auto;padding:0 16px">
-              <h1 style="color:#0d9488;margin-bottom:4px">HealthCare AI Assistant</h1>
+              <h1 style="color:#6D5AE6;margin-bottom:4px">HealthCare AI Assistant</h1>
               <p style="color:#64748b;margin-top:0">Prescription</p>
               <hr/>
               <p><b>Patient:</b> ${esc(record.patientName)}<br/>
@@ -125,14 +125,14 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
         <AnimatePresence>
             <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={onClose} />
+                    className="absolute inset-0 bg-secondary/50 backdrop-blur-sm" onClick={onClose} />
                 <motion.div initial={{ scale: 0.96, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.96, opacity: 0 }}
                     className="bg-white rounded-3xl w-full max-w-2xl relative z-10 shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
-                    <div className="p-6 border-b border-line bg-slate-50 flex items-center justify-between">
+                    <div className="p-6 border-b border-line bg-surface flex items-center justify-between">
                         <h3 className="text-lg font-extrabold text-secondary flex items-center gap-2">
                             <Stethoscope className="text-primary w-5 h-5" /> Clinical Record
                         </h3>
-                        <button onClick={onClose} className="p-2 text-muted hover:text-slate-600 bg-white rounded-full shadow-sm"><X size={18} /></button>
+                        <button onClick={onClose} className="p-2 text-muted hover:text-muted bg-white rounded-full shadow-sm"><X size={18} /></button>
                     </div>
 
                     {loading ? (
@@ -151,9 +151,9 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
                                 {canEdit ? (
                                     <textarea rows={4} value={note} onChange={e => setNote(e.target.value)}
                                         placeholder="Clinical observations, diagnosis, advice…"
-                                        className="w-full bg-slate-50 border border-line p-3 rounded-xl text-sm text-secondary outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
+                                        className="w-full bg-surface border border-line p-3 rounded-xl text-sm text-secondary outline-none focus:ring-2 focus:ring-primary/20 resize-none" />
                                 ) : (
-                                    <p className="text-sm text-slate-700 bg-slate-50 border border-line rounded-xl p-3 whitespace-pre-wrap">{record?.noteContent || 'No notes recorded.'}</p>
+                                    <p className="text-sm text-secondary bg-surface border border-line rounded-xl p-3 whitespace-pre-wrap">{record?.noteContent || 'No notes recorded.'}</p>
                                 )}
                             </div>
 
@@ -164,7 +164,7 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
                                 {canEdit ? (
                                     <div className="space-y-3">
                                         {items.map((it, idx) => (
-                                            <div key={idx} className="grid grid-cols-12 gap-2 items-start bg-slate-50 border border-line rounded-xl p-3">
+                                            <div key={idx} className="grid grid-cols-12 gap-2 items-start bg-surface border border-line rounded-xl p-3">
                                                 <input value={it.medicationName} onChange={e => updateItem(idx, 'medicationName', e.target.value)} placeholder="Medication" className="col-span-12 sm:col-span-3 bg-white border border-line p-2 rounded-lg text-sm outline-none" />
                                                 <input value={it.dosage} onChange={e => updateItem(idx, 'dosage', e.target.value)} placeholder="500mg" className="col-span-4 sm:col-span-2 bg-white border border-line p-2 rounded-lg text-sm outline-none" />
                                                 <select value={it.frequency} onChange={e => updateItem(idx, 'frequency', e.target.value)} className="col-span-8 sm:col-span-3 bg-white border border-line p-2 rounded-lg text-sm outline-none">
@@ -176,13 +176,13 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
                                             </div>
                                         ))}
                                         <button onClick={addItem} className="flex items-center gap-2 text-sm font-bold text-primary hover:underline"><Plus size={16} /> Add medication</button>
-                                        <textarea rows={2} value={generalInstructions} onChange={e => setGeneralInstructions(e.target.value)} placeholder="General instructions (e.g. take after meals)…" className="w-full bg-slate-50 border border-line p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none mt-2" />
+                                        <textarea rows={2} value={generalInstructions} onChange={e => setGeneralInstructions(e.target.value)} placeholder="General instructions (e.g. take after meals)…" className="w-full bg-surface border border-line p-3 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary/20 resize-none mt-2" />
                                     </div>
                                 ) : (
                                     record?.prescription?.items?.length ? (
                                         <div className="space-y-2">
                                             {record.prescription.items.map((i: any, idx: number) => (
-                                                <div key={idx} className="bg-slate-50 border border-line rounded-xl p-3 text-sm">
+                                                <div key={idx} className="bg-surface border border-line rounded-xl p-3 text-sm">
                                                     <p className="font-bold text-secondary">{i.medicationName} {i.dosage && <span className="text-muted font-medium">· {i.dosage}</span>}</p>
                                                     <p className="text-xs text-muted mt-0.5">{i.frequency}{i.durationDays ? ` · ${i.durationDays} days` : ''}{i.instructions ? ` · ${i.instructions}` : ''}</p>
                                                 </div>
@@ -198,7 +198,7 @@ export default function ClinicalRecordModal({ appointmentId, canEdit, onClose }:
                     {!loading && (
                         <div className="p-4 border-t border-line bg-surface flex items-center justify-end gap-3">
                             {(canEdit || hasContent) && (
-                                <button onClick={printRx} className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-slate-600 bg-white border border-line hover:border-slate-300 transition-colors">
+                                <button onClick={printRx} className="flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-muted bg-white border border-line hover:border-line transition-colors">
                                     <Printer size={16} /> Print
                                 </button>
                             )}

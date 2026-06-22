@@ -38,7 +38,7 @@ function calculateCompleteness(data: ProfileData): number {
 }
 
 function ShimmerBlock({ className = "" }: { className?: string }) {
-    return <div className={`animate-pulse bg-slate-200 rounded-xl ${className}`} />;
+    return <div className={`animate-pulse bg-line rounded-xl ${className}`} />;
 }
 
 export default function ProfilePage() {
@@ -224,7 +224,7 @@ function PatientProfile() {
                     {/* Profile Completeness */}
                     <div className="bg-white p-6 rounded-3xl shadow-soft border border-line">
                         <h3 className="text-lg font-bold text-secondary mb-4">Profile Completeness</h3>
-                        <div className="relative w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="relative w-full h-3 bg-surface rounded-full overflow-hidden">
                             <div
                                 className="h-full rounded-full transition-all duration-700 ease-out"
                                 style={{
@@ -266,7 +266,7 @@ function PatientProfile() {
                                 <select
                                     value={profile.gender || ''}
                                     onChange={(e) => handleChange('gender', e.target.value)}
-                                    className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
+                                    className="w-full p-3.5 bg-surface border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
                                 >
                                     <option value="">Select</option>
                                     <option value="MALE">Male</option>
@@ -289,7 +289,7 @@ function PatientProfile() {
                                 <select
                                     value={profile.bloodGroup || ''}
                                     onChange={(e) => handleChange('bloodGroup', e.target.value)}
-                                    className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
+                                    className="w-full p-3.5 bg-surface border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium"
                                 >
                                     <option value="">Select</option>
                                     {['A+','A-','B+','B-','AB+','AB-','O+','O-'].map(bg => (
@@ -306,7 +306,7 @@ function PatientProfile() {
                                 placeholder="e.g., Diabetes, Hypertension" icon={<Activity className="w-4 h-4 text-red-500" />} />
                             <FieldTextarea label="Current Medications" value={profile.currentMedications || ''}
                                 onChange={(v) => handleChange('currentMedications', v)}
-                                placeholder="e.g., Metformin 500mg" icon={<Pill className="w-4 h-4 text-blue-500" />} className="md:col-span-2" />
+                                placeholder="e.g., Metformin 500mg" icon={<Pill className="w-4 h-4 text-pastel-skyInk" />} className="md:col-span-2" />
                         </div>
                     </div>
 
@@ -332,7 +332,7 @@ function PatientProfile() {
                         </h3>
                         <div
                             onClick={toggleEmailNotifications}
-                            className="flex items-center justify-between p-4 bg-slate-50 border border-line rounded-xl cursor-pointer hover:bg-slate-100 transition-colors"
+                            className="flex items-center justify-between p-4 bg-surface border border-line rounded-xl cursor-pointer hover:bg-surface transition-colors"
                         >
                             <div className="pr-4">
                                 <h4 className="font-bold text-secondary text-sm flex items-center gap-2">
@@ -340,7 +340,7 @@ function PatientProfile() {
                                 </h4>
                                 <p className="text-xs text-muted font-medium mt-0.5">Receive appointment confirmations and reminders by email.</p>
                             </div>
-                            <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${profile.emailNotificationsEnabled ? 'bg-green-500' : 'bg-slate-300'}`}>
+                            <div className={`w-12 h-6 rounded-full relative shadow-inner transition-colors shrink-0 ${profile.emailNotificationsEnabled ? 'bg-accent' : 'bg-muted'}`}>
                                 <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all ${profile.emailNotificationsEnabled ? 'right-1' : 'left-1'}`}></div>
                             </div>
                         </div>
@@ -370,7 +370,7 @@ function FieldInput({ label, value, onChange, disabled, type = "text", placehold
                     disabled={disabled}
                     placeholder={placeholder}
                     className={`w-full p-3.5 ${icon ? 'pl-12' : ''} ${
-                        disabled ? 'bg-slate-100 text-muted cursor-not-allowed' : 'bg-slate-50'
+                        disabled ? 'bg-surface text-muted cursor-not-allowed' : 'bg-surface'
                     } border ${error ? 'border-red-400 ring-2 ring-red-100' : 'border-line'} rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium`}
                 />
             </div>
@@ -394,7 +394,7 @@ function FieldTextarea({ label, value, onChange, placeholder, icon, className = 
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
                 rows={3}
-                className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium resize-none"
+                className="w-full p-3.5 bg-surface border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-secondary font-medium resize-none"
             />
         </div>
     );

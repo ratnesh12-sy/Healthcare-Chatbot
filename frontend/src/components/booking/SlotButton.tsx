@@ -23,14 +23,14 @@ export default function SlotButton({ time, available, reason, selected, onClick 
                 ${available && selected
                     ? 'bg-primary text-white shadow-lg shadow-primary/30 ring-2 ring-primary scale-105'
                     : available
-                        ? 'bg-white text-slate-700 border border-line hover:border-primary hover:text-primary hover:shadow-md cursor-pointer focus:ring-primary'
-                        : 'bg-slate-100 text-muted border border-line cursor-not-allowed'
+                        ? 'bg-white text-secondary border border-line hover:border-primary hover:text-primary hover:shadow-md cursor-pointer focus:ring-primary'
+                        : 'bg-surface text-muted border border-line cursor-not-allowed'
                 }
             `}
         >
             {time}
             {!available && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-slate-300 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-muted rounded-full flex items-center justify-center">
                     <span className="text-[10px] text-white font-black">✕</span>
                 </span>
             )}

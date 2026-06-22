@@ -32,9 +32,9 @@ function getDocTypeBadge(documentPath: string | null) {
         return { label: 'PDF', icon: <FileText className="w-4 h-4" />, color: 'text-red-600 bg-red-50 border-red-200' };
     }
     if (['jpg', 'jpeg', 'png'].includes(ext || '')) {
-        return { label: ext?.toUpperCase(), icon: <ImageIcon className="w-4 h-4" />, color: 'text-blue-600 bg-blue-50 border-blue-200' };
+        return { label: ext?.toUpperCase(), icon: <ImageIcon className="w-4 h-4" />, color: 'text-pastel-skyInk bg-pastel-sky border-pastel-sky' };
     }
-    return { label: 'FILE', icon: <FileText className="w-4 h-4" />, color: 'text-slate-600 bg-slate-50 border-line' };
+    return { label: 'FILE', icon: <FileText className="w-4 h-4" />, color: 'text-muted bg-surface border-line' };
 }
 
 export default function DoctorVerificationPage() {
@@ -114,7 +114,7 @@ export default function DoctorVerificationPage() {
             <Toaster position="top-right" />
 
             <div>
-                <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">Identity Verification Queue</h1>
+                <h1 className="text-3xl font-extrabold text-secondary tracking-tight">Identity Verification Queue</h1>
                 <p className="text-muted mt-2 font-medium">Review and authorize pending medical professionals.</p>
             </div>
 
@@ -127,13 +127,13 @@ export default function DoctorVerificationPage() {
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
                             activeFilter === f
                                 ? 'bg-primary text-white shadow-sm'
-                                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                                : 'bg-surface text-muted hover:bg-line'
                         }`}
                     >
                         <Filter size={14} />
                         {f === 'ALL' ? 'All' : f.charAt(0) + f.slice(1).toLowerCase()}
                         <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                            activeFilter === f ? 'bg-white/20' : 'bg-slate-600'
+                            activeFilter === f ? 'bg-white/20' : 'bg-muted'
                         }`}>
                             {filterCounts[f]}
                         </span>
@@ -155,7 +155,7 @@ export default function DoctorVerificationPage() {
                             : 'No verification records match the current filter.'
                         }
                     </p>
-                    <button onClick={fetchVerifications} className="mt-8 px-6 py-3 bg-slate-50 hover:bg-slate-100 text-secondary font-bold rounded-xl border border-line transition-colors shadow-sm">
+                    <button onClick={fetchVerifications} className="mt-8 px-6 py-3 bg-surface hover:bg-surface text-secondary font-bold rounded-xl border border-line transition-colors shadow-sm">
                         Refresh Queue
                     </button>
                 </div>
@@ -167,7 +167,7 @@ export default function DoctorVerificationPage() {
                         return (
                             <div key={v.id} className="bg-white rounded-3xl p-6 shadow-soft border border-line flex flex-col md:flex-row items-center justify-between gap-6 group hover:shadow-lg transition-all">
                                 <div className="flex items-center gap-6 w-full md:w-auto">
-                                    <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-primary border border-line shrink-0 shadow-sm relative overflow-hidden">
+                                    <div className="w-16 h-16 bg-surface rounded-2xl flex items-center justify-center text-primary border border-line shrink-0 shadow-sm relative overflow-hidden">
                                          <div className="absolute top-0 right-0 w-8 h-8 bg-primary/10 rounded-bl-full"></div>
                                          <FileBadge size={28} className="relative z-10" />
                                     </div>
@@ -180,10 +180,10 @@ export default function DoctorVerificationPage() {
                                         </h3>
                                         <p className="text-muted font-medium text-sm mt-1">{v.doctor.email}</p>
                                         <div className="flex items-center gap-4 mt-3">
-                                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-lg border border-line">
+                                            <div className="flex items-center gap-1.5 text-xs font-bold text-secondary bg-surface px-2.5 py-1 rounded-lg border border-line">
                                                 <span className="text-muted">License:</span> {v.licenseNumber}
                                             </div>
-                                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-lg border border-line">
+                                            <div className="flex items-center gap-1.5 text-xs font-bold text-secondary bg-surface px-2.5 py-1 rounded-lg border border-line">
                                                 <span className="text-muted">Specialty:</span> {v.specialty}
                                             </div>
                                             {docBadge && (
@@ -199,7 +199,7 @@ export default function DoctorVerificationPage() {
                                     {/* View Details Button */}
                                     <button
                                         onClick={() => setSelectedVerification(v)}
-                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-slate-600 bg-slate-50 hover:bg-slate-100 border border-line transition-colors"
+                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-muted bg-surface hover:bg-surface border border-line transition-colors"
                                     >
                                         <Eye size={18} />
                                         View Details
@@ -237,18 +237,18 @@ export default function DoctorVerificationPage() {
                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                         <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+                            className="absolute inset-0 bg-secondary/50 backdrop-blur-sm"
                             onClick={() => setSelectedVerification(null)}
                         />
                         <motion.div
                             initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
                             className="bg-white rounded-3xl w-full max-w-lg relative z-10 shadow-xl overflow-hidden"
                         >
-                            <div className="p-6 border-b flex justify-between items-center bg-slate-50">
+                            <div className="p-6 border-b flex justify-between items-center bg-surface">
                                 <h3 className="text-xl font-bold text-secondary flex items-center gap-2">
                                     <FileBadge className="w-5 h-5 text-primary" /> Verification Details
                                 </h3>
-                                <button onClick={() => setSelectedVerification(null)} className="p-2 text-muted hover:text-slate-600 bg-white rounded-full shadow-sm">
+                                <button onClick={() => setSelectedVerification(null)} className="p-2 text-muted hover:text-muted bg-white rounded-full shadow-sm">
                                     <X className="w-5 h-5" />
                                 </button>
                             </div>
@@ -268,15 +268,15 @@ export default function DoctorVerificationPage() {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-slate-50 p-4 rounded-2xl border border-line">
+                                    <div className="bg-surface p-4 rounded-2xl border border-line">
                                         <p className="text-xs font-semibold text-muted mb-1 uppercase tracking-wider">License Number</p>
                                         <p className="text-lg font-bold text-secondary">{selectedVerification.licenseNumber}</p>
                                     </div>
-                                    <div className="bg-slate-50 p-4 rounded-2xl border border-line">
+                                    <div className="bg-surface p-4 rounded-2xl border border-line">
                                         <p className="text-xs font-semibold text-muted mb-1 uppercase tracking-wider">Specialty</p>
                                         <p className="text-lg font-bold text-secondary">{selectedVerification.specialty}</p>
                                     </div>
-                                    <div className="bg-slate-50 p-4 rounded-2xl border border-line">
+                                    <div className="bg-surface p-4 rounded-2xl border border-line">
                                         <p className="text-xs font-semibold text-muted mb-1 uppercase tracking-wider">Submission Date</p>
                                         <p className="text-lg font-bold text-secondary">
                                             {selectedVerification.submittedAt
@@ -284,7 +284,7 @@ export default function DoctorVerificationPage() {
                                                 : 'N/A'}
                                         </p>
                                     </div>
-                                    <div className="bg-slate-50 p-4 rounded-2xl border border-line">
+                                    <div className="bg-surface p-4 rounded-2xl border border-line">
                                         <p className="text-xs font-semibold text-muted mb-1 uppercase tracking-wider">Email</p>
                                         <p className="text-lg font-bold text-secondary truncate">{selectedVerification.doctor.email}</p>
                                     </div>
@@ -306,7 +306,7 @@ export default function DoctorVerificationPage() {
                                             })()}
                                             <button
                                                 onClick={() => handleViewDocument(selectedVerification.id)}
-                                                className="flex items-center gap-2 px-4 py-2.5 bg-pastel-sky text-pastel-skyInk font-bold text-sm rounded-xl border border-blue-200 hover:bg-blue-100 transition-colors"
+                                                className="flex items-center gap-2 px-4 py-2.5 bg-pastel-sky text-pastel-skyInk font-bold text-sm rounded-xl border border-pastel-sky hover:bg-primary-soft transition-colors"
                                             >
                                                 <ExternalLink className="w-4 h-4" />
                                                 View Document

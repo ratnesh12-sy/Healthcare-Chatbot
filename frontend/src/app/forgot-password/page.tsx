@@ -24,7 +24,7 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-surface">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -63,12 +63,12 @@ export default function ForgotPasswordPage() {
                 ) : (
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Email</label>
+                            <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">Email</label>
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="you@example.com"
                                 required
                             />
@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
                         >
                             {loading ? 'Sending...' : 'Send reset link'}
                         </button>
-                        <p className="text-center text-gray-600 text-sm">
+                        <p className="text-center text-muted text-sm">
                             Remember your password?{' '}
                             <Link href="/login" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">
                                 Sign in

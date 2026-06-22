@@ -32,7 +32,7 @@ export default function SignupPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12">
+        <div className="min-h-screen flex items-center justify-center bg-surface py-12">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -59,56 +59,56 @@ export default function SignupPage() {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Full Name</label>
+                            <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">Full Name</label>
                             <input
                                 type="text"
                                 value={formData.fullName}
                                 onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                                className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="John Doe"
                                 required
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Username</label>
+                            <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">Username</label>
                             <input
                                 type="text"
                                 value={formData.username}
                                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-                                className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                                className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                                 placeholder="johndoe"
                                 required
                             />
                         </div>
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Email</label>
+                        <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">Email</label>
                         <input
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="email@example.com"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Password</label>
+                        <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">Password</label>
                         <input
                             type="password"
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="••••••••"
                             required
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">I am a...</label>
+                        <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">I am a...</label>
                         <select
                             value={formData.role}
                             onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                            className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none appearance-none"
+                            className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none appearance-none"
                         >
                             <option value="patient">Patient</option>
                             <option value="doctor">Doctor</option>
@@ -125,7 +125,7 @@ export default function SignupPage() {
 
                 <GoogleSignInButton onError={setError} />
 
-                <p className="mt-10 text-center text-gray-600 text-sm">
+                <p className="mt-10 text-center text-muted text-sm">
                     Already have an account? <Link href="/login" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">Log in</Link>
                 </p>
             </motion.div>

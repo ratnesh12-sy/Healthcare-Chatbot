@@ -16,9 +16,9 @@ export default function GoogleSignInButton({ onError }: { onError?: (msg: string
     return (
         <div className="mt-6 space-y-4">
             <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-gray-200" />
+                <div className="h-px flex-1 bg-line" />
                 <span className="text-xs font-semibold text-muted uppercase">or</span>
-                <div className="h-px flex-1 bg-gray-200" />
+                <div className="h-px flex-1 bg-line" />
             </div>
             <div className="flex justify-center">
                 <GoogleLogin

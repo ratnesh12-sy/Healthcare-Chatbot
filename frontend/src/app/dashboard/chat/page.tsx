@@ -48,7 +48,7 @@ function ChatContent() {
                                         onClick={() => sendMessage(suggestion, suggestion, false)}
                                         className="p-4 bg-white border border-line rounded-2xl text-left hover:border-primary/50 hover:shadow-md transition-all group"
                                     >
-                                        <p className="text-sm font-medium text-slate-700 group-hover:text-primary transition-colors">{suggestion}</p>
+                                        <p className="text-sm font-medium text-secondary group-hover:text-primary transition-colors">{suggestion}</p>
                                     </button>
                                 ))}
                             </div>

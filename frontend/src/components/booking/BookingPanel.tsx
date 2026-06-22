@@ -170,10 +170,10 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                     <div className="bg-white rounded-2xl border border-line p-6 shadow-sm min-h-[300px]">
                         {!selectedDate ? (
                             <div className="flex flex-col items-center justify-center h-full py-16 text-center">
-                                <div className="w-14 h-14 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                                <div className="w-14 h-14 bg-surface text-muted rounded-full flex items-center justify-center mb-4">
                                     <span className="text-2xl">📅</span>
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-700 mb-1">Select a date</h3>
+                                <h3 className="text-lg font-bold text-secondary mb-1">Select a date</h3>
                                 <p className="text-sm text-muted">Pick a date from the calendar to see available time slots.</p>
                             </div>
                         ) : error ? (
@@ -181,7 +181,7 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                                 <div className="w-14 h-14 bg-red-50 text-red-400 rounded-full flex items-center justify-center mb-4">
                                     <AlertCircle className="w-7 h-7" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-700 mb-1">Something went wrong</h3>
+                                <h3 className="text-lg font-bold text-secondary mb-1">Something went wrong</h3>
                                 <p className="text-sm text-muted mb-4">{error}</p>
                                 <button
                                     onClick={() => fetchSlots(format(selectedDate, 'yyyy-MM-dd'), false)}
@@ -193,10 +193,10 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                         ) : (
                             <>
                                 <div className="flex items-center justify-between mb-5">
-                                    <h3 className="text-lg font-bold text-slate-800">
+                                    <h3 className="text-lg font-bold text-secondary">
                                         {format(selectedDate, 'EEEE, MMMM d, yyyy')}
                                     </h3>
-                                    <span className="text-xs font-semibold text-muted bg-slate-100 px-3 py-1 rounded-full">
+                                    <span className="text-xs font-semibold text-muted bg-surface px-3 py-1 rounded-full">
                                         Dr. {doctorName}
                                     </span>
                                 </div>
@@ -215,16 +215,16 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
             {/* Booking Confirmation Section */}
             {selectedSlot && selectedDate && (
                 <div className="bg-white rounded-2xl border border-line p-6 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <h3 className="text-lg font-bold text-slate-800 mb-4">Confirm Your Appointment</h3>
+                    <h3 className="text-lg font-bold text-secondary mb-4">Confirm Your Appointment</h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
-                        <div className="bg-slate-50 rounded-xl p-4 border border-line">
+                        <div className="bg-surface rounded-xl p-4 border border-line">
                             <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Doctor</p>
-                            <p className="text-sm font-bold text-slate-800">Dr. {doctorName}</p>
+                            <p className="text-sm font-bold text-secondary">Dr. {doctorName}</p>
                         </div>
-                        <div className="bg-slate-50 rounded-xl p-4 border border-line">
+                        <div className="bg-surface rounded-xl p-4 border border-line">
                             <p className="text-xs font-semibold text-muted uppercase tracking-wider mb-1">Date</p>
-                            <p className="text-sm font-bold text-slate-800">{format(selectedDate, 'MMMM d, yyyy')}</p>
+                            <p className="text-sm font-bold text-secondary">{format(selectedDate, 'MMMM d, yyyy')}</p>
                         </div>
                         <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
                             <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-1">Time</p>
@@ -233,13 +233,13 @@ export default function BookingPanel({ doctorId, doctorName, maxDays = 30, onBoo
                     </div>
 
                     <div className="mb-5">
-                        <label className="block text-sm font-semibold text-slate-700 mb-1.5">Describe your symptoms</label>
+                        <label className="block text-sm font-semibold text-secondary mb-1.5">Describe your symptoms</label>
                         <textarea
                             value={symptoms}
                             onChange={(e) => setSymptoms(e.target.value)}
                             rows={3}
                             placeholder="E.g. Fever for 3 days, persistent cough, headache..."
-                            className="w-full p-3.5 bg-slate-50 border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-slate-700"
+                            className="w-full p-3.5 bg-surface border border-line rounded-xl outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-secondary"
                         />
                     </div>
 

@@ -225,7 +225,7 @@ export default function PatientDashboard() {
                                     >
                                         <button
                                             onClick={() => toggleReminder(reminder.id, reminder.isCompleted)}
-                                            className={`mt-0.5 flex-shrink-0 transition-colors ${reminder.isCompleted ? 'text-accent' : 'text-slate-300 hover:text-primary'}`}
+                                            className={`mt-0.5 flex-shrink-0 transition-colors ${reminder.isCompleted ? 'text-accent' : 'text-muted hover:text-primary'}`}
                                             aria-label={reminder.isCompleted ? "Mark incomplete" : "Mark complete"}
                                         >
                                             {reminder.isCompleted ? <CheckCircle2 className="w-6 h-6" /> : <Circle className="w-6 h-6" />}

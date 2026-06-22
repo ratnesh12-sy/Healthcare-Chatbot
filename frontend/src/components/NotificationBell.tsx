@@ -135,15 +135,15 @@ export default function NotificationBell() {
               due.map((r) => (
                 <div
                   key={r.id}
-                  className="px-4 py-3 flex items-start gap-3 hover:bg-slate-50 border-b border-slate-50 last:border-0"
+                  className="px-4 py-3 flex items-start gap-3 hover:bg-surface border-b border-line last:border-0"
                 >
                   <div className="mt-0.5 p-1.5 bg-primary-soft text-primary rounded-lg flex-shrink-0">
                     <Clock className="w-4 h-4" />
                   </div>
-                  <p className="flex-1 text-sm text-slate-700 font-medium">{r.text}</p>
+                  <p className="flex-1 text-sm text-secondary font-medium">{r.text}</p>
                   <button
                     onClick={() => snooze(r.id)}
-                    className="text-slate-300 hover:text-amber-500 flex-shrink-0 transition-colors"
+                    className="text-muted hover:text-amber-500 flex-shrink-0 transition-colors"
                     aria-label="Snooze 30 minutes"
                     title="Snooze 30 min"
                   >
@@ -151,7 +151,7 @@ export default function NotificationBell() {
                   </button>
                   <button
                     onClick={() => dismiss(r.id)}
-                    className="text-slate-300 hover:text-green-500 flex-shrink-0 transition-colors"
+                    className="text-muted hover:text-green-500 flex-shrink-0 transition-colors"
                     aria-label="Mark done"
                     title="Mark done"
                   >

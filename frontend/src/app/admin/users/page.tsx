@@ -30,7 +30,7 @@ const ROLE_FILTERS = [
 const ROLE_BADGE: Record<string, string> = {
     ROLE_ADMIN: 'bg-pastel-rose text-pastel-roseInk border-rose-200',
     ROLE_DOCTOR: 'bg-primary-soft text-[#5040c0] border-primary-soft',
-    ROLE_PATIENT: 'bg-pastel-sky text-pastel-skyInk border-blue-200',
+    ROLE_PATIENT: 'bg-pastel-sky text-pastel-skyInk border-pastel-sky',
 };
 
 const formatRole = (role: string) =>
@@ -46,12 +46,12 @@ function Avatar({ user, dim = 'w-10 h-10' }: { user: AdminUser; dim?: string }) 
             <img
                 src={user.avatarUrl}
                 alt={user.fullName || user.username}
-                className={`${dim} rounded-full object-cover bg-slate-200 border border-line`}
+                className={`${dim} rounded-full object-cover bg-line border border-line`}
             />
         );
     }
     return (
-        <div className={`${dim} rounded-full bg-slate-200 text-slate-600 font-bold flex items-center justify-center`}>
+        <div className={`${dim} rounded-full bg-line text-muted font-bold flex items-center justify-center`}>
             {(user.fullName?.charAt(0) || user.username.charAt(0)).toUpperCase()}
         </div>
     );
@@ -61,7 +61,7 @@ function AuthBadge({ provider }: { provider: string | null }) {
     const isGoogle = (provider || '').toUpperCase() === 'GOOGLE';
     return (
         <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full border ${
-            isGoogle ? 'bg-white text-slate-700 border-line' : 'bg-slate-50 text-muted border-line'
+            isGoogle ? 'bg-white text-secondary border-line' : 'bg-surface text-muted border-line'
         }`}>
             {isGoogle ? (
                 <>
@@ -86,8 +86,8 @@ function AuthBadge({ provider }: { provider: string | null }) {
 function StatusPill({ enabled }: { enabled: boolean }) {
     return (
         <span className="inline-flex items-center gap-1.5">
-            <span className={`w-2 h-2 rounded-full ${enabled ? 'bg-green-500' : 'bg-slate-300'}`}></span>
-            <span className={`text-xs font-bold ${enabled ? 'text-slate-600' : 'text-muted'}`}>
+            <span className={`w-2 h-2 rounded-full ${enabled ? 'bg-green-500' : 'bg-muted'}`}></span>
+            <span className={`text-xs font-bold ${enabled ? 'text-muted' : 'text-muted'}`}>
                 {enabled ? 'Active' : 'Suspended'}
             </span>
         </span>
@@ -254,7 +254,7 @@ export default function UserManagementPage() {
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-extrabold text-slate-800 tracking-tight">User Management</h1>
+                    <h1 className="text-3xl font-extrabold text-secondary tracking-tight">User Management</h1>
                     <p className="text-muted mt-2 font-medium">Control platform access, roles, and account status.</p>
                 </div>
             </div>
@@ -266,17 +266,17 @@ export default function UserManagementPage() {
                         key={f.key}
                         onClick={() => setRoleFilter(f.key)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
-                            roleFilter === f.key ? 'bg-secondary text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            roleFilter === f.key ? 'bg-secondary text-white shadow-sm' : 'bg-surface text-muted hover:bg-line'
                         }`}
                     >
                         <Filter size={14} />
                         {f.label}
-                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${roleFilter === f.key ? 'bg-white/20' : 'bg-slate-300 text-slate-700'}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${roleFilter === f.key ? 'bg-white/20' : 'bg-line text-secondary'}`}>
                             {roleCounts[f.key] || 0}
                         </span>
                     </button>
                 ))}
-                <span className="w-px h-6 bg-slate-200 mx-1" />
+                <span className="w-px h-6 bg-line mx-1" />
                 <button
                     onClick={() => setRoleFilter('DELETED')}
                     className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold transition-all ${
@@ -305,7 +305,7 @@ export default function UserManagementPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50 border-b border-line">
+                                <tr className="bg-surface border-b border-line">
                                     <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Account</th>
                                     <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Former Role</th>
                                     <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Deleted On</th>
@@ -320,7 +320,7 @@ export default function UserManagementPage() {
                                     <tr key={user.id} className="hover:bg-surface transition-colors">
                                         <td className="p-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-slate-100 text-muted flex items-center justify-center">
+                                                <div className="w-10 h-10 rounded-full bg-surface text-muted flex items-center justify-center">
                                                     <UserX size={18} />
                                                 </div>
                                                 <div>
@@ -330,11 +330,11 @@ export default function UserManagementPage() {
                                             </div>
                                         </td>
                                         <td className="p-4">
-                                            <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${ROLE_BADGE[user.role] || 'bg-slate-50 text-slate-600 border-line'}`}>
+                                            <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${ROLE_BADGE[user.role] || 'bg-surface text-muted border-line'}`}>
                                                 {formatRole(user.role)}
                                             </span>
                                         </td>
-                                        <td className="p-4"><span className="text-sm font-semibold text-slate-600">{formatDate(user.deletedAt)}</span></td>
+                                        <td className="p-4"><span className="text-sm font-semibold text-muted">{formatDate(user.deletedAt)}</span></td>
                                         <td className="p-4 text-right">
                                             <button
                                                 onClick={() => permanentlyDelete(user)}
@@ -372,7 +372,7 @@ export default function UserManagementPage() {
                                 <select
                                     value={sortBy}
                                     onChange={(e) => setSortBy(e.target.value as 'name' | 'joined')}
-                                    className="bg-white border border-line pl-9 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all shadow-sm font-bold text-slate-600 cursor-pointer"
+                                    className="bg-white border border-line pl-9 pr-4 py-3 rounded-xl focus:ring-2 focus:ring-secondary/20 focus:border-secondary outline-none transition-all shadow-sm font-bold text-muted cursor-pointer"
                                 >
                                     <option value="joined">Newest first</option>
                                     <option value="name">Name (A–Z)</option>
@@ -387,7 +387,7 @@ export default function UserManagementPage() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-50 border-b border-line">
+                                <tr className="bg-surface border-b border-line">
                                     <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">User Identity</th>
                                     <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Contact</th>
                                     <th className="p-4 text-xs font-bold text-muted uppercase tracking-wider">Role</th>
@@ -403,7 +403,7 @@ export default function UserManagementPage() {
                                 {!loading && visibleUsers.map(user => {
                                     const isSelf = user.id === currentUser?.id;
                                     return (
-                                        <tr key={user.id} className={`hover:bg-surface transition-colors ${!user.enabled ? 'bg-slate-50/40' : ''}`}>
+                                        <tr key={user.id} className={`hover:bg-surface transition-colors ${!user.enabled ? 'bg-surface/40' : ''}`}>
                                             <td className="p-4">
                                                 <div className="flex items-center gap-3">
                                                     <Avatar user={user} />
@@ -417,14 +417,14 @@ export default function UserManagementPage() {
                                                 </div>
                                             </td>
                                             <td className="p-4">
-                                                <p className="text-sm font-semibold text-slate-700">{user.email}</p>
+                                                <p className="text-sm font-semibold text-secondary">{user.email}</p>
                                                 <p className="text-xs text-muted font-medium">{user.phoneNumber || 'No phone'}</p>
                                             </td>
                                             <td className="p-4">
                                                 <select
                                                     value={user.role || 'ROLE_PATIENT'}
                                                     onChange={(e) => changeRole(user.id, e.target.value)}
-                                                    className={`text-xs font-bold px-3 py-1.5 rounded-full border outline-none cursor-pointer ${ROLE_BADGE[user.role] || 'bg-slate-50 text-slate-600 border-line'}`}
+                                                    className={`text-xs font-bold px-3 py-1.5 rounded-full border outline-none cursor-pointer ${ROLE_BADGE[user.role] || 'bg-surface text-muted border-line'}`}
                                                 >
                                                     <option value="ROLE_ADMIN">Administrator</option>
                                                     <option value="ROLE_DOCTOR">Doctor</option>
@@ -432,13 +432,13 @@ export default function UserManagementPage() {
                                                 </select>
                                             </td>
                                             <td className="p-4"><AuthBadge provider={user.authProvider} /></td>
-                                            <td className="p-4"><span className="text-sm font-semibold text-slate-600">{formatDate(user.createdAt)}</span></td>
+                                            <td className="p-4"><span className="text-sm font-semibold text-muted">{formatDate(user.createdAt)}</span></td>
                                             <td className="p-4"><StatusPill enabled={user.enabled} /></td>
                                             <td className="p-4 text-right">
                                                 <div className="flex items-center justify-end gap-1">
                                                     <button
                                                         onClick={() => setSelected(user)}
-                                                        className="p-2 text-muted hover:text-secondary hover:bg-slate-100 rounded-lg transition-colors"
+                                                        className="p-2 text-muted hover:text-secondary hover:bg-surface rounded-lg transition-colors"
                                                         title="View details"
                                                     >
                                                         <Eye size={18} />
@@ -478,7 +478,7 @@ export default function UserManagementPage() {
                     <div className="fixed inset-0 z-50 flex justify-end">
                         <motion.div
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+                            className="absolute inset-0 bg-secondary/50 backdrop-blur-sm"
                             onClick={() => setSelected(null)}
                         />
                         <motion.div
@@ -486,9 +486,9 @@ export default function UserManagementPage() {
                             transition={{ type: 'tween', duration: 0.25 }}
                             className="relative z-10 w-full max-w-md bg-white h-full shadow-2xl overflow-y-auto"
                         >
-                            <div className="p-6 border-b border-line bg-slate-50 flex items-center justify-between">
+                            <div className="p-6 border-b border-line bg-surface flex items-center justify-between">
                                 <h3 className="text-lg font-extrabold text-secondary">User Details</h3>
-                                <button onClick={() => setSelected(null)} className="p-2 text-muted hover:text-slate-600 bg-white rounded-full shadow-sm">
+                                <button onClick={() => setSelected(null)} className="p-2 text-muted hover:text-muted bg-white rounded-full shadow-sm">
                                     <X size={18} />
                                 </button>
                             </div>
@@ -508,7 +508,7 @@ export default function UserManagementPage() {
                                     <DetailRow icon={<Phone size={16} />} label="Phone" value={selected.phoneNumber || '—'} />
                                     <DetailRow icon={<ShieldCheck size={16} />} label="Role" value={formatRole(selected.role)} badge={ROLE_BADGE[selected.role]} />
                                     <DetailRow icon={<Calendar size={16} />} label="Joined" value={formatDate(selected.createdAt)} />
-                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-line">
+                                    <div className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-line">
                                         <span className="text-muted"><Mail size={16} /></span>
                                         <div className="flex-1">
                                             <p className="text-xs font-semibold text-muted uppercase tracking-wider">Sign-in method</p>
@@ -521,12 +521,12 @@ export default function UserManagementPage() {
                                 <div className="space-y-3 pt-4 border-t border-line">
                                     <p className="text-xs font-semibold text-muted uppercase tracking-wider">Actions</p>
                                     <div className="flex items-center justify-between gap-3">
-                                        <span className="text-sm font-bold text-slate-600">Change role</span>
+                                        <span className="text-sm font-bold text-muted">Change role</span>
                                         <select
                                             value={selected.role}
                                             onChange={(e) => changeRole(selected.id, e.target.value)}
                                             disabled={selected.id === currentUser?.id}
-                                            className={`text-xs font-bold px-3 py-2 rounded-lg border outline-none cursor-pointer disabled:opacity-50 ${ROLE_BADGE[selected.role] || 'bg-slate-50 text-slate-600 border-line'}`}
+                                            className={`text-xs font-bold px-3 py-2 rounded-lg border outline-none cursor-pointer disabled:opacity-50 ${ROLE_BADGE[selected.role] || 'bg-surface text-muted border-line'}`}
                                         >
                                             <option value="ROLE_ADMIN">Administrator</option>
                                             <option value="ROLE_DOCTOR">Doctor</option>
@@ -568,7 +568,7 @@ export default function UserManagementPage() {
 
 function DetailRow({ icon, label, value, badge }: { icon: React.ReactNode; label: string; value: string; badge?: string }) {
     return (
-        <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-line">
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-surface border border-line">
             <span className="text-muted">{icon}</span>
             <div className="flex-1 min-w-0">
                 <p className="text-xs font-semibold text-muted uppercase tracking-wider">{label}</p>

@@ -19,7 +19,7 @@ export default function DoctorSuggestion({ aiMessage }: DoctorSuggestionProps) {
             </div>
             <ul className="space-y-1.5">
                 {suggestions.map((suggestion, idx) => (
-                    <li key={idx} className="text-sm text-slate-700 flex items-start gap-2">
+                    <li key={idx} className="text-sm text-secondary flex items-start gap-2">
                         <span className="text-primary font-bold mt-0.5">•</span>
                         <span className="leading-tight">{suggestion}</span>
                     </li>

@@ -24,7 +24,7 @@ export default function AdminLayout({
     // Show nothing while checking auth or if not admin
     if (loading || !isAdmin) {
         return (
-            <div className="flex items-center justify-center h-screen bg-slate-50">
+            <div className="flex items-center justify-center h-screen bg-surface">
                 <div className="text-center space-y-4">
                     <div className="w-12 h-12 border-4 border-line border-t-rose-500 rounded-full animate-spin mx-auto"></div>
                     <p className="text-sm font-bold text-muted uppercase tracking-wider">Verifying Clearance…</p>
@@ -34,10 +34,10 @@ export default function AdminLayout({
     }
 
     return (
-        <div className="flex h-screen bg-slate-50 font-sans">
+        <div className="flex h-screen bg-surface font-sans">
             {/* Admin Sidebar */}
             <aside className="w-72 bg-secondary text-white flex flex-col shadow-2xl z-20">
-                <div className="p-6 border-b border-slate-800 flex items-center gap-3">
+                <div className="p-6 border-b border-white/10 flex items-center gap-3">
                     <div className="bg-rose-500 text-white p-2 rounded-xl shadow-lg">
                         <ShieldAlert size={24} />
                     </div>
@@ -48,34 +48,34 @@ export default function AdminLayout({
                 </div>
 
                 <nav className="flex-1 px-4 py-8 space-y-2">
-                    <Link href="/admin" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
+                    <Link href="/admin" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors text-white/70 font-medium hover:text-white">
                         <LayoutDashboard size={20} />
                         Command Center
                     </Link>
-                    <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
+                    <Link href="/admin/users" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors text-white/70 font-medium hover:text-white">
                         <Users size={20} />
                         User Management
                     </Link>
-                    <Link href="/admin/doctors/verify" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
+                    <Link href="/admin/doctors/verify" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors text-white/70 font-medium hover:text-white">
                         <UserCheck size={20} />
                         Doctor Verification
                         <span className="ml-auto bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">New</span>
                     </Link>
                     <div className="pt-8 pb-2">
-                        <p className="px-4 text-xs font-bold text-muted uppercase tracking-wider border-b border-slate-800 pb-2">System</p>
+                        <p className="px-4 text-xs font-bold text-white/40 uppercase tracking-wider border-b border-white/10 pb-2">System</p>
                     </div>
-                    <Link href="/admin/audit" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
+                    <Link href="/admin/audit" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors text-white/70 font-medium hover:text-white">
                         <ScrollText size={20} />
                         Audit Logs
                     </Link>
-                    <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 transition-colors text-slate-300 font-medium hover:text-white">
+                    <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/10 transition-colors text-white/70 font-medium hover:text-white">
                         <Settings size={20} />
                         Global Settings
                     </Link>
                 </nav>
 
-                <div className="p-4 border-t border-slate-800 space-y-2">
-                    <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-muted hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all font-bold">
+                <div className="p-4 border-t border-white/10 space-y-2">
+                    <button onClick={logout} className="flex items-center gap-3 w-full px-4 py-3 text-white/70 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all font-bold">
                         <LogOut size={20} />
                         Logout
                     </button>
@@ -94,13 +94,13 @@ export default function AdminLayout({
                             <p className="text-sm font-bold text-secondary">{user?.fullName || user?.username}</p>
                             <p className="text-xs text-rose-500 font-bold uppercase tracking-wider">Administrator</p>
                         </div>
-                        <div className="w-10 h-10 rounded-full bg-slate-900 border-2 border-rose-500 flex items-center justify-center text-white font-bold shadow-sm">
+                        <div className="w-10 h-10 rounded-full bg-dark border-2 border-rose-500 flex items-center justify-center text-white font-bold shadow-sm">
                             {user?.username?.charAt(0)?.toUpperCase() || 'A'}
                         </div>
                     </div>
                 </header>
                 <div className="flex-1 overflow-y-auto p-8 relative">
-                    <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-slate-100 to-transparent -z-10 rounded-b-[3rem]"></div>
+                    <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-primary-soft to-transparent -z-10 rounded-b-[3rem]"></div>
                     {children}
                 </div>
             </main>

@@ -172,15 +172,15 @@ export default function DoctorDashboard() {
     };
 
     const statCards = [
-        { label: "Today's Appointments", value: stats?.todayCount || 0, icon: <Calendar className="w-6 h-6 text-blue-500" />, color: "bg-blue-50" },
+        { label: "Today's Appointments", value: stats?.todayCount || 0, icon: <Calendar className="w-6 h-6 text-pastel-skyInk" />, color: "bg-pastel-sky" },
         { label: "Pending Requests", value: stats?.pendingCount || 0, icon: <Clock className="w-6 h-6 text-orange-500" />, color: "bg-orange-50" },
         { label: "Completed", value: stats?.completedCount || 0, icon: <CheckCircle className="w-6 h-6 text-green-500" />, color: "bg-green-50" },
-        { label: "Total Patients", value: stats?.totalCount || 0, icon: <Users className="w-6 h-6 text-purple-500" />, color: "bg-purple-50" },
+        { label: "Total Patients", value: stats?.totalCount || 0, icon: <Users className="w-6 h-6 text-pastel-lilacInk" />, color: "bg-pastel-lilac" },
     ];
 
     const statusConfig: Record<string, { dot: string; badge: string; badgeBg: string }> = {
         PENDING: { dot: 'bg-orange-400', badge: 'text-orange-600', badgeBg: 'bg-orange-100' },
-        CONFIRMED: { dot: 'bg-blue-400', badge: 'text-blue-600', badgeBg: 'bg-blue-100' },
+        CONFIRMED: { dot: 'bg-pastel-skyInk', badge: 'text-pastel-skyInk', badgeBg: 'bg-pastel-sky' },
         COMPLETED: { dot: 'bg-green-400', badge: 'text-green-600', badgeBg: 'bg-green-100' },
         CANCELLED: { dot: 'bg-red-300', badge: 'text-red-600', badgeBg: 'bg-red-100' },
     };
@@ -215,18 +215,18 @@ export default function DoctorDashboard() {
             buttonHover: 'hover:bg-amber-600',
         },
         pending: {
-            icon: <ShieldCheck className="w-7 h-7 text-blue-600" />,
+            icon: <ShieldCheck className="w-7 h-7 text-pastel-skyInk" />,
             title: 'Verification Under Review',
             description: 'Your professional credentials are being reviewed by our admin team. You\'ll get full access once your identity is verified. This usually takes less than 24 hours.',
             actionLabel: 'Check Status',
             actionHref: null, // triggers reload
-            gradient: 'from-blue-50 via-primary-soft to-sky-50',
-            borderColor: 'border-blue-200',
-            iconBg: 'bg-blue-100',
-            titleColor: 'text-blue-900',
-            textColor: 'text-blue-700',
-            buttonBg: 'bg-blue-500',
-            buttonHover: 'hover:bg-blue-600',
+            gradient: 'from-pastel-sky via-primary-soft to-pastel-lilac',
+            borderColor: 'border-primary-soft',
+            iconBg: 'bg-pastel-sky',
+            titleColor: 'text-secondary',
+            textColor: 'text-muted',
+            buttonBg: 'bg-primary',
+            buttonHover: 'hover:bg-primary/90',
         },
         rejected: {
             icon: <ShieldX className="w-7 h-7 text-red-600" />,
@@ -272,13 +272,13 @@ export default function DoctorDashboard() {
                         <div className="flex bg-white/10 backdrop-blur-sm p-1 rounded-xl border border-white/10">
                             <button 
                                 onClick={() => setActiveMainTab('overview')}
-                                className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${activeMainTab === 'overview' ? 'bg-white text-slate-800 shadow-sm' : 'text-white/60 hover:text-white/90'}`}
+                                className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${activeMainTab === 'overview' ? 'bg-white text-secondary shadow-sm' : 'text-white/60 hover:text-white/90'}`}
                             >
                                 Overview
                             </button>
                             <button 
                                 onClick={() => setActiveMainTab('availability')}
-                                className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${activeMainTab === 'availability' ? 'bg-white text-slate-800 shadow-sm' : 'text-white/60 hover:text-white/90'}`}
+                                className={`px-6 py-2 rounded-lg font-bold text-sm transition-all ${activeMainTab === 'availability' ? 'bg-white text-secondary shadow-sm' : 'text-white/60 hover:text-white/90'}`}
                             >
                                 Availability
                             </button>
@@ -323,7 +323,7 @@ export default function DoctorDashboard() {
                                         </button>
                                         <button
                                             onClick={() => router.push('/dashboard/profile')}
-                                            className="px-5 py-2.5 bg-white/80 text-slate-700 font-semibold text-sm rounded-xl hover:bg-white transition-colors border border-line"
+                                            className="px-5 py-2.5 bg-white/80 text-secondary font-semibold text-sm rounded-xl hover:bg-white transition-colors border border-line"
                                         >
                                             View Profile
                                         </button>
@@ -350,10 +350,10 @@ export default function DoctorDashboard() {
                             >
                                 <div>
                                     <p className="text-xs text-muted font-semibold mb-1">{stat.label}</p>
-                                    <h3 className="text-2xl font-extrabold text-slate-300 tracking-tight">—</h3>
+                                    <h3 className="text-2xl font-extrabold text-muted tracking-tight">—</h3>
                                 </div>
-                                <div className={`p-3 rounded-xl bg-slate-50`}>
-                                    <Lock className="w-6 h-6 text-slate-300" />
+                                <div className={`p-3 rounded-xl bg-surface`}>
+                                    <Lock className="w-6 h-6 text-muted" />
                                 </div>
                             </motion.div>
                         ))}
@@ -369,7 +369,7 @@ export default function DoctorDashboard() {
                             </span>
                         </div>
                         <div className="p-16 flex flex-col items-center justify-center text-center">
-                            <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                            <div className="w-16 h-16 bg-surface text-muted rounded-full flex items-center justify-center mb-4">
                                 <Calendar className="w-8 h-8" />
                             </div>
                             <h3 className="text-lg font-bold text-muted mb-1">Appointments are locked</h3>
@@ -406,7 +406,7 @@ export default function DoctorDashboard() {
                                         <div>
                                             <p className="text-xs text-muted font-semibold mb-1">{stat.label}</p>
                                             {loading ? (
-                                                <div className="h-8 w-14 bg-slate-200 animate-pulse rounded"></div>
+                                                <div className="h-8 w-14 bg-line animate-pulse rounded"></div>
                                             ) : (
                                                 <h3 className="text-2xl font-extrabold text-secondary tracking-tight">{stat.value}</h3>
                                             )}
@@ -426,19 +426,19 @@ export default function DoctorDashboard() {
                                     transition={{ delay: 0.3 }}
                                 >
                                     {nextAppointment ? (
-                                        <div className="bg-gradient-to-r from-primary-soft to-blue-50 border border-primary-soft rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                                        <div className="bg-gradient-to-r from-primary-soft to-pastel-sky border border-primary-soft rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                             <div className="flex items-start gap-4">
                                                 <div className="p-3 bg-primary-soft rounded-xl shrink-0">
                                                     <AlertCircle className="w-6 h-6 text-[#5d4bd6]" />
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-bold text-[#5040c0] uppercase tracking-wider mb-1">🔔 Next Up</p>
-                                                    <h4 className="text-lg font-extrabold text-slate-800">{nextAppointment.patientName}</h4>
+                                                    <h4 className="text-lg font-extrabold text-secondary">{nextAppointment.patientName}</h4>
                                                     <p className="text-sm text-[#5040c0] font-semibold mt-1">
                                                         {new Date(nextAppointment.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} — {getCountdown(nextAppointment.appointmentDate)}
                                                     </p>
                                                     {nextAppointment.symptomsSummary && nextAppointment.symptomsSummary.trim() !== '' && (
-                                                        <p className="text-sm text-slate-600 mt-2 line-clamp-1">
+                                                        <p className="text-sm text-muted mt-2 line-clamp-1">
                                                             🤖 &quot;{nextAppointment.symptomsSummary.slice(0, 100)}&quot;
                                                         </p>
                                                     )}
@@ -455,14 +455,14 @@ export default function DoctorDashboard() {
                                                 )}
                                                 <button
                                                     onClick={() => setSelectedAppointment(nextAppointment)}
-                                                    className="px-4 py-2 bg-white text-slate-700 font-semibold text-sm rounded-lg hover:bg-slate-50 transition-colors border border-line"
+                                                    className="px-4 py-2 bg-white text-secondary font-semibold text-sm rounded-lg hover:bg-surface transition-colors border border-line"
                                                 >
                                                     Details
                                                 </button>
                                             </div>
                                         </div>
                                     ) : (stats?.totalCount || 0) > 0 ? (
-                                        <div className="bg-slate-50 border border-line rounded-2xl p-6 text-center">
+                                        <div className="bg-surface border border-line rounded-2xl p-6 text-center">
                                             <p className="text-muted font-medium">🎉 You&apos;re free for the rest of the day!</p>
                                             <p className="text-sm text-muted mt-1">Take a breather or review your schedule.</p>
                                         </div>
@@ -483,22 +483,22 @@ export default function DoctorDashboard() {
                                 {loading ? (
                                     <div className="p-6 space-y-4">
                                         {[1, 2, 3].map(i => (
-                                            <div key={i} className="h-20 bg-slate-100 animate-pulse rounded-xl"></div>
+                                            <div key={i} className="h-20 bg-surface animate-pulse rounded-xl"></div>
                                         ))}
                                     </div>
                                 ) : !stats?.todayAppointments || stats.todayAppointments.length === 0 ? (
                                     <div className="p-16 flex flex-col items-center justify-center text-center">
-                                        <div className="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                                        <div className="w-16 h-16 bg-surface text-muted rounded-full flex items-center justify-center mb-4">
                                             <Calendar className="w-8 h-8" />
                                         </div>
-                                        <h3 className="text-lg font-bold text-slate-700 mb-1">No appointments today</h3>
+                                        <h3 className="text-lg font-bold text-secondary mb-1">No appointments today</h3>
                                         <p className="text-muted">Take a breather, your schedule is clear.</p>
                                     </div>
                                 ) : (
                                     <div className="p-6">
                                         <div className="relative">
                                             {/* Vertical timeline line */}
-                                            <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-slate-200" />
+                                            <div className="absolute left-[11px] top-3 bottom-3 w-0.5 bg-line" />
                                             
                                             <div className={stats.todayAppointments.length > 3 ? 'space-y-2' : 'space-y-4'}>
                                                 {stats.todayAppointments.map((apt, idx) => {
@@ -517,10 +517,10 @@ export default function DoctorDashboard() {
                                                             {/* Card */}
                                                             <div
                                                                 onClick={() => setSelectedAppointment(apt)}
-                                                                className="flex-1 flex flex-col md:flex-row md:items-center justify-between p-5 bg-slate-50 hover:bg-white rounded-xl border border-line hover:border-line hover:shadow-sm transition-all cursor-pointer gap-3"
+                                                                className="flex-1 flex flex-col md:flex-row md:items-center justify-between p-5 bg-surface hover:bg-white rounded-xl border border-line hover:border-line hover:shadow-sm transition-all cursor-pointer gap-3"
                                                             >
                                                                 <div className="flex items-center gap-4 flex-1">
-                                                                    <div className="flex flex-col items-center justify-center w-14 h-14 bg-white text-slate-600 rounded-xl font-bold shrink-0 border border-line">
+                                                                    <div className="flex flex-col items-center justify-center w-14 h-14 bg-white text-muted rounded-xl font-bold shrink-0 border border-line">
                                                                         <span className="text-xs font-semibold">
                                                                             {new Date(apt.appointmentDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                                         </span>
@@ -587,18 +587,18 @@ export default function DoctorDashboard() {
                                     <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
                                         <motion.div 
                                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-                                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                                            className="absolute inset-0 bg-secondary/40 backdrop-blur-sm"
                                             onClick={() => setSelectedAppointment(null)}
                                         />
                                         <motion.div 
                                             initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
                                             className="bg-white rounded-3xl w-full max-w-2xl relative z-10 shadow-xl overflow-hidden"
                                         >
-                                            <div className="p-6 border-b flex justify-between items-center bg-slate-50">
+                                            <div className="p-6 border-b flex justify-between items-center bg-surface">
                                                 <h3 className="text-xl font-bold text-secondary flex items-center gap-2">
                                                     <Activity className="w-5 h-5 text-primary" /> Patient Triage Overview
                                                 </h3>
-                                                <button onClick={() => setSelectedAppointment(null)} className="p-2 text-muted hover:text-slate-600 bg-white rounded-full shadow-sm">
+                                                <button onClick={() => setSelectedAppointment(null)} className="p-2 text-muted hover:text-muted bg-white rounded-full shadow-sm">
                                                     <X className="w-5 h-5" />
                                                 </button>
                                             </div>
@@ -609,15 +609,15 @@ export default function DoctorDashboard() {
                                                         <p className="text-muted font-medium">Scheduled for {new Date(selectedAppointment.appointmentDate).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}</p>
                                                     </div>
                                                     <span className={`text-xs font-bold px-3 py-1.5 rounded-lg uppercase tracking-wide ${
-                                                        statusConfig[selectedAppointment.status]?.badgeBg || 'bg-slate-100'
-                                                    } ${statusConfig[selectedAppointment.status]?.badge || 'text-slate-600'}`}>
+                                                        statusConfig[selectedAppointment.status]?.badgeBg || 'bg-surface'
+                                                    } ${statusConfig[selectedAppointment.status]?.badge || 'text-muted'}`}>
                                                         {selectedAppointment.status}
                                                     </span>
                                                 </div>
                                                 
-                                                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
-                                                    <h5 className="font-bold text-blue-900 mb-2">AI Triage Summary</h5>
-                                                    <p className="text-blue-800 leading-relaxed whitespace-pre-wrap">
+                                                <div className="bg-pastel-sky border border-primary-soft rounded-2xl p-5">
+                                                    <h5 className="font-bold text-secondary mb-2">AI Triage Summary</h5>
+                                                    <p className="text-secondary leading-relaxed whitespace-pre-wrap">
                                                         {selectedAppointment.symptomsSummary || "No summary provided by the patient."}
                                                     </p>
                                                 </div>
@@ -637,14 +637,14 @@ export default function DoctorDashboard() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         {[1, 2, 3, 4].map(i => (
                             <div key={i} className="bg-white p-5 rounded-2xl shadow-sm border border-line h-24 animate-pulse">
-                                <div className="h-3 w-20 bg-slate-200 rounded mb-3"></div>
-                                <div className="h-7 w-12 bg-slate-200 rounded"></div>
+                                <div className="h-3 w-20 bg-line rounded mb-3"></div>
+                                <div className="h-7 w-12 bg-line rounded"></div>
                             </div>
                         ))}
                     </div>
                     <div className="bg-white rounded-3xl shadow-sm border border-line p-6 space-y-4">
                         {[1, 2, 3].map(i => (
-                            <div key={i} className="h-20 bg-slate-100 animate-pulse rounded-xl"></div>
+                            <div key={i} className="h-20 bg-surface animate-pulse rounded-xl"></div>
                         ))}
                     </div>
                 </>

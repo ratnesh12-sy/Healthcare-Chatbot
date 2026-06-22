@@ -120,7 +120,7 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+          className="absolute inset-0 bg-secondary/40 backdrop-blur-sm"
         />
         
         {/* Modal Window */}
@@ -142,7 +142,7 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
             </div>
             <button
               onClick={onClose}
-              className="p-2 text-muted hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
+              className="p-2 text-muted hover:text-muted hover:bg-surface rounded-full transition-colors"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -166,7 +166,7 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
               )}
 
               <div className="mb-5">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">Reminder Text</label>
+                <label className="block text-sm font-semibold text-secondary mb-2">Reminder Text</label>
                 <input
                   ref={inputRef}
                   type="text"
@@ -180,7 +180,7 @@ export default function ReminderModal({ isOpen, onClose, aiMessage }: ReminderMo
                   }}
                   maxLength={120}
                   placeholder="E.g., Schedule an iron blood test"
-                  className="w-full p-3 bg-slate-50 border border-line rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-slate-800"
+                  className="w-full p-3 bg-surface border border-line rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all font-medium text-secondary"
                 />
               </div>
 

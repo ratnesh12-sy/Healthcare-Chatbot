@@ -68,7 +68,7 @@ body {
   animation: ocr-shimmer 1.5s ease-in-out infinite;
 }
 .ocr-privacy-notice {
-  @apply flex items-center gap-1.5 text-xs text-slate-400 py-1.5 px-3;
+  @apply flex items-center gap-1.5 text-xs text-muted py-1.5 px-3;
 }
 .ocr-disclaimer {
   @apply mt-2 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 leading-relaxed;

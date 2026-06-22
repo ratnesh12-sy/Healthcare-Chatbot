@@ -35,9 +35,9 @@ export default function Home() {
                         <span className="text-xl font-bold text-dark tracking-tight">HealthAI</span>
                     </div>
                     <div className="hidden md:flex items-center gap-8">
-                        <Link href="#features" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">Features</Link>
-                        <Link href="#how-it-works" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">How it Works</Link>
-                        <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-primary transition-colors">Login</Link>
+                        <Link href="#features" className="text-sm font-medium text-muted hover:text-primary transition-colors">Features</Link>
+                        <Link href="#how-it-works" className="text-sm font-medium text-muted hover:text-primary transition-colors">How it Works</Link>
+                        <Link href="/login" className="text-sm font-medium text-muted hover:text-primary transition-colors">Login</Link>
                         <Link href="/signup" className="btn-primary py-2 px-6 text-sm">Sign Up</Link>
                     </div>
 
@@ -45,7 +45,7 @@ export default function Home() {
                     <div className="md:hidden flex items-center">
                         <button 
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                            className="text-gray-700 hover:text-primary transition-colors p-2"
+                            className="text-secondary hover:text-primary transition-colors p-2"
                         >
                             {isMobileMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
                         </button>
@@ -62,9 +62,9 @@ export default function Home() {
                             className="md:hidden bg-white border-t border-line overflow-hidden"
                         >
                             <div className="px-6 py-4 flex flex-col gap-4">
-                                <Link onClick={() => setIsMobileMenuOpen(false)} href="#features" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">Features</Link>
-                                <Link onClick={() => setIsMobileMenuOpen(false)} href="#how-it-works" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">How it Works</Link>
-                                <Link onClick={() => setIsMobileMenuOpen(false)} href="/login" className="text-base font-medium text-gray-700 hover:text-primary py-2 border-b border-gray-50">Login</Link>
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="#features" className="text-base font-medium text-secondary hover:text-primary py-2 border-b border-line">Features</Link>
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="#how-it-works" className="text-base font-medium text-secondary hover:text-primary py-2 border-b border-line">How it Works</Link>
+                                <Link onClick={() => setIsMobileMenuOpen(false)} href="/login" className="text-base font-medium text-secondary hover:text-primary py-2 border-b border-line">Login</Link>
                                 <Link onClick={() => setIsMobileMenuOpen(false)} href="/signup" className="btn-primary py-3 px-6 text-center mt-2 w-full text-base font-bold">Sign Up Free</Link>
                             </div>
                         </motion.div>
@@ -88,7 +88,7 @@ export default function Home() {
                             Your Personal <br />
                             <span className="text-primary">AI Health Assistant</span>
                         </h1>
-                        <p className="text-lg text-gray-600 mb-10 max-w-lg leading-relaxed">
+                        <p className="text-lg text-muted mb-10 max-w-lg leading-relaxed">
                             Experience the future of healthcare with instant symptom analysis, 
                             smart scheduling, and secure tracking—all powered by advanced AI.
                         </p>
@@ -158,7 +158,7 @@ export default function Home() {
             <section id="features" className="py-24 bg-light">
                 <div className="max-w-7xl mx-auto px-6 text-center">
                     <h2 className="text-3xl md:text-5xl font-extrabold text-dark mb-4">Everything You Need for Better Health</h2>
-                    <p className="text-gray-600 mb-16 max-w-2xl mx-auto">
+                    <p className="text-muted mb-16 max-w-2xl mx-auto">
                         Our integrated AI platform provides comprehensive support across all aspects of your health journey.
                     </p>
 
@@ -214,7 +214,7 @@ export default function Home() {
                         <p className="text-sm">
                             © 2026 HealthAI Assistant. All rights reserved.
                         </p>
-                        <p className="text-xs leading-relaxed italic border-t border-gray-800 pt-4">
+                        <p className="text-xs leading-relaxed italic border-t border-white/10 pt-4">
                             Disclaimer: This AI assistant is for informational purposes only and is not a replacement for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician.
                         </p>
                     </div>
@@ -240,7 +240,7 @@ function FeatureCard({ icon, title, description }: FeatureCardProps) {
                 {icon}
             </div>
             <h3 className="text-xl font-bold mb-3 text-dark">{title}</h3>
-            <p className="text-gray-600 leading-relaxed">{description}</p>
+            <p className="text-muted leading-relaxed">{description}</p>
         </motion.div>
     );
 }

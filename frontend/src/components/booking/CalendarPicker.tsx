@@ -34,7 +34,7 @@ export default function CalendarPicker({ selectedDate, maxDays, onDateSelect, on
                 modifiersClassNames={{
                     selected: '!bg-primary !text-white !rounded-lg !font-bold',
                     today: '!font-extrabold !text-primary',
-                    disabled: '!text-slate-300 !cursor-not-allowed'
+                    disabled: '!text-muted !cursor-not-allowed'
                 }}
                 className="!font-sans"
             />

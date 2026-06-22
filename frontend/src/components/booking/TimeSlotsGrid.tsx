@@ -39,10 +39,10 @@ function SkeletonGrid() {
         <div className="space-y-6">
             {[1, 2, 3].map(group => (
                 <div key={group}>
-                    <div className="h-4 w-24 bg-slate-200 rounded animate-pulse mb-3" />
+                    <div className="h-4 w-24 bg-line rounded animate-pulse mb-3" />
                     <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
                         {Array.from({ length: 6 }).map((_, i) => (
-                            <div key={i} className="h-12 bg-slate-100 rounded-xl animate-pulse" />
+                            <div key={i} className="h-12 bg-surface rounded-xl animate-pulse" />
                         ))}
                     </div>
                 </div>
@@ -64,7 +64,7 @@ function SlotGroup({ label, icon, slots, selectedSlot, onSlotSelect }: {
         <div>
             <div className="flex items-center gap-2 mb-3">
                 {icon}
-                <h4 className="text-sm font-bold text-slate-600 uppercase tracking-wider">{label}</h4>
+                <h4 className="text-sm font-bold text-muted uppercase tracking-wider">{label}</h4>
                 <span className="text-xs text-muted font-semibold">
                     ({slots.filter(s => s.available).length} available)
                 </span>
@@ -91,10 +91,10 @@ export default function TimeSlotsGrid({ slots, loading, selectedSlot, onSlotSele
     if (!slots || slots.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-16 text-center">
-                <div className="w-16 h-16 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                <div className="w-16 h-16 bg-surface text-muted rounded-full flex items-center justify-center mb-4">
                     <Calendar className="w-8 h-8" />
                 </div>
-                <h3 className="text-lg font-bold text-slate-700 mb-1">No slots available for this day</h3>
+                <h3 className="text-lg font-bold text-secondary mb-1">No slots available for this day</h3>
                 <p className="text-sm text-muted max-w-xs">The doctor has no availability on this date. Try selecting a different day.</p>
             </div>
         );

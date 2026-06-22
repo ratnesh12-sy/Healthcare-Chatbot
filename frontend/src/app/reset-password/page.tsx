@@ -80,13 +80,13 @@ function ResetPasswordForm() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">New password</label>
+                    <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">New password</label>
                     <div className="relative">
                         <input
                             type={showPassword ? 'text' : 'password'}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="block w-full px-4 py-3 pr-10 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                            className="block w-full px-4 py-3 pr-10 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                             placeholder="••••••••"
                             required
                         />
@@ -95,19 +95,19 @@ function ResetPasswordForm() {
                             onClick={() => setShowPassword((prev) => !prev)}
                             aria-label="Toggle password visibility"
                             tabIndex={-1}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-gray-600 cursor-pointer transition-colors"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-muted cursor-pointer transition-colors"
                         >
                             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
                     </div>
                 </div>
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1.5 ml-1">Confirm new password</label>
+                    <label className="block text-sm font-semibold text-secondary mb-1.5 ml-1">Confirm new password</label>
                     <input
                         type={showPassword ? 'text' : 'password'}
                         value={confirm}
                         onChange={(e) => setConfirm(e.target.value)}
-                        className="block w-full px-4 py-3 bg-gray-50 border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
+                        className="block w-full px-4 py-3 bg-surface border border-line rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white transition-all outline-none"
                         placeholder="••••••••"
                         required
                     />
@@ -119,7 +119,7 @@ function ResetPasswordForm() {
                 >
                     {loading ? 'Updating...' : 'Update password'}
                 </button>
-                <p className="text-center text-gray-600 text-sm">
+                <p className="text-center text-muted text-sm">
                     <Link href="/login" className="text-primary font-bold hover:text-[#5d4bd6] transition-colors">
                         Back to sign in
                     </Link>
@@ -131,7 +131,7 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-surface">
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
